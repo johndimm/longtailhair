@@ -1,0 +1,1 @@
+psql -f functions.sql

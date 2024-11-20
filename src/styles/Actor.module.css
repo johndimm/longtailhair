@@ -1,0 +1,26 @@
+.selected_actor {
+    color: black;
+    cursor: pointer;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.selected_actor img {
+   height: 200px;
+   border-radius: 10px;
+}
+
+.selected_actor .close_button {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    background-color: gray;
+    color: white;
+}
+
+.selected_actor:hover .close_button {
+    display: inline-block;
+}

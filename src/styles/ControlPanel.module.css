@@ -1,0 +1,137 @@
+
+
+.controls {
+    width: 99%;
+    vertical-align: top;
+    text-align: center;
+    border: 1px solid gray;
+    overflow-x: auto;
+    overflow-y: auto;
+    font-size: 100%;
+    white-space: nowrap;
+    padding-bottom: 10px;
+    padding-right: 3px;
+
+    max-width: 100%;
+}
+
+
+.controls input {
+    margin: 3px;
+    margin-top: 10px;
+}
+
+.controls .page_title {
+    text-align: center;
+}
+
+.controls .search_input {
+    height: 24px;
+    margin-bottom: 10px;
+}
+
+.controls .search_input:placeholder-shown {
+    font-style: italic;
+ }
+
+
+ .controls .page_title {
+    position: relative;
+    margin: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 30px;
+    font-size: 180%;
+    font-weight: 600;
+    text-align: center;
+}
+
+.controls .page_subtitle {
+    font-size: 11pt;
+    font-style: italic;
+    font-weight: 400;
+    width: 200px;
+    margin: 10px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.controls .page_title {
+    margin-left: 0;
+}
+
+.controls .widget {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+    vertical-align: middle;
+    position: relative;
+}
+
+.controls .date_widget {
+    border: 0px solid gray;
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.controls .genres_widget {
+    width: calc(100% - 600px - 100px);
+    display: inline-block;
+    text-align: center;
+    vertical-align: bottom;
+    max-height: 250px;
+    overflow-y: auto;
+
+}
+
+.controls .genres_widget::-webkit-scrollbar {
+    display: none;
+}
+
+.controls .date_widget hr {
+    margin-top: 10px;
+}
+
+.controls .date_widget .resetButton {
+    padding: 5px;
+    margin: 10px;
+    font-size: 14pt;
+}
+
+.controls {
+    background-color: lightgray;
+    color: black;
+}
+
+.controls::-webkit-scrollbar {
+    display: none;
+  }
+
+.controls {
+    padding: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 10px;
+    background: lightgray;
+    color: black;
+}
+
+.controls .magnifying_glass {
+    font-size: 10pt;
+    padding: 3px;
+}
+
+.controls .logo {
+    height: 24px;
+}
+
+.controls .logo2 {
+    height: 16px;
+}
+
+.controls .search_form {
+    width: 100%;
+    display: block;
+}
+/* Mobile-Specific Styles */

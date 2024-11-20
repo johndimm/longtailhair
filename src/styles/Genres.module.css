@@ -1,0 +1,37 @@
+.genre_count {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 8pt;
+}
+
+.checkbox_line {
+    vertical-align: bottom;
+    height: 24px;
+    width: 165px;
+    position: relative;
+    break-inside: avoid-column;
+}
+
+.checkbox_line input[type=checkbox] {
+    color: white;
+    background-color: white
+}
+
+
+.genres {
+    text-align: left;
+    min-width: 168px;
+    overflow-x: auto;
+    padding: 10px;
+    margin: 10px;
+    column-width: 165px;
+    column-count: auto;
+    font-size: 12pt;
+    border: 0px solid gray;
+    overflow-y: auto;
+}
+
+.genre_name {
+    cursor: pointer;
+}

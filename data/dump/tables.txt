@@ -1,0 +1,7 @@
+careers
+name_basics_ex
+posters
+summaries
+title_basics_ex
+title_principals_agg
+tmdb

@@ -1,0 +1,370 @@
+.left,
+.center,
+.right {
+    float: left;
+    font-size: 14.6px;
+    width: 35%;
+    padding: 20px;
+    padding-top: 0;
+    background-color: white;
+
+}
+
+.center {
+    width: 30%;
+    font-size: 12pt;
+}
+
+.movie_page {
+    position: relative;
+    color: black;
+    min-width: 1060px;
+    overflow-x: auto;
+    background-color: white;
+}
+
+.main_page {
+    height: 100vh;
+    width: 100vw;
+    overflow: auto;
+}
+
+.search_page {
+    padding-bottom: 100px;
+    height: 100vh;
+    width: 100%;
+
+    overflow: auto;
+    position: relative;
+
+    background-color: black;
+    padding-left: 10px;
+    padding-top: 10px;
+    text-align: center;
+}
+
+.movie .page_title {
+    float: left;
+    width: 100%;
+    text-align: left;
+}
+
+.movie .close_button {
+    float: right;
+    vertical-align: middle;
+    font-weight: 1;
+}
+
+.center .trailers {
+    margin: 5px;
+    text-align: center;
+    width: 100%;
+}
+
+.card {
+    position: relative;
+    width: 100%;
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid rgb(100, 100, 100, 1);
+    display: flex;
+    align-items: flex-start;
+    font-weight: 200;
+    break-inside: avoid-column;
+}
+
+.card .person {
+    margin-bottom: 5px;
+    break-inside: avoid-column;
+    max-width: 100%;
+}
+
+.card .person_name {
+    font-weight: 600;
+    max-width: 100%;
+    cursor: pointer;
+}
+
+.card .movie_title {
+    font-weight: 600;
+    font-size: 120%;
+    text-align: left;
+    padding-left: 10px;
+    cursor: pointer;
+}
+
+.card hr {
+    clear: both;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.card .star_rating {
+    color: orange;
+    margin-right: 3px;
+}
+
+.card .person .age {
+    margin-left: 2px;
+    font-size: 80%;
+}
+
+.card .card_text {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+}
+
+.card .plot_summary {
+    text-align: left;
+}
+
+.card .persons {
+    column-count: 2;
+    font-size: 90%;
+    margin: 10px;
+    text-align: left;
+}
+
+.card .metadata {
+    bottom: 3px;
+    margin-top: 5px;
+
+    text-align: left;
+}
+
+.card .year {
+    margin-right: 7px;
+    cursor: pointer;
+}
+
+.card .genres {
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.card .genres:hover {
+    transform: scale(1.1);
+}
+
+.card .card_text .person .person_name:hover {
+    transform: scale(1.1);
+}
+
+.movie_title:hover {
+    transform: scale(1.1);
+}
+
+.card img:hover {
+    transform: scale(1.4);
+    /* 140% zoom */
+    border-radius: 15px;
+    padding: 5px;
+    z-index: 100;
+}
+
+.card img {
+    transition: transform .2s;
+    /* Animation */
+}
+
+.card .card_text {
+    animation: fadeIn 1s;
+}
+
+
+.center .card hr {
+    display: none;
+}
+
+.search_page .card .card_text {
+    width: 100%;
+}
+
+.search_page .card .age {
+    display: none
+}
+
+.left .card img,
+.right .card img {
+    max-width: 40%;
+    padding-left: 10px;
+    display: inline-block;
+}
+
+.center .card img {
+    max-width: 100%;
+    margin-bottom: 10px;
+}
+
+.center .card img:hover {
+    transform: scale(1);
+    /* 140% zoom */
+    z-index: 99;
+}
+
+.center .card {
+    border: 1px solid black;
+}
+
+.center .card .movie_title {
+    text-align: center;
+}
+
+.center .card .movie_title {
+    font-size: 150%;
+}
+
+.search_page .card .movie_title {
+    font-size: 180%;
+}
+
+.search_page .persons {
+    margin-top: 10px;
+    max-width: 100%;
+    overflow: hidden;
+    max-height: 180px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+
+.search_page .card {
+    width: 30%;
+    font-size: 80%;
+    height: 210px;
+    display: inline-block;
+}
+
+.search_page .card img {
+    max-height: 100%;
+    float: right;
+    width: 37%;
+    cursor: pointer;
+}
+
+.search_page .car_black .plot_summary {
+    display: none;
+}
+
+.search_page .role {
+    display: block;
+}
+
+.search_page .card .metadata {
+    position: relative;
+    bottom: 10px;
+}
+
+.search_page .card_black .card_text {
+    display: none;
+}
+
+.search_page .card_black img {
+    width: 100%;
+}
+
+.search_page .card {
+    width: 210px;
+    height: 290px;
+    margin: 10px;
+}
+
+.search_page .card_black {
+    background-color: black;
+    margin: 10px;
+}
+
+.center .card {
+    text-align: center;
+}
+
+.search_page .card_white {
+    background-color: black;
+    color: white;
+    overflow: auto;
+}
+
+
+.search_page .card_white img {
+    width: 0;
+    position: absolute;
+}
+
+
+.search_page .card_white .card_text {
+    width: 100%;
+    background-color: black;
+    position: relative;
+}
+
+.search_page .card_white::-webkit-scrollbar {
+    display: none;
+}
+
+
+.search_page .card_light {
+    background-color: white;
+    color: black;
+    overflow: auto;
+    width: 400px;
+    height: 290px;
+}
+
+.search_page .card_light img:hover {
+    transform: scale(1.0);
+    /* 140% zoom */
+    border-radius: 0px;
+    padding: 0px;
+    z-index: 100;
+}
+
+.search_page .card_light .card_text {
+    margin-right: 5px;
+    width: 60%;
+}
+
+.search_page .card_light .plot_summary {
+    background-color: white;
+    color: black;
+    margin: 5px;
+    padding: 5px;
+    z-index: 2;
+    position: relative;
+}
+
+.search_page .card_light::-webkit-scrollbar {
+    display: none;
+}
+
+.search_page .plot_summary {
+    background-color: rgb(240, 240, 240, 1);
+    color: black;
+    margin: 5px;
+    padding: 5px;
+    z-index: 2;
+    position: relative;
+}
+
+
+.movie_page .page_title {
+    position: relative;
+    padding: 10px;
+
+    padding-left: 30px;
+    font-size: 180%;
+    font-weight: 600;
+    text-align: center;
+    background-color: lightgray;
+
+}
+
+.movie_page .page_subtitle {
+    font-size: 11pt;
+    font-style: italic;
+    font-weight: 400;
+    width: 200px;
+    margin: 10px;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
