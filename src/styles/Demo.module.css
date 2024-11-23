@@ -1,0 +1,39 @@
+.demo {
+    margin: 50px;
+    width: 1024px;
+}
+
+.demo .page_title {
+    padding-left: 20px;
+}
+.demo img {
+    border: 1px solid gray;
+    width: 800px;
+    padding: 20px;
+    margin: 10px;
+}
+
+.demo .demo_text {
+    padding-left: 20px;
+    width: 300px;
+}
+
+.demo .intro {
+  font-size: 120%;
+  margin: 20px;
+}
+
+.demo table {
+    padding: 10px;
+    margin: 10px;
+}
+
+.demo .link {
+    display: inline-block;
+    margin-top: 40px;
+    font-size: 160%;
+}
+
+.demo p {
+    margin-top: 10px;
+}

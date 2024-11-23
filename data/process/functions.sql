@@ -153,6 +153,7 @@ join name_basics_ex as nb using (nconst)
 left join posters as p using(tconst)
 left join summaries as s using (tconst)
 left join tmdb using (tconst)
+-- where e.averageRating is not null
 order by e.popularity desc, ordering
 ;
 ' using 

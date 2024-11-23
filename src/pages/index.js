@@ -73,7 +73,7 @@ export default function Index() {
   }
 
   const resetActor = (nconst) => {
-    // toggle
+
     console.log('resetActor', nconst)
     
     const newNconst = _nconst == nconst
@@ -81,15 +81,15 @@ export default function Index() {
       : nconst
 
     setMovie(null)
-    setQuery(null)
-    setGenres(null)
-    setYearstart(null)
-    setYearend(null)
     resetNumMovies()
     setActor(newNconst)
 
-    if (newNconst)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (newNconst) {
+      setQuery(null)
+      setGenres(null)
+      setYearstart(null)
+      setYearend(null)
+    }
   }
 
   const resetNumMovies = () => {
