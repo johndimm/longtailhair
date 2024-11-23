@@ -10,7 +10,7 @@ import Head from 'next/head'
 
 export const CallbackContext = createContext(null);
 
-export default function Main({}) {
+export default function Main({ }) {
   const router = useRouter()
 
   const [data, setData] = useState([])
@@ -24,9 +24,9 @@ export default function Main({}) {
   const [theme, setTheme] = useState('dark')
 
   const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetYear, resetMovie, resetActor, 
+  const { resetGenres, resetYear, resetMovie, resetActor,
     resetQuery, setYearstart, setYearend, setTitletype, setNumMovies,
-    tconst, nconst, titletype, genres, 
+    tconst, nconst, titletype, genres,
     query, yearstart, yearend, numMovies } = callbacks
 
   const snagActorName = (result) => {
@@ -57,6 +57,16 @@ export default function Main({}) {
   }
 
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Enable the back button.
+      window.addEventListener('popstate', function (event) {
+        this.window.location.reload()
+        event.preventDefault()
+      })
+    }
+  }, [])
+
+  useEffect(() => {
     if (tconst)
       setupMoviePage()
     else
@@ -66,7 +76,7 @@ export default function Main({}) {
   useEffect(() => {
     //if (!nconst)
     setActorName('')
-    
+
   }, [nconst])
 
   useEffect(() => {
@@ -75,7 +85,9 @@ export default function Main({}) {
       return
 
     getData()
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+
+
+
   }, [genres, numMovies, yearstart, yearend, query, nconst, titletype])
 
   if (!data) // || data.length == 0)
@@ -150,24 +162,27 @@ export default function Main({}) {
       }
     }
     if (typeof window !== 'undefined') {
-      // console.log("setNavUrl", navUrl)
-      window.history.pushState({}, '', navUrl);
+      if (navUrl !== '/' + window.location.search) {
+        window.history.pushState({}, '', navUrl)
+      }
+
     }
   }
 
   const searchResultsHTML = (
     <div
+      id="search_page"
       className={styles.search_page}
-      style={{...searchPageVisible, "backgroundColor": theme == 'light' ? 'white' : 'black'}}
+      style={{ ...searchPageVisible, "backgroundColor": theme == 'light' ? 'white' : 'black' }}
       onScroll={onScroll}
     >
-      
-        <Head>
-				<meta
-					name='viewport'
-					content='width=device-width, initial-scale=0.7, maximum-scale=10.0, minimum-scale=0.1, user-scalable=yes'
-				/>
-        </Head>
+
+      <Head>
+        <meta
+          name='viewport'
+          content='width=device-width, initial-scale=0.7, maximum-scale=10.0, minimum-scale=0.1, user-scalable=yes'
+        />
+      </Head>
 
       <ControlPanel
         setTheme={setTheme}

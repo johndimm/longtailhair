@@ -1,12 +1,11 @@
 \pset pager 0
 
-
 --
 -- some movies have no ratings
 --
 -- explain
 with constants as (
-  select 'Game-Show' as _genres,
+  select 'Adult' as _genres,
   1890 as _startyear,
   2024 as _endyear,
   null as _query,
@@ -21,10 +20,16 @@ select
   tbe.averageRating, 
   tbe.numVotes, 
   tbe.popularity
-from title_basics_ex as tbe,
-  constants
+from title_basics_ex as tbe
+--  join full_genres as fg using(genres)
+  ,constants
+
 where 
- ( _genres is null or tbe.genres_array @> string_to_array(_genres, ','))
+
+  tbe.genres = 'Adult'
+
+-- ( _genres is null or fg.genres_array @> string_to_array(_genres::text, '','') )
+
 
  -- and
  --( _startyear is null or tbe.startyear >= _startyear)
@@ -34,8 +39,10 @@ where
  --(_query is null or tbe.fulltext @@ to_tsquery('english', replace(_query,' ',' & ')))
  --and 
  --(_nconst is null or _nconst = ANY (tbe.actors_array) )
- and 
- (_titletype is null or tbe.titletype = _titletype)
+
+
+ -- and 
+ -- (_titletype is null or tbe.titletype = _titletype)
  
 
  order by 5 desc

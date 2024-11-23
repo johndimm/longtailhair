@@ -30,7 +30,7 @@
 }
 
 .search_page {
-    padding-bottom: 100px;
+    padding-bottom: 50px;
     height: 100vh;
     width: 100%;
 
@@ -160,11 +160,15 @@
     /* 140% zoom */
     border-radius: 15px;
     padding: 5px;
-    z-index: 100;
+    z-index: 2;
 }
 
 .card img {
+    position: relative;
     transition: transform .2s;
+    z-index: 1;
+    cursor: pointer;
+
     /* Animation */
 }
 
@@ -239,7 +243,6 @@
     max-height: 100%;
     float: right;
     width: 37%;
-    cursor: pointer;
 }
 
 .search_page .car_black .plot_summary {
@@ -281,6 +284,12 @@
 .search_page .card_white {
     background-color: black;
     color: white;
+    overflow: auto;
+}
+
+.search_page .card_white_light {
+    color: black;
+    background-color: white;
     overflow: auto;
 }
 

@@ -4,8 +4,8 @@ import styles from "@/styles/RangeSlider.module.css";
 
 const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   changeYearstart, changeYearend, goLeft, goRight, yearstart, yearend, reset }) => {
-  const [minval, setMinval] = useState(yearstart || 0)
-  const [maxval, setMaxval] = useState(yearend || 0)
+  const [minval, setMinval] = useState(yearstart || min)
+  const [maxval, setMaxval] = useState(yearend || max)
 
   const setBoth = (yearstart, yearend) => {
     //if (yearstart) {
@@ -13,13 +13,13 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
 
       // should useRef for this.
       const minRange = document.getElementById('min_range_id')
-      minRange.value = yearstart
+      minRange.value = yearstart || min
     //} 
     //if (yearend) {
       setMaxval(yearend || max)
 
       const maxRange = document.getElementById('max_range_id')
-      maxRange.value = yearend
+      maxRange.value = yearend || max
     //}
   }
 
@@ -79,19 +79,32 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   const MAX = parseInt(max)
 
   const r = MAX - MIN
-  const left = ((minval - MIN) / r) * 100
-  const right = 100 - ((maxval - MIN) / r) * 100
+  const left = ((minval - MIN) * 100 / r)
+  const right = 100 - ((maxval - MIN) * 100 / r) 
 
   const fillBlueStyle = {
     left: left + "%",
     right: right + "%"
   }
-
   // console.log(`yearstart=${yearstart} min=${min} yearend=${yearend} max=${max}`)
+
+  const defaultMax = yearend || MAX
+  const defaultMin = yearstart || MIN
+  console.log(`defaultMax=${defaultMax} defaultMin=${defaultMin}`)
 
   const clearButton = yearstart || yearend
     ? <div className={styles.clear_button} onClick={clear}>clear</div>
     : <></>
+
+  const rangeEndpoints = minval != maxval
+     ? (<>
+     {leftFieldName}&nbsp;
+    <span className={styles.year}>{minval}</span>
+    {rightFieldName}&nbsp;
+    <span className={styles.year}>{maxval}</span> 
+  </>)
+    : <div className={styles.year} style={{fontSize: "150%"}}>{minval}</div>   
+
 
   return (
     <div className={styles.range}>
@@ -103,7 +116,7 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
 
       <input id='max_range_id' type="range"
           min={MIN} max={MAX}
-          defaultValue={yearend || MAX} step="1"
+          defaultValue={defaultMax} step="1"
           onChange={newEnd}
           onMouseUp={updateEnd}
           onTouchEnd={updateEnd}
@@ -111,7 +124,7 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
 
         <input id='min_range_id' type="range"
           min={MIN} max={MAX}
-          defaultValue={yearstart || MIN} step="1"
+          defaultValue={defaultMin} step="1"
           onChange={newStart}
           onMouseUp={updateStart}
           onTouchEnd={updateStart}
@@ -126,10 +139,7 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
           className={styles.date_left_arrow}>&#10148;
         </span>
 
-        {leftFieldName}&nbsp;
-        <span className={styles.year}>{minval}</span>
-        {rightFieldName}&nbsp;
-        <span className={styles.year}>{maxval}</span>
+        {rangeEndpoints}
 
         <span
           onClick={goRight}

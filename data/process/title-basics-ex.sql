@@ -28,7 +28,7 @@ left join raw_data.title_ratings as tr using (tconst)
 create index idx_tbe_tconst on title_basics_ex (tconst);
 create index idx_tbe_year on title_basics_ex (startYear);
 create index idx_tbe_titletype on title_basics_ex(titletype);
-create index idx_tbe_pop on title_basics_ex(popularity);
+-- create index idx_tbe_pop on title_basics_ex(popularity);
 
 create index idx_tbe_fulltext on title_basics_ex using GIN (fulltext);
 create index idx_tbe_genres_array on title_basics_ex using GIN (genres_array);

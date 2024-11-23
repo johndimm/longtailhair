@@ -36,6 +36,7 @@ const Person = ({ r, selectedPerson, resetActor }) => {
       style={style}
       onClick={() => {
         resetActor(r.nconst);
+        window.scrollTo({ top: 0, behavior: 'smooth' })
       }}>
       {r.primaryname}
       <span className={styles.age}>{age}</span>
@@ -62,7 +63,8 @@ export const Card = ({
       const primaryTitle = recs[0].primarytitle
       if (!poster_url || poster_url == '') {
         //console.log("useEffect sets card white", poster_url, primaryTitle)
-        setTopClass(clsx(styles.card, styles.card_white))
+        const className = theme == 'light' ? styles.card_white_light : styles.card_white
+        setTopClass(clsx(styles.card, className))     
       } else {
         const className = theme == 'light' ? styles.card_light : styles.card_black
         setTopClass(clsx(styles.card, className))     
@@ -77,6 +79,7 @@ export const Card = ({
 
   let slicedRecs = recs
   if (r1.place == 'genres') {
+    // Get the top 4 actors.
     slicedRecs = recs.slice(0, 4)
   }
 
@@ -132,8 +135,9 @@ export const Card = ({
     : <span style={{ "display": "flex", "fontSize": "70%", "lineHeight": "1.2", "flexWrap": 'wrap', }}>{r1.primarytitle}</span>
   1
   let plot_sentence = r1.plot_summary
-  if (r1.place == 'genres')
-    plot_sentence = r1.plot_summary ? r1.plot_summary + '...' : ''
+  if (r1.place != 'center')
+
+    plot_sentence = r1.plot_summary ? r1.plot_summary.substring(0,150) + '...' : ''
 
   return <div className={topClass}>
 

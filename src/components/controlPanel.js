@@ -137,6 +137,8 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
         </div>
       </div>
 
+      <div className={styles.demo_link}><a href='/Demo'>demo</a></div>
+
 
 
       <hr />
@@ -176,7 +178,6 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
         <label htmlFor="dark-theme">dark</label>
 
       </div>
-
 
 
     </div>

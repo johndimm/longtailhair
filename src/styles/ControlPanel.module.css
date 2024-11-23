@@ -134,4 +134,10 @@
     width: 100%;
     display: block;
 }
+
+.demo_link {
+    font-size: 10pt;
+    font-style: italic;
+    margin: 5px;
+}
 /* Mobile-Specific Styles */
