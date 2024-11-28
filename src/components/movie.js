@@ -95,40 +95,47 @@ const Movie = ({
 
   let tmdb_id
   let titletype
+  let backdrop
   if (center_persons.length > 0) {
     tmdb_id = center_persons[0].tmdb_id
     titletype = center_persons[0].titletype
+    backdrop = center_persons[0].backdrop_url
+  }
+
+  if (backdrop) {
+    const backdrop_url = backdrop.replace('w300', 'w1280').replace('SX300', 'SX1280')
+    backdrop = <img className={styles.backdrop} src={backdrop_url} />
   }
 
   if (!data || data.length == 0)
-    return <Spinner isLoading={isLoading}/>
+    return <Spinner isLoading={isLoading} />
 
   return <div className={styles.movie_page}>
 
-        <Head>
-				<meta
-					name='viewport'
-					content='width=device-width, initial-scale=0.5, maximum-scale=1.0, minimum-scale=0.01, user-scalable=yes'
-				/>
-        </Head>
+    <Head>
+      <meta
+        name='viewport'
+        content='width=device-width, initial-scale=0.5, maximum-scale=1.0, minimum-scale=0.01, user-scalable=yes'
+      />
+    </Head>
 
     <Spinner isLoading={isLoading} />
 
     <div className={styles.controls} style={{ "marginTop": "10px" }}>
 
-<span className={styles.page_title} style={{ "cursor": "pointer" }} title="go back" onClick={() => resetMovie(null)}>
-  Long Tail
+      <span className={styles.page_title} style={{ "cursor": "pointer" }} title="go back" onClick={() => resetMovie(null)}>
+        Long Tail
 
 
-  <span className={styles.page_subtitle}>productions by members of this cast and crew before and after</span>
+        <span className={styles.page_subtitle}>productions by members of this cast and crew before and after</span>
 
 
-  <span className={styles.close_button}>
-    X
-  </span>
+        <span className={styles.close_button}>
+          X
+        </span>
 
-</span>
-</div>
+      </span>
+    </div>
 
     <div className={styles.left}>
       <Sidebar
@@ -140,6 +147,7 @@ const Movie = ({
 
     <div className={styles.center}>
       {center}
+      {backdrop}
       <Trailer tmdb_id={tmdb_id} titletype={titletype} />
     </div>
 
@@ -147,8 +155,8 @@ const Movie = ({
       <Sidebar
         data={data}
         place='right'
-        selectedPerson={nconst} 
-        />
+        selectedPerson={nconst}
+      />
     </div>
 
   </div>

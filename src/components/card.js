@@ -78,7 +78,7 @@ export const Card = ({
   const r1 = recs[0]
 
   let slicedRecs = recs
-  if (r1.place == 'genres') {
+  if (r1.place == 'genres' && r1.poster_url != null) {
     // Get the top 4 actors.
     slicedRecs = recs.slice(0, 4)
   }
@@ -133,11 +133,16 @@ export const Card = ({
   const title = r1.primarytitle.length < 30
     ? <>{r1.primarytitle}</>
     : <span style={{ "display": "flex", "fontSize": "70%", "lineHeight": "1.2", "flexWrap": 'wrap', }}>{r1.primarytitle}</span>
-  1
+  
   let plot_sentence = r1.plot_summary
   if (r1.place != 'center')
-
     plot_sentence = r1.plot_summary ? r1.plot_summary.substring(0,150) + '...' : ''
+
+  const plotHtml = r1.plot_summary ?
+    <div className={styles.plot_summary}>
+      {plot_sentence}
+    </div>
+    : null
 
   return <div className={topClass}>
 
@@ -151,9 +156,8 @@ export const Card = ({
 
           <hr />
           {center_poster}
-          <div className={styles.plot_summary}>
-            {plot_sentence}
-          </div>
+          {plotHtml}
+
         </div>
 
         <div className={styles.persons}>

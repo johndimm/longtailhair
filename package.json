@@ -16,5 +16,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-slider": "^2.0.6"
+  },
+  "engines": {
+    "node": "22.x" 
   }
 }

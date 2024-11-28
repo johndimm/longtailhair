@@ -13,3 +13,4 @@ I used the non-commercial data dump from imdb as base and added posters, plot su
 ![longtail](https://longtailhair.vercel.app/demo/top-movies.png)
 
 
+!(https://longtailhair.vercel.app/demo/top-movies.png)

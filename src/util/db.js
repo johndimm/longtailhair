@@ -25,6 +25,9 @@ async function performSQLQuery(query) {
 }
 
 exports.get_movie = function (tconst) {
+  if (tconst == 'undefined')
+    return []
+
 	return performSQLQuery(`select * from get_movie('${tconst}');`);
 };
 

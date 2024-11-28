@@ -37,3 +37,9 @@
 .demo p {
     margin-top: 10px;
 }
+
+.demo .link_to_app {
+    margin: 20px;
+    font-size: 16pt;
+    font-weight: 600;
+}
