@@ -20,7 +20,8 @@ age integer,
 poster_url text,
 plot_summary text,
 titletype text,
-tmdb_id integer
+tmdb_id integer,
+backdrop_url text
 )  language plpgsql STABLE as 
 $$ 
 begin 
@@ -53,7 +54,8 @@ select _all.*, nb.primaryName, tb.primaryTitle, coalesce(tp.characters, tp.categ
   coalesce(p.url, tmdb.poster_path) as poster_url, 
   coalesce(tmdb.overview, s.plot_summary) as plot_summary,
   tb.titletype,
-  tmdb.tmdb_id
+  tmdb.tmdb_id,
+  backdrop_path as backdrop_url
   from _all
   join title_basics_ex as tb using (tconst)
   join name_basics_ex as nb using (nconst)

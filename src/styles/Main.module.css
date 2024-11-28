@@ -263,12 +263,12 @@
 }
 
 .search_page .card_black img {
-    width: 100%;
+   width: 100%;
 }
 
 .search_page .card {
-    width: 210px;
-    height: 290px;
+    width: 310px;
+    height: 450px;
     margin: 10px;
 }
 
@@ -375,5 +375,9 @@
     margin: 10px;
     margin-left: 10px;
     vertical-align: middle;
+}
+
+.backdrop {
+    width: 100%;
 }
 
