@@ -1,55 +1,31 @@
 \pset pager 0
 
---
--- some movies have no ratings
---
---explain
 /*
-with constants as (
-  select 'Adult' as _genres,
-  1890 as _startyear,
-  2024 as _endyear,
-  null as _query,
-  null as _nconst,
-  'movie' as _titletype,
-  24 as _numMovies
-),
-exploded as (
-*/
 with tbe as (
-  select * from title_basics_ex
+  select 
+   tbe.tconst, 
+  tbe.startyear, 
+  tbe.averageRating, 
+  tbe.numVotes, 
+  tbe.popularity 
+  
+  from title_basics_ex as tbe
   limit 1000000
 )
+*/
+
 select 
   tbe.tconst, 
   tbe.startyear, 
   tbe.averageRating, 
   tbe.numVotes, 
   tbe.popularity
--- from title_basics_ex as tbe
-from tbe
+from title_basics_ex as tbe
+-- from tbe
+
 --  join full_genres as fg using(genres)
  -- ,constants
 
---where 
---  tbe.genres = 'Adult'
-
--- ( _genres is null or fg.genres_array @> string_to_array(_genres::text, '','') )
-
-
- -- and
- --( _startyear is null or tbe.startyear >= _startyear)
- --and
- --(_endyear is null or tbe.startyear <= _endyear)
--- and
- --(_query is null or tbe.fulltext @@ to_tsquery('english', replace(_query,' ',' & ')))
- --and 
- --(_nconst is null or _nconst = ANY (tbe.actors_array) )
-
-
- -- and 
- -- (_titletype is null or tbe.titletype = _titletype)
- 
 
  order by 5 desc
  limit 24

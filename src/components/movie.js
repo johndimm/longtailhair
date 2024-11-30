@@ -124,10 +124,11 @@ const Movie = ({
     <div className={styles.controls} style={{ "marginTop": "10px" }}>
 
       <span className={styles.page_title} style={{ "cursor": "pointer" }} title="go back" onClick={() => resetMovie(null)}>
+
         Long Tail
 
-
-        <span className={styles.page_subtitle}>productions by members of this cast and crew before and after</span>
+        <span className={styles.page_subtitle}>
+          productions by members of this cast and crew before and after</span>
 
 
         <span className={styles.close_button}>
