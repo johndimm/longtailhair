@@ -90,7 +90,7 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
 
   const defaultMax = yearend || MAX
   const defaultMin = yearstart || MIN
-  console.log(`defaultMax=${defaultMax} defaultMin=${defaultMin}`)
+  // console.log(`defaultMax=${defaultMax} defaultMin=${defaultMin}`)
 
   const clearButton = yearstart || yearend
     ? <div className={styles.clear_button} onClick={clear}>clear</div>

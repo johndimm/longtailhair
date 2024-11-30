@@ -29,19 +29,6 @@ export default function Main({ }) {
     tconst, nconst, titletype, genres,
     query, yearstart, yearend, numMovies } = callbacks
 
-  const snagActorName = (result) => {
-    // Get selected actor name after we have some data.
-    let found = false
-    for (let i = 0; i < result.length && !found; i++) {
-      const _nconst = result[i]["nconst"]
-      if (nconst && nconst == _nconst) {
-        const name = result[i]["primaryname"]
-        setActorName(name)
-        found = true
-      }
-    }
-  }
-
   const getData = async () => {
     const url = `/api/get_movies?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&numMovies=${numMovies}&query=${query}&nconst=${nconst}&titletype=${titletype}`
     // console.log(url)
@@ -52,8 +39,6 @@ export default function Main({ }) {
     setIsLoading(false)
 
     setData(result)
-    if (result && !query)
-      snagActorName(result)
   }
 
   useEffect(() => {
@@ -101,14 +86,14 @@ export default function Main({ }) {
   const onScroll = (e) => {
     e.preventDefault()
     // return
-    // console.log("onScroll")
+    console.log("onScroll, isScrolling:", isScrolling)
     setIsScrolling(true);
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
     scrollTimeoutRef.current = setTimeout(() => {
       setIsScrolling(false);
-    }, 100);
+    }, 5000);
 
     const el = e.nativeEvent.srcElement
     if (isBottom(el)) {
