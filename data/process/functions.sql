@@ -141,7 +141,7 @@ and
   select tb.tconst, tb.genres, e.averageRating, e.numVotes, e.averageRating * e.numVotes as popularity,
   tp.nconst, ''genres'' as place, nb.primaryName, tb.primaryTitle, coalesce(tp.characters, tp.category) as role, tb.startYear, tb.startYear - nb.birthYear as age, 
   coalesce(p.url, tmdb.poster_path) as poster_url, 
-  -- '' as plot_summary,
+  -- '''' as plot_summary,
   substring(
     coalesce(tmdb.overview, s.plot_summary), 0, 150
   ) as plot_summary,

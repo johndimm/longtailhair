@@ -8,6 +8,13 @@ const YearPicker = ({
 }) => {
   const minDate = 1890
   const maxDate = 2030
+  const initialStart = 2024
+  const initialEnd = 2024
+
+  useEffect(() => {
+    setParentYearstart(initialStart)
+    setParentYearend(initialEnd)
+  }, [])
 
   const reset = () => {
     setParentYearstart(null)
@@ -15,7 +22,7 @@ const YearPicker = ({
   }
 
   const sliderWasMoved = (start, end) => {
-    return start != minDate || end != maxDate
+    return start != initialStart || end != initialEnd
   }
   const changeYearstart = (e) => {
     const newYearstart = e.target.value
