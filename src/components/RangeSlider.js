@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 import { useState, useEffect } from 'react'
 import styles from "@/styles/RangeSlider.module.css";
 
@@ -75,6 +75,12 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
     }
   }
 
+  const onMouseMove = (e) => {
+    const offsetX = e.nativeEvent.offsetX
+    
+    console.log("onMouseMove: ", offsetX)
+  } 
+
   const MIN = parseInt(min)
   const MAX = parseInt(max)
 
@@ -107,12 +113,14 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
 
 
   return (
-    <div className={styles.range}>
+    <div className={styles.range} onMouseMove={onMouseMove}>
 
       <div className={styles.range_slider}>
         <span className={styles.range_selected} style={fillBlueStyle}></span>
       </div>
-      <div className={styles.range_input}>
+
+      <div className={styles.range_input}
+        >
 
       <input id='max_range_id' type="range"
           min={MIN} max={MAX}
