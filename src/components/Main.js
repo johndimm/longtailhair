@@ -1,3 +1,4 @@
+//"use client"
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react'
 import styles from "@/styles/Main.module.css"
 import { Sidebar } from "@/components/card"
@@ -36,9 +37,8 @@ export default function Main({ }) {
     setIsLoading(true)
     const response = await fetch(url)
     const result = await response.json()
-    setIsLoading(false)
-
     setData(result)
+    setIsLoading(false)
   }
 
   useEffect(() => {

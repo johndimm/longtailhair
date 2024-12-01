@@ -18,6 +18,7 @@ export default function Index() {
   const [_titletype, setTitletype] = useState('movie')
   const [_numMovies, setNumMovies] = useState(NUM_MOVIES)
   const [paramsProcessed, setParamsProcessed] = useState(false)
+  const [cardDim, setCardDim] = useState({width: 310, height:450})
 
   const { tconst, nconst, genres, year, yearstart, yearend, query, titletype, numMovies } = router.query
 
@@ -114,7 +115,9 @@ export default function Index() {
     yearend: _yearend,
     query: _query,
     titletype: _titletype,
-    numMovies: _numMovies
+    numMovies: _numMovies,
+    cardDim: cardDim,
+    setCardDim: setCardDim
   }
 
   return <CallbackContext.Provider value={callbacks}>

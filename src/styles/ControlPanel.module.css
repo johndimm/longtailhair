@@ -140,4 +140,7 @@
     font-style: italic;
     margin: 5px;
 }
-/* Mobile-Specific Styles */
+
+.card_dim_slider {
+    width: 50px;
+}

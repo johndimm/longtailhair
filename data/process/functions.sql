@@ -22,7 +22,7 @@ plot_summary text,
 titletype text,
 tmdb_id integer,
 backdrop_url text
-)  language plpgsql STABLE as 
+)  language plpgsql IMMUTABLE as 
 $$ 
 begin 
 
@@ -103,7 +103,7 @@ poster_url text,
 plot_summary text,
 titletype text,
 tmdb_id integer
-) language plpgsql STABLE as 
+) language plpgsql IMMUTABLE as 
 $$ 
 begin 
 
@@ -192,7 +192,7 @@ returns table (
   genre text,
   count integer
 )
-language plpgsql STABLE as 
+language plpgsql IMMUTABLE as 
 $$ 
 begin 
 
@@ -244,7 +244,7 @@ returns table (
   genre text,
   count integer
 )
-language plpgsql STABLE as 
+language plpgsql IMMUTABLE as 
 $$ 
 begin 
 

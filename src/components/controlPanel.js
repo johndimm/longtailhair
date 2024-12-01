@@ -61,7 +61,7 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
   const { resetGenres, resetYear, resetMovie, resetActor,
     resetQuery, resetYearstart, resetYearend, setTitletype, setNumMovies,
     tconst, nconst, titletype, genres,
-    query, yearstart, yearend, numMovies } = callbacks
+    query, yearstart, yearend, numMovies, setCardDim } = callbacks
 
   const updateDates = (yearstart, yearend) => {
     resetYearstart(yearstart)
@@ -97,6 +97,14 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
     const value = e.target.value
     if (value == '')
       resetQuery(null)
+  }
+
+  const newCardDim = (e) => {
+    const val = e.target.value
+    const width = parseInt(val)
+    const height = width * 450 / 310
+    const style = {width: width + 'px', height: height + 'px'}
+    setCardDim(style)
   }
 
 
@@ -178,6 +186,13 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
         <label htmlFor="dark-theme">dark</label>
 
       </div>
+
+      small
+      <input className={styles.card_dim_slider} type="range" 
+        min="150" max="600" 
+        defaultValue="310"
+        onChange={newCardDim} />
+      big
 
 
     </div>

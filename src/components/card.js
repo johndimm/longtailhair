@@ -53,9 +53,10 @@ export const Card = ({
 }) => {
   const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
   const [showingBigPic, setShowingBigPic] = useState(false)
+
   
   const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetYear, resetMovie, resetActor } = callbacks
+  const { resetGenres, resetYear, resetMovie, resetActor, cardDim } = callbacks
 
   useEffect(() => {
     if (recs && recs.length > 0) {
@@ -144,7 +145,11 @@ export const Card = ({
     </div>
     : null
 
-  return <div className={topClass}>
+  let style = {}
+  if (r1.place == 'genres' && theme == 'dark') 
+    style = cardDim
+
+  return <div className={topClass} style={style}>
 
     <div className={styles.card_text}>
 
