@@ -103,7 +103,9 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype }) => {
                     checked={checked} onChange={handleCheckboxChange} />
                 &nbsp;
 
-                <span className={styles.genre_name} onClick={() => selectOneGenre(genre)}>{genre}</span>
+                <span className={styles.genre_name} onClick={() => {
+                    if (!disabledFlag) selectOneGenre(genre)
+                    }}>{genre}</span>
 
             <span className={styles.genre_count}>{count}</span>
 

@@ -1,4 +1,4 @@
-//"use client"
+"use client"
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react'
 import styles from "@/styles/Main.module.css"
 import { Sidebar } from "@/components/card"
@@ -98,7 +98,7 @@ export default function Main({ }) {
     const el = e.nativeEvent.srcElement
     if (isBottom(el)) {
       // Get twice as many movies.
-      setNumMovies(2 * numMovies)
+      setNumMovies(numMovies + NUM_MOVIES)
     }
   }
 

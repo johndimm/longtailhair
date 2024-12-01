@@ -10,8 +10,8 @@ export default function Index() {
   const router = useRouter()
 
   const [_genres, setGenres] = useState()
-  const [_yearstart, setYearstart] = useState()
-  const [_yearend, setYearend] = useState()
+  const [_yearstart, setYearstart] = useState(2024)
+  const [_yearend, setYearend] = useState(2024)
   const [_query, setQuery] = useState('undefined')
   const [_tconst, setMovie] = useState()
   const [_nconst, setActor] = useState()

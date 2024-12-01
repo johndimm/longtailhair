@@ -39,10 +39,14 @@
     height: 30px;
     width: 30px;
     border-radius: 50%;
-    border: 3px solid #1b53c0;
-    background-color: white;
+    border: 1px solid white;
+    background-color: darkgreen;
     pointer-events: auto;
     appearance: none;
+}
+
+.max_date_range input::-webkit-slider-thumb {
+    background-color: darkred;
 }
 
 .range_input input::-moz-range-thumb {
