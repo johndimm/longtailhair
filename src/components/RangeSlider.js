@@ -4,22 +4,23 @@ import styles from "@/styles/RangeSlider.module.css";
 
 const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   changeYearstart, changeYearend, goLeft, goRight, yearstart, yearend, reset }) => {
-  const [minval, setMinval] = useState(yearstart || min)
-  const [maxval, setMaxval] = useState(yearend || max)
+  const [minval, setMinval] = useState(2024)
+  const [maxval, setMaxval] = useState(2024)
+  const [top, settop] = useState('min')
 
   const setBoth = (yearstart, yearend) => {
     //if (yearstart) {
-      setMinval(yearstart || min)
+      setMinval(yearstart || 2024)
 
       // should useRef for this.
       const minRange = document.getElementById('min_range_id')
-      minRange.value = yearstart || min
+      minRange.value = yearstart || 2024
     //} 
     //if (yearend) {
-      setMaxval(yearend || max)
+      setMaxval(yearend || 2024)
 
       const maxRange = document.getElementById('max_range_id')
-      maxRange.value = yearend || max
+      maxRange.value = yearend || 2024
     //}
   }
 
@@ -33,7 +34,16 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   }
 
   const newStart = (e) => {
+    // return
     const val = e.target.value
+    setMinval(val)
+    if (minval == maxval) {
+      setMaxval(val)
+      settop('min')
+    }
+    console.log("newStart: ", val)
+    return
+
     if (val > maxval) {
       setBoth(maxval, maxval)
     }
@@ -46,28 +56,40 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
 
   const updateStart = (e) => {
     const val = e.target.value
-    console.log("updateStart", val)
+    console.log("updateStart and end", val)
 
-    if (val <= maxval) {
+    //if (val <= maxval) {
+      //setMaxval(val)
       setMinval(val)
       changeYearstart(e)
-    }
+      if (minval == maxval)
+        changeYearend(e)
+      settop('max')
+    //}
   }
 
   const updateEnd = (e) => {
     const val = e.target.value
-    // console.log("updateEnd", val)
+     console.log("updateEnd", val)
     if (val <= maxval) {
       setMaxval(val)
       changeYearend(e)
+      if (minval == maxval)
+        settop('min')
     }
   }
 
   const newEnd = (e) => {
+    //return
     const val = e.target.value
+
     if (val < minval) {
       setBoth(minval, minval)
+    } else {
+      setMaxval(val)
     }
+    console.log("newEnd: ", val)
+    return
 
     // console.log("newEnd", val)
     if (val >= minval) {
@@ -94,8 +116,8 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   }
   // console.log(`yearstart=${yearstart} min=${min} yearend=${yearend} max=${max}`)
 
-  const defaultMax = yearend || MAX
-  const defaultMin = yearstart || MIN
+  const defaultMax = 2024 // yearend || MAX
+  const defaultMin = 2024 // yearstart || MIN
   // console.log(`defaultMax=${defaultMax} defaultMin=${defaultMin}`)
 
   const clearButton = yearstart || yearend
@@ -111,9 +133,13 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   </>)
     : <div className={styles.year} style={{fontSize: "150%"}}>{minval}</div>   
 
+  const minZstyle = {"zIndex": top == 'min' ? 10 : 1, "display": "block"}
+  const maxZstyle = {"zIndex": 5, "display": top != 'min' ? "block" :  "none"}
+
+  console.log(`minVal=${minval} maxVal=${maxval}`)
 
   return (
-    <div className={styles.range} onMouseMove={onMouseMove}>
+    <div className={styles.range}>
 
       <div className={styles.range_slider}>
         <span className={styles.range_selected} style={fillBlueStyle}></span>
@@ -122,13 +148,16 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
       <div className={styles.range_input}
         >
 
-      <input id='max_range_id' type="range"
+      <span className={styles.max_date_range}>
+      <input  id='max_range_id' type="range"
           min={MIN} max={MAX}
           defaultValue={defaultMax} step="1"
           onChange={newEnd}
           onMouseUp={updateEnd}
           onTouchEnd={updateEnd}
+          style={maxZstyle}
         />
+        </span>
 
         <input id='min_range_id' type="range"
           min={MIN} max={MAX}
@@ -136,6 +165,7 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
           onChange={newStart}
           onMouseUp={updateStart}
           onTouchEnd={updateStart}
+          style={minZstyle}
         />
 
       </div>

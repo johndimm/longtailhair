@@ -107,6 +107,16 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
     setCardDim(style)
   }
 
+  const bigSmall = theme == 'dark'
+    ?  <>small
+    <input className={styles.card_dim_slider} type="range" 
+      min="150" max="600" 
+      defaultValue="310"
+      onChange={newCardDim} />
+    big
+    </>
+    : <></>
+
 
   const resetAll = () => {
     resetGenres()
@@ -187,13 +197,7 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
 
       </div>
 
-      small
-      <input className={styles.card_dim_slider} type="range" 
-        min="150" max="600" 
-        defaultValue="310"
-        onChange={newCardDim} />
-      big
-
+       {bigSmall}
 
     </div>
 
