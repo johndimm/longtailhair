@@ -97,7 +97,8 @@ export default function Main({ }) {
 
     const el = e.nativeEvent.srcElement
     if (isBottom(el)) {
-      setNumMovies(numMovies + NUM_MOVIES)
+      // Get twice as many movies.
+      setNumMovies(2 * numMovies)
     }
   }
 

@@ -1,1 +1,1 @@
-export const NUM_MOVIES = 24
+export const NUM_MOVIES = 8
