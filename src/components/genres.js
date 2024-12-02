@@ -104,7 +104,7 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype }) => {
                 &nbsp;
 
                 <span className={styles.genre_name} onClick={() => {
-                    if (!disabledFlag) selectOneGenre(genre)
+                      selectOneGenre(genre)
                     }}>{genre}</span>
 
             <span className={styles.genre_count}>{count}</span>
