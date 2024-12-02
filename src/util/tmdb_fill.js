@@ -32,7 +32,7 @@ export const getTheMovieDatabase = async (tconst, titletype) => {
         }
 
         console.log("found in tmdb:", tconst, jsonData)
-        if (jsonData.tmdb_id)
+        if (jsonData.id)
           insertDB(tconst, jsonData)
     } else {
        jsonData = {"id": -1}
@@ -84,7 +84,9 @@ export const tmdb_fill = async (_data) => {
             data.filter((r) => r.tconst == tconst).forEach((r) => {
                 //console.log('poster:', tmdb_result.poster_path)
                 r.poster_url = url_prefix + tmdb_result.poster_path
-                r.plot_summary = tmdb_result.overview.substring(0,100) + ". . ."
+                r.plot_summary = tmdb_result.overview
+                if (r.place != 'center')
+                    r.plot_summary = r.plot_summary.substring(0,100) + ". . ."
                 //console.log('replaced with tmdb for ', r.primarytitle, r.primaryname)
                 // console.log(r)
             })
