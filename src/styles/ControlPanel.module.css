@@ -26,8 +26,10 @@
 }
 
 .controls .search_input {
-    height: 24px;
+    height: 30px;
+    padding: 3px;
     margin-bottom: 10px;
+    border-radius: 10px;
 }
 
 .controls .search_input:placeholder-shown {
@@ -143,4 +145,9 @@
 
 .card_dim_slider {
     width: 50px;
+}
+
+.controls .credits {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }

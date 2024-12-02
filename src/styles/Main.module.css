@@ -297,6 +297,8 @@
     color: black;
     background-color: white;
     overflow: auto;
+    width: 400px;
+    height: 290px;
 }
 
 

@@ -52,7 +52,7 @@ export const Card = ({
   theme
 }) => {
   const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
-  const [showingBigPic, setShowingBigPic] = useState(false)
+  // const [showingBigPic, setShowingBigPic] = useState(false)
 
   
   const callbacks = useContext(CallbackContext)
