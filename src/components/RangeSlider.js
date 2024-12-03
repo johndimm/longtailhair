@@ -1,26 +1,29 @@
 // "use client"
 import { useState, useEffect } from 'react'
-import styles from "@/styles/RangeSlider.module.css";
+import styles from "@/styles/RangeSlider.module.css"
+import { THIS_YEAR } from "@/util/constants"
 
 const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   changeYearstart, changeYearend, goLeft, goRight, yearstart, yearend, reset }) => {
-  const [minval, setMinval] = useState(2024)
-  const [maxval, setMaxval] = useState(2024)
+  const [minval, setMinval] = useState()
+  const [maxval, setMaxval] = useState()
   const [top, settop] = useState('min')
 
   const setBoth = (yearstart, yearend) => {
+      //console.log("setBoth", yearstart, yearend)
+      const thisYear = THIS_YEAR
     //if (yearstart) {
-      setMinval(yearstart || 2024)
+      setMinval(yearstart || thisYear)
 
       // should useRef for this.
       const minRange = document.getElementById('min_range_id')
-      minRange.value = yearstart || 2024
+      minRange.value = yearstart || thisYear
     //} 
     //if (yearend) {
-      setMaxval(yearend || 2024)
+      setMaxval(yearend || thisYear)
 
       const maxRange = document.getElementById('max_range_id')
-      maxRange.value = yearend || 2024
+      maxRange.value = yearend || thisYear
     //}
   }
 
@@ -116,8 +119,8 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   }
   // console.log(`yearstart=${yearstart} min=${min} yearend=${yearend} max=${max}`)
 
-  const defaultMax = 2024 // yearend || MAX
-  const defaultMin = 2024 // yearstart || MIN
+  const defaultMax = yearend || THIS_YEAR
+  const defaultMin = yearstart || THIS_YEAR
   // console.log(`defaultMax=${defaultMax} defaultMin=${defaultMin}`)
 
   const clearButton = yearstart || yearend
@@ -134,9 +137,9 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
     : <div className={styles.year} style={{fontSize: "150%"}}>{minval}</div>   
 
   const minZstyle = {"zIndex": top == 'min' ? 10 : 1, "display": "block"}
-  const maxZstyle = {"zIndex": 5, "display": top != 'min' ? "block" :  "none"}
+  const maxZstyle = {"zIndex": 5, "display": top != 'min' || minval != maxval ? "block" :  "none"}
 
-  console.log(`minVal=${minval} maxVal=${maxval}`)
+  //console.log(`minVal=${minval} maxVal=${maxval}`)
 
   return (
     <div className={styles.range}>
