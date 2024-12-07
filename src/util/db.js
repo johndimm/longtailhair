@@ -9,11 +9,13 @@ const pgOptions = {
 // console.log(pgOptions)
 const pool = new Pool(pgOptions);
 
+
 // pg will convert dates to datetimes by default, we don't want that.
 var types = require('pg').types;
 types.setTypeParser(types.builtins.DATE, (str) => str);
 
 async function performSQLQuery(query) {
+    console.log('===> pool: ', JSON.stringify(pool))
     console.log('===> performSQLQuery, query: \n', query);
 
     try {
