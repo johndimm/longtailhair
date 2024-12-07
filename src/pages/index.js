@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react'
 import Main from "@/components/Main"
 import { useRouter } from 'next/router'
 import { CallbackContext } from '@/components/Main'
-import { NUM_MOVIES, THIS_YEAR } from "@/util/constants"
+import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 
 export default function Index() {
   const router = useRouter()
 
   const [_genres, setGenres] = useState()
-  const [_yearstart, setYearstart] = useState(THIS_YEAR)
-  const [_yearend, setYearend] = useState(THIS_YEAR)
+  const [_yearstart, setYearstart] = useState(MIN_YEAR)
+  const [_yearend, setYearend] = useState(MAX_YEAR)
   const [_query, setQuery] = useState('undefined')
   const [_tconst, setMovie] = useState()
   const [_nconst, setActor] = useState()

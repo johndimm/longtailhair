@@ -4,7 +4,7 @@ import Actor from "@/components/actor"
 import YearPicker from "@/components/yearPicker"
 import Genres from "@/components/genres"
 import styles from "@/styles/ControlPanel.module.css"
-import { NUM_MOVIES, THIS_YEAR } from "@/util/constants"
+import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 
 
 const SearchForm = ({ query, resetQuery }) => {
@@ -140,7 +140,8 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
 
   const resetAll = () => {
     resetGenres()
-    resetYear(THIS_YEAR)
+    resetYearstart(MIN_YEAR)
+    resetYearend(MAX_YEAR)
     resetMovie()
     resetActor()
     resetQuery(null)

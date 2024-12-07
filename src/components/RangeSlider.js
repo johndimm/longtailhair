@@ -1,7 +1,7 @@
 // "use client"
 import { useState, useEffect } from 'react'
 import styles from "@/styles/RangeSlider.module.css"
-import { THIS_YEAR } from "@/util/constants"
+import { MIN_YEAR, MAX_YEAR } from "@/util/constants"
 
 const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   changeYearstart, changeYearend, goLeft, goRight, yearstart, yearend, reset }) => {
@@ -11,19 +11,18 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
 
   const setBoth = (yearstart, yearend) => {
       //console.log("setBoth", yearstart, yearend)
-      const thisYear = THIS_YEAR
     //if (yearstart) {
-      setMinval(yearstart || thisYear)
+      setMinval(yearstart || MIN_YEAR)
 
       // should useRef for this.
       const minRange = document.getElementById('min_range_id')
-      minRange.value = yearstart || thisYear
+      minRange.value = yearstart || MIN_YEAR
     //} 
     //if (yearend) {
-      setMaxval(yearend || thisYear)
+      setMaxval(yearend || MAX_YEAR)
 
       const maxRange = document.getElementById('max_range_id')
-      maxRange.value = yearend || thisYear
+      maxRange.value = yearend || MAX_YEAR
     //}
   }
 
@@ -119,8 +118,8 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   }
   // console.log(`yearstart=${yearstart} min=${min} yearend=${yearend} max=${max}`)
 
-  const defaultMax = yearend || THIS_YEAR
-  const defaultMin = yearstart || THIS_YEAR
+  const defaultMax = yearend || MAX_YEAR
+  const defaultMin = yearstart || MIN_YEAR
   // console.log(`defaultMax=${defaultMax} defaultMin=${defaultMin}`)
 
   const clearButton = yearstart || yearend
