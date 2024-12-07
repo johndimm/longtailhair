@@ -2,7 +2,8 @@ const { Pool } = require('pg');
 
 const pgOptions = {
     connectionString: process.env.DATABASE_URL_GCE,
-    // ssl: false // { rejectUnauthorized: false }
+    ssl: false ,
+    rejectUnauthorized: false 
 }
 
 // console.log(pgOptions)
