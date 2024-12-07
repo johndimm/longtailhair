@@ -20,6 +20,7 @@ async function performSQLQuery(query) {
 
     try {
         const response = await pool.query(query);
+        console.log('===> performSQLQuery, response:', response);
         return response.rows;
     } catch (error) {
         console.log('===> performSQLQuery, error:', error);
