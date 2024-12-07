@@ -1,0 +1,1 @@
+time psql -f query-adult-array.sql

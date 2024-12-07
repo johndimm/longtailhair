@@ -11,19 +11,16 @@ with constants as (
   null as _endyear,
   null as _query,
   null as _nconst,
-  'movie' as _titletype,
+  null as _titletype,
   24 as _numMovies
 )
 
 
 select 
-  tbe.tconst, 
-  tbe.startyear, 
-  tbe.averageRating, 
-  tbe.numVotes, 
+  tbe.tconst,  
   tbe.popularity
 from title_basics_ex as tbe
-join full_genres as fg using(genres)
+--join full_genres as fg using(genres)
   ,constants
 
 where 
@@ -32,8 +29,8 @@ where
 -- position('Adult' in tbe.genres) > 0
 
 
-( _genres is null or fg.genres_array @> string_to_array(_genres::text, ',') )
--- ( _genres is null or tbe.genres_array @> string_to_array(_genres::text, ',') )
+-- ( _genres is null or fg.genres_array @> string_to_array(_genres::text, ',') )
+( _genres is null or tbe.genres_array @> string_to_array(_genres::text, ',') )
 
 and
  ( _startyear is null or tbe.startyear >= _startyear::int)
@@ -47,7 +44,7 @@ and
  (_titletype is null or tbe.titletype = _titletype)
  
 
- order by 5 desc
+ order by 2 desc
  limit 24
 
 --)

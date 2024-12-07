@@ -1,0 +1,71 @@
+DROP TABLE
+SET
+SET
+SET
+SET
+SET
+ set_config 
+------------
+ 
+(1 row)
+
+SET
+SET
+SET
+SET
+SET
+SET
+CREATE TABLE
+COPY 1109016
+DROP TABLE
+CREATE TABLE
+INSERT 0 1109016
+CREATE INDEX
+CREATE INDEX
+ANALYZE
+                              Table "public.tmp"
+   Column   |  Type   | Collation | Nullable |             Default             
+------------+---------+-----------+----------+---------------------------------
+ id         | integer |           | not null | nextval('tmp_id_seq'::regclass)
+ genres     | text    |           |          | 
+ popularity | integer |           |          | 
+ dummy      | text    |           |          | 
+Indexes:
+    "tmp_pkey" PRIMARY KEY, btree (id)
+    "idx_tmp_genres" btree (genres)
+    "idx_tmp_pop" btree (popularity)
+
+select Drama and it's fast everywhere
+
+real	0m0.059s
+user	0m0.020s
+sys	0m0.014s
+select Adult and it's fast locally, but 50 seconds on aws.
+
+real	0m0.557s
+user	0m0.020s
+sys	0m0.015s
+again...
+                              Table "public.tmp"
+   Column   |  Type   | Collation | Nullable |             Default             
+------------+---------+-----------+----------+---------------------------------
+ id         | integer |           | not null | nextval('tmp_id_seq'::regclass)
+ genres     | text    |           |          | 
+ popularity | integer |           |          | 
+ dummy      | text    |           |          | 
+Indexes:
+    "tmp_pkey" PRIMARY KEY, btree (id)
+    "idx_tmp_genres" btree (genres)
+    "idx_tmp_pop" btree (popularity)
+
+select Drama and it's fast everywhere
+
+real	0m0.055s
+user	0m0.020s
+sys	0m0.015s
+select Adult and it's fast locally, but 50 seconds on aws.
+
+real	0m0.445s
+user	0m0.020s
+sys	0m0.015s
+
