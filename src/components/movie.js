@@ -125,7 +125,7 @@ const Movie = ({
 
       <span className={styles.page_title} style={{ "cursor": "pointer" }} title="go back" onClick={() => resetMovie(null)}>
 
-        Long Tail
+        Collaborations
 
         <span className={styles.page_subtitle}>
           productions by members of this cast and crew before and after</span>

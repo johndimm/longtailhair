@@ -24,3 +24,7 @@
 .selected_actor:hover .close_button {
     display: inline-block;
 }
+
+.logo_credit {
+    cursor: auto;
+}

@@ -372,7 +372,7 @@
     font-weight: 600;
     text-align: center;
     background-color: lightgray;
-
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif
 }
 
 .movie_page .page_subtitle {
@@ -383,6 +383,7 @@
     margin: 10px;
     margin-left: 10px;
     vertical-align: middle;
+    font-family: Arial;
 }
 
 .backdrop {

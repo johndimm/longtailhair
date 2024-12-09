@@ -25,8 +25,8 @@ const Actor = ({ nconst, actorName, resetActor }) => {
     const profilePicture = data.hasOwnProperty("profile_path") 
       && nconst
       && data["profile_path"] != null
-      ? <img src={url_prefix + data["profile_path"]} />
-      : <></>
+      ? <img onClick={(e) => resetActor(nconst)} src={url_prefix + data["profile_path"]} />
+      : <img className={styles.logo_credit} src="/graph-logo.webp" />
   
     const imdbUrl = `https://www.imdb.com/name/${nconst}`
     // console.log('imgUrl', imgUrl)
@@ -39,16 +39,14 @@ const Actor = ({ nconst, actorName, resetActor }) => {
       ? <span className={styles.close_button} onClick={(e) => resetActor(nconst)}>X</span>
       : <></>
   
-    const name = nconst ? data.name : ''
+    const name = nconst ? data.name : <span className={styles.logo_credit}>image by DALL·E</span>
 
     return <div className={styles.selected_actor}>
-      <div className={styles.selected_actor_pix}>
-      <a href={imdbUrl} target="_imdb">
+      <div>
         {closeButton}
         {profilePicture}
         <br />
         {name}
-        </a>
         {closeButton}
       </div>
 
