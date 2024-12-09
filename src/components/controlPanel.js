@@ -153,93 +153,101 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
 
   const actorWidget = (
     <div className={styles.widget}>
-    <Actor nconst={nconst}
-      actorName={actorName}
-      resetActor={resetActor}
-    />
-  </div>
+      <Actor nconst={nconst}
+        actorName={actorName}
+        resetActor={resetActor}
+      />
+    </div>
   )
 
   const creditsWidget = (
     <div className={styles.widget}>
-    <div className={styles.page_title}>
-      Long Tail
+      <div className={styles.page_title}>
+        <a href='/Demo'>
+          Long Tail
+          <div style={{ fontFamily: 'Arial', fontSize: "10pt", fontWeight: "100" }}>with</div>
+          <div style={{ fontSize: "12pt" }}>Collaborations</div>
+        </a>
+      </div>
+
+      {credits}
     </div>
-    <div className={styles.demo_link}>
-      <a href='/Demo'>about</a>
-    </div>
-    <hr />
-    <div className={styles.movie_tv_switch}>
-      <label>
-        <input
-          name='titletype'
-          type="radio"
-          defaultChecked={titletype == 'movie'}
-          onChange={
-            (e) => {
-              if (e.target.checked) setTitletype('movie')
-            }
-          } />
-        movies
-      </label>
-      &nbsp;
-      <label>
-        <input name='titletype' type="radio"
-          defaultChecked={titletype == 'tvSeries'}
-          onChange={
-            (e) => {
-              if (e.target.checked) setTitletype('tvSeries')
-            }
-          } />
-        tv
-      </label>
-    </div>
-    <div>
-      <input id="light-theme" type="radio" checked={theme == 'light'} onChange={() => setTheme(theme == 'light' ? 'dark' : 'light')} />
-      <label htmlFor="light-theme">light</label>
-      &nbsp;
-      <input id="dark-theme" type="radio" checked={theme == 'dark'} onChange={() => setTheme(theme == 'dark' ? 'light' : 'dark')} />
-      <label htmlFor="dark-theme">dark</label>
-    </div>
-    {bigSmall}
-    {credits}
-  </div>
   )
 
   const genresWidget = (
     <div className={styles.genres_widget}>
-    <Genres
-      genres={genres}
-      query={query}
-      yearstart={yearstart}
-      yearend={yearend}
-      nconst={nconst}
-      titletype={titletype}
-    />
-  </div>
+      <Genres
+        genres={genres}
+        query={query}
+        yearstart={yearstart}
+        yearend={yearend}
+        nconst={nconst}
+        titletype={titletype}
+      />
+    </div>
   )
 
   const dateWidget = (
     <div className={styles.date_widget}>
-    <SearchForm query={query} resetQuery={resetQuery} />
-    <YearPicker
-      setParentYearstart={resetYearstart}
-      setParentYearend={resetYearend}
-      goLeft={goLeft}
-      goRight={goRight}
-      yearstart={yearstart}
-      yearend={yearend} />
-    <button className={styles.resetButton} onClick={resetAll}>reset</button>
-    <br />
-  </div>
+
+      <SearchForm query={query} resetQuery={resetQuery} />
+
+      <div className={styles.movie_tv_switch}>
+        <label>
+          <input
+            name='titletype'
+            type="radio"
+            defaultChecked={titletype == 'movie'}
+            onChange={
+              (e) => {
+                if (e.target.checked) setTitletype('movie')
+              }
+            } />
+          movies
+        </label>
+        &nbsp;
+        <label>
+          <input name='titletype' type="radio"
+            defaultChecked={titletype == 'tvSeries'}
+            onChange={
+              (e) => {
+                if (e.target.checked) setTitletype('tvSeries')
+              }
+            } />
+          tv
+        </label>
+      </div>
+
+      <div>
+        <input id="light-theme" type="radio" checked={theme == 'light'} onChange={() => setTheme(theme == 'light' ? 'dark' : 'light')} />
+        <label htmlFor="light-theme">light</label>
+        &nbsp;
+        <input id="dark-theme" type="radio" checked={theme == 'dark'} onChange={() => setTheme(theme == 'dark' ? 'light' : 'dark')} />
+        <label htmlFor="dark-theme">dark</label>
+      </div>
+
+      {bigSmall}
+
+      <YearPicker
+        setParentYearstart={resetYearstart}
+        setParentYearend={resetYearend}
+        goLeft={goLeft}
+        goRight={goRight}
+        yearstart={yearstart}
+        yearend={yearend} />
+
+
+      <button className={styles.resetButton} onClick={resetAll}>reset</button>
+      <br />
+    </div>
   )
 
   return (
     <div className={styles.controls}>
-       {actorWidget}
-       {creditsWidget}
-       {genresWidget}
-       {dateWidget}
+      {actorWidget}
+      {creditsWidget}
+      {genresWidget}
+      {dateWidget}
     </div>
   )
 }

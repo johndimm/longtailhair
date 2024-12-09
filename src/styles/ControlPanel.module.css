@@ -29,7 +29,7 @@
 .controls .search_input {
     height: 30px;
     padding: 3px;
-    margin-bottom: 10px;
+    margin-bottom: 0;
     border-radius: 10px;
 }
 
@@ -76,6 +76,7 @@
     display: inline-block;
     text-align: center;
     vertical-align: middle;
+    font-size: 10pt;
 }
 
 .controls .genres_widget {
@@ -98,8 +99,8 @@
 
 .controls .date_widget .resetButton {
     padding: 5px;
-    margin: 10px;
-    font-size: 14pt;
+    margin: 5px;
+    font-size: 12pt;
 }
 
 .controls {
@@ -138,14 +139,8 @@
     display: block;
 }
 
-.demo_link {
-    font-size: 10pt;
-    font-style: italic;
-    margin: 5px;
-}
-
 .card_dim_slider {
-    width: 50px;
+    width: 100px;
 }
 
 .controls .credits {
