@@ -109,7 +109,7 @@ export const Card = ({
         e.target.style.display = 'inline-block'
       }}
       onError={(e) => {
-        console.log('cover image load error for', r1.primaryTitle)
+        console.log(`cover image load error for ${r1.primarytitle}, ${poster_url} ${e}`)
         deletePoster(r1.tconst)
         e.target.style.display = 'none'
       }} />

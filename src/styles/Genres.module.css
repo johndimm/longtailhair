@@ -25,6 +25,7 @@
     overflow-x: auto;
     padding: 10px;
     margin: 10px;
+    margin-right: 0;
     column-width: 165px;
     column-count: auto;
     font-size: 12pt;
