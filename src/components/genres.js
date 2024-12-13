@@ -97,24 +97,18 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype }) => {
         const checked = checkedItems.indexOf(genre) != -1
         const disabledFlag = (count == '' || count == 0) // && checkedItems.length > 0
         // console.log(`genre ${genre}, count[${count}] disabledFlag ${disabledFlag}`)
-        return <div key={idx} className={styles.checkbox_line}>
-
+        return (
+            <div key={idx} className={styles.checkbox_line}>
                 <input id={genre} name={genre} type='checkbox' value={genre} disabled={disabledFlag}
                     checked={checked} onChange={handleCheckboxChange} />
                 &nbsp;
-
                 <span className={styles.genre_name} onClick={() => {
-                      selectOneGenre(genre)
-                    }}>{genre}</span>
-
-            <span className={styles.genre_count}>{count}</span>
-
-        </div>
-
-
+                    selectOneGenre(genre)
+                }}>{genre}</span>
+                <span className={styles.genre_count}>{count}</span>
+            </div>
+        )
     })
-
-    const clear_style = genres ? {} : { "display": "none" }
 
     return <div className={styles.genres}>
         {genresListHtml}

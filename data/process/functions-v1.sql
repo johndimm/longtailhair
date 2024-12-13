@@ -52,7 +52,7 @@ select * from _right
 )
 select _all.*, nb.primaryName, tb.primaryTitle, coalesce(tp.characters, tp.category) as role, tb.startYear, tb.averagerating, tb.numvotes, tb.genres, tb.startYear - nb.birthYear as age, 
   coalesce(p.url, tmdb.poster_path) as poster_url, 
-  tmdb.overview as plot_summary,
+  coalesce(tmdb.overview, s.plot_summary) as plot_summary,
   tb.titletype,
   tmdb.tmdb_id,
   backdrop_path as backdrop_url
@@ -61,8 +61,8 @@ select _all.*, nb.primaryName, tb.primaryTitle, coalesce(tp.characters, tp.categ
   join name_basics_ex as nb using (nconst)
   join title_principals_agg as tp using (tconst, nconst)
   left join posters as p using(tconst)
+  left join summaries as s using (tconst)
   left join tmdb using (tconst)
-  where p.error_count = 0
 ;
 
 end $$ ;
@@ -107,7 +107,11 @@ tmdb_id integer
 $$ 
 begin 
 
-return query
+return query execute '
+
+--
+-- some movies have no ratings
+--
 with exploded as (
 select 
   tbe.tconst, 
@@ -118,27 +122,31 @@ select
 from title_basics_ex as tbe
 join full_genres as fg using(genres)
 where 
-
- ( _genres is null or fg.genres_array @> string_to_array(_genres::text, ',') )
+ ( $2 is null or fg.genres_array @> string_to_array($2::text, '','') )
  and
- ( _startyear is null or tbe.startyear >= _startyear::integer)
+ ( $3 is null or tbe.startyear >= $3)
  and
- (_endyear is null or tbe.startyear <= _endyear::integer)
- and
- (_query is null or fulltext @@ to_tsquery('english', replace(_query,' ',' & ')))
- and
-(_nconst is null or actors_array @> string_to_array(_nconst, ','))
+ ( $4 is null or tbe.startyear <= $4)
+and
+ ( $5 is null or tbe.fulltext @@ to_tsquery(''english'', replace($5,'' '','' & '')))
  and 
- (_titletype is null or tbe.titletype = _titletype)
+ ( $6 is null or $6 = ANY (tbe.actors_array) )
+ and 
+ ( $7 is null or tbe.titletype = $7)
 
  order by 5 desc
  limit $1
 )
 
   select tb.tconst, tb.genres, e.averageRating, e.numVotes, e.averageRating * e.numVotes as popularity,
-  tp.nconst, 'genres' as place, nb.primaryName, tb.primaryTitle, coalesce(tp.characters, tp.category) as role, tb.startYear, tb.startYear - nb.birthYear as age, 
-  coalesce(p.url, tmdb.poster_path) as poster_url, 
-  substring(tmdb.overview, 0, 150) as plot_summary,
+  tp.nconst, ''genres'' as place, nb.primaryName, tb.primaryTitle, coalesce(tp.characters, tp.category) as role, tb.startYear, tb.startYear - nb.birthYear as age, 
+--   coalesce(omdb.poster, p.url, tmdb.poster_path) as poster_url, 
+  coalesce(omdb.poster) as poster_url, 
+
+  -- '''' as plot_summary,
+  substring(
+    coalesce(tmdb.overview, s.plot_summary), 0, 150
+  ) as plot_summary,
   tb.titletype,
   tmdb.tmdb_id
   -- coalesce(tmdb.overview, s.plot_summary) as plot_summary
@@ -147,18 +155,82 @@ join title_basics_ex as tb using (tconst)
 join title_principals_agg as tp using (tconst)
 join name_basics_ex as nb using (nconst)
 left join posters as p using(tconst)
+left join summaries as s using (tconst)
 left join tmdb using (tconst)
-where p.error_count = 0
+left join omdb using (tconst)
 -- where e.averageRating is not null
 order by e.popularity desc, ordering
 ;
-
+' using 
+_numMovies,
+_genres,
+_startyear,
+_endyear,
+_query,
+_nconst,
+_titletype
+;
 
 end $$ ;
 
 select *
 from get_movies(2,  'Crime,Horror',1990, 2024, 'kill', null, 'movie')
 limit 3;
+
+
+
+/*
+
+drop function if exists count_genres;
+create
+or replace function count_genres(
+  _genres text,
+  _startyear integer,
+  _endyear integer,
+  _query text,
+  _nconst text,
+  _titletype text
+)
+returns table (
+  genre text,
+  count integer
+)
+language plpgsql IMMUTABLE as 
+$$ 
+begin 
+
+return query execute '
+select unnest(genres_array) as genre, count(*)::integer as count
+from title_basics_ex as tbe
+where
+
+ ( $2  is null or tbe.genres_array @> string_to_array($2, '',''))
+ and
+ ( $3 is null or tbe.startyear >= $3)
+ and
+ ( $4 is null or tbe.startyear <= $4)
+and
+ ( $5 is null or tbe.fulltext @@ to_tsquery(''english'', replace($5,'' '','' & '')))
+ and 
+ ( $6 is null or $6 = ANY (tbe.actors_array) )
+ and 
+ ( $7 is null or tbe.titletype = $7)
+
+group by 1
+order by 1
+;' using 
+'',
+_genres,
+_startyear,
+_endyear,
+_query,
+_nconst,
+_titletype
+;
+
+end $$ ;
+
+*/
 
 
 drop function if exists count_genres;
@@ -180,6 +252,8 @@ $$
 begin 
 
 return query 
+
+
 select g.genre, count(*)::integer
 from title_basics_ex as tbe
 join full_genres as fg using(genres)
@@ -197,11 +271,32 @@ where
  and 
  (_titletype is null or titletype = _titletype)
 
+
+/*
+
+select unnest(genres_array) as genre, count(*)::integer as count
+from title_basics_ex
+where 
+ ( _genres is null or genres_array @> string_to_array(_genres, ','))
+ and
+ ( _startyear is null or startyear >= _startyear)
+ and
+ (_endyear is null or startyear <= _endyear)
+ and
+ (_query is null or fulltext @@ to_tsquery('english', replace(_query,' ',' & ')))
+ and
+(_nconst is null or actors_array @> string_to_array(_nconst, ','))
+ and 
+ (_titletype is null or titletype = _titletype)
+
+*/
+
 group by 1
 order by 1
 ;
 
 end $$ ;
+
 
 
 select *

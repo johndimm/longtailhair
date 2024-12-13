@@ -93,7 +93,18 @@ exports.insertDB = async function (tconst, jsonData) {
     return await performSQLQuery(cmd)  
 }
 
-exports.deletePoster = async function (tconst) {
-    const cmd = `delete from posters where tconst='${tconst}'`
+exports.markPoster = async function (tconst) {
+    const cmd = `update posters set error_count = error_count + 1 where tconst='${tconst}'`
     return performSQLQuery(cmd)
+}
+
+exports.insertOMDB = async function (tconst, jsonData) {
+  const jsonDataString = JSON.stringify(jsonData).replace(/'/g, "''")
+  const plot = jsonData.Plot ? jsonData.Plot.replace(/'/g, "''") : ''
+
+   const cmd = `insert into omdb (tconst, json_data, poster, plot) 
+   values ('${tconst}', '${jsonDataString}', '${jsonData.Poster}', '${plot}')`
+
+   
+   return performSQLQuery(cmd)
 }

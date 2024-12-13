@@ -13,10 +13,10 @@ const StarRating = ({ score }) => {
   return <span className={styles.star_rating}>{stars}</span>
 }
 
-const deletePoster = (tconst) => {
-  console.log("deleting failed poster from ", tconst)
-  const url = `/api/delete_poster/${tconst}`
-  const response = fetch(url)
+const markPosterError = (tconst) => {
+  console.log("marking failed poster from ", tconst)
+  const url = `/api/mark_poster/${tconst}`
+  fetch(url)
 }
 
 const Person = ({ r, selectedPerson, resetActor }) => {
@@ -110,14 +110,15 @@ export const Card = ({
       }}
       onError={(e) => {
         console.log(`cover image load error for ${r1.primarytitle}, ${poster_url} ${e}`)
-        deletePoster(r1.tconst)
+        markPosterError(r1.tconst)
+
         e.target.style.display = 'none'
       }} />
 
       if (r1.place == 'center') {
         poster = <a href={poster_url} target="_blank">{poster}</a>
       }
-  }
+  } 
 
   const center_poster = r1.place == 'center'
     ? poster

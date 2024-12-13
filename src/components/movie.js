@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styles from "@/styles/Main.module.css"
-import { Card, Sidebar } from "./card"
+import { Card, Sidebar } from "./Card"
 import { CallbackContext } from '@/components/Main'
-import Spinner from "@/components/spinner"
+import Spinner from "@/components/Spinner"
 import Head from 'next/head'
 
 const Trailer = ({ tmdb_id, titletype }) => {
@@ -129,7 +129,6 @@ const Movie = ({
 
         <span className={styles.page_subtitle}>
           productions by members of this cast and crew before and after</span>
-
 
         <span className={styles.close_button}>
           X
