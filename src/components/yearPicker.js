@@ -15,6 +15,7 @@ const YearPicker = ({
   }
 
   const sliderWasMoved = (start, end) => {
+    return true
     return start != minDate || end != maxDate
   }
   const changeYearstart = (e) => {

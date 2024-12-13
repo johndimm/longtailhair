@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react'
 import { CallbackContext } from '@/components/Main'
-import Actor from "@/components/actor"
-import YearPicker from "@/components/yearPicker"
-import Genres from "@/components/genres"
+import Actor from "@/components/Actor"
+import YearPicker from "@/components/YearPicker"
+import Genres from "@/components/Genres"
 import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 
 
 const SearchForm = ({ query, resetQuery }) => {
-
   useEffect(() => {
     document.getElementById("query").addEventListener("search", function (event) {
       event.preventDefault();
@@ -17,23 +16,8 @@ const SearchForm = ({ query, resetQuery }) => {
     });
   }, [])
 
-  const handleSubmit = (e) => {
-    e.preventDefault(); // Prevent default form submission
-    //const formData = new FormData(e.target); // Get form data from the event
-    //const newQuery = formData.get('query');
-    //resetQuery(newQuery) // Retrieve value from the field named 'inputField'
-    // alert(`Submitted: ${inputValue}`);
-  };
-
-
-
   return (
-
-    <form
-      onSubmit={handleSubmit}
-      className={styles.search_form}
-    >
-
+    <form className={styles.search_form}>
       <input
         id="query"
         name="query"
@@ -41,24 +25,63 @@ const SearchForm = ({ query, resetQuery }) => {
         type="search"
         defaultValue={query != 'undefined' ? query : null}
         placeholder='title, cast, crew' />
-
-
       <button type="submit" className={styles.magnifying_glass}>
         &#128269;
       </button>
-
     </form>
   );
 };
 
 
+const MovieTVSwitch = ({ titletype, setTitletype }) => {
+  return (
+    <div className={styles.movie_tv_switch}>
+      <label>
+        <input
+          name='titletype'
+          type="radio"
+          defaultChecked={titletype == 'movie'}
+          onChange={
+            (e) => {
+              if (e.target.checked) setTitletype('movie')
+            }
+          } />
+        movies
+      </label>
+      <br />
+      <label>
+        <input name='titletype' type="radio"
+          defaultChecked={titletype == 'tvSeries'}
+          onChange={
+            (e) => {
+              if (e.target.checked) setTitletype('tvSeries')
+            }
+          } />
+        tv
+      </label>
+    </div>
+  )
+}
+
+const ThemeSwitch = ({ theme, setTheme }) => {
+  return (
+    <div className={styles.theme_switch}>
+      <input id="light-theme" type="radio" checked={theme == 'light'} onChange={() => setTheme(theme == 'light' ? 'dark' : 'light')} />
+      <label htmlFor="light-theme">light</label>
+      <br />
+      <input id="dark-theme" type="radio" checked={theme == 'dark'} onChange={() => setTheme(theme == 'dark' ? 'light' : 'dark')} />
+      <label htmlFor="dark-theme">dark</label>
+    </div>
+  )
+}
+
 const ControlPanel = ({ actorName, setTheme, theme }) => {
 
   const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetYear, resetMovie, resetActor,
+  const { resetGenres, resetMovie, resetActor,
     resetQuery, resetYearstart, resetYearend, setTitletype, setNumMovies,
-    tconst, nconst, titletype, genres,
-    query, yearstart, yearend, numMovies, setCardDim } = callbacks
+    nconst, titletype, genres,
+    query, yearstart, yearend, setCardDim } = callbacks
 
   const updateDates = (yearstart, yearend) => {
     resetYearstart(yearstart)
@@ -81,21 +104,6 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
     updateDates(parseInt(yearstart) + delta, parseInt(yearend) + delta)
   }
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      const text = event.target.value
-      resetQuery(text)
-      setNumMovies(NUM_MOVIES)
-      event.preventDefault();
-    }
-  }
-
-  const handleOnChange = (e) => {
-    const value = e.target.value
-    if (value == '')
-      resetQuery(null)
-  }
-
   const newCardDim = (e) => {
     const val = e.target.value
     const width = parseInt(val)
@@ -103,6 +111,7 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
     const style = { width: width + 'px', height: height + 'px' }
     setCardDim(style)
   }
+
   const credits = (
     <div className={styles.credits}>
       <a href="https://developer.imdb.com/non-commercial-datasets/">
@@ -127,14 +136,13 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
     </div>
   )
 
-  const bigSmall = theme == 'dark'
-    ? <>small
-      <input className={styles.card_dim_slider} type="range"
+  const zoom = theme == 'dark'
+    ? <div className={styles.card_dim_slider} >zoom
+      <input type="range"
         min="150" max="600"
         defaultValue="310"
         onChange={newCardDim} />
-      big
-    </>
+    </div>
     : <></>
 
 
@@ -145,7 +153,6 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
     resetMovie()
     resetActor()
     resetQuery(null)
-    // setTitletype('movie')
     setNumMovies(NUM_MOVIES)
     const queryInput = document.getElementById("query")
     queryInput.value = ''
@@ -189,44 +196,12 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
 
   const dateWidget = (
     <div className={styles.date_widget}>
-
       <SearchForm query={query} resetQuery={resetQuery} />
 
-      <div className={styles.movie_tv_switch}>
-        <label>
-          <input
-            name='titletype'
-            type="radio"
-            defaultChecked={titletype == 'movie'}
-            onChange={
-              (e) => {
-                if (e.target.checked) setTitletype('movie')
-              }
-            } />
-          movies
-        </label>
-        &nbsp;
-        <label>
-          <input name='titletype' type="radio"
-            defaultChecked={titletype == 'tvSeries'}
-            onChange={
-              (e) => {
-                if (e.target.checked) setTitletype('tvSeries')
-              }
-            } />
-          tv
-        </label>
-      </div>
+      {zoom}
 
-      <div>
-        <input id="light-theme" type="radio" checked={theme == 'light'} onChange={() => setTheme(theme == 'light' ? 'dark' : 'light')} />
-        <label htmlFor="light-theme">light</label>
-        &nbsp;
-        <input id="dark-theme" type="radio" checked={theme == 'dark'} onChange={() => setTheme(theme == 'dark' ? 'light' : 'dark')} />
-        <label htmlFor="dark-theme">dark</label>
-      </div>
-
-      {bigSmall}
+      <MovieTVSwitch titletype={titletype} setTitletype={setTitletype} />
+      <ThemeSwitch theme={theme} setTheme={setTheme} />
 
       <YearPicker
         setParentYearstart={resetYearstart}
@@ -235,7 +210,6 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
         goRight={goRight}
         yearstart={yearstart}
         yearend={yearend} />
-
 
       <button className={styles.resetButton} onClick={resetAll}>reset</button>
       <br />

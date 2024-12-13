@@ -1,11 +1,11 @@
 "use client"
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react'
 import styles from "@/styles/Main.module.css"
-import { Sidebar } from "@/components/card"
-import Movie from "@/components/movie"
-import Spinner from "@/components/spinner"
+import { Sidebar } from "@/components/Card"
+import Movie from "@/components/Movie"
+import Spinner from "@/components/Spinner"
 import { useRouter } from 'next/router'
-import ControlPanel from "@/components/controlPanel"
+import ControlPanel from "@/components/ControlPanel"
 import { NUM_MOVIES } from "@/util/constants"
 import Head from 'next/head'
 
@@ -65,17 +65,13 @@ export default function Main({ }) {
   }, [nconst])
 
   useEffect(() => {
-    // console.log("useEffect, query:", _query, query)
     if (!router.isReady)
       return
 
     getData()
-
-
-
   }, [genres, numMovies, yearstart, yearend, query, nconst, titletype])
 
-  if (!data) // || data.length == 0)
+  if (!data) 
     return null
 
   const isBottom = (el) => {
@@ -85,7 +81,6 @@ export default function Main({ }) {
 
   const onScroll = (e) => {
     e.preventDefault()
-    // return
     console.log("onScroll, isScrolling:", isScrolling)
     setIsScrolling(true);
     if (scrollTimeoutRef.current) {
@@ -103,15 +98,12 @@ export default function Main({ }) {
   }
 
   const setupSearchPage = () => {
-
     setSearchPageVisible({ "display": "block" })
     setMoviePageVisible({ "display": "none" })
   }
 
   const setupMoviePage = () => {
     setMoviePageVisible({ "display": "block" })
-    // SearchPage will be hidden once the Movie page is ready.
-    // hideSearchPage()
   }
 
   const hideSearchPage = () => {
@@ -162,7 +154,6 @@ export default function Main({ }) {
       style={{ ...searchPageVisible, "backgroundColor": theme == 'light' ? 'white' : 'black' }}
       onScroll={onScroll}
     >
-
       <Head>
         <meta
           name='viewport'

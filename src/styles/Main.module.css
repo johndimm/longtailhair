@@ -155,20 +155,6 @@
     transform: scale(1.1);
 }
 
-.xcard img:hover {
-    transform: scale(1.4);
-    transition-delay: 1s;
-    /* 140% zoom */
-    border-radius: 15px;
-    padding: 5px;
-    z-index: 2;
-
-    transition-timing-function: ease-out 2s;
-
-    /* A litttttle slower on the way in */
-    transition: 0.25s;
-}
-
 .card img {
     position: relative;
     transition: transform .7s;
@@ -281,6 +267,7 @@
 .search_page .card_black {
     background-color: black;
     margin: 10px;
+    vertical-align: center;
 }
 
 .center .card {

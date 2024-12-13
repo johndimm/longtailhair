@@ -140,13 +140,28 @@
 .controls .search_form {
     width: 100%;
     display: block;
+    margin-bottom: 5px;
 }
 
 .card_dim_slider {
     width: 100px;
+    clear: both;
 }
 
 .controls .credits {
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.controls .movie_tv_switch {
+    text-align: left;
+    float: left;
+}
+
+.controls .movie_tv_switch input {
+   height: 8px;
+}
+
+.controls .theme_switch input {
+  height: 8px;
 }
