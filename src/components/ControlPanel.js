@@ -8,23 +8,30 @@ import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 
 
 const SearchForm = ({ query, resetQuery }) => {
-  useEffect(() => {
-    document.getElementById("query").addEventListener("search", function (event) {
-      event.preventDefault();
-      const query = event.currentTarget.value
-      resetQuery(query)
-    });
-  }, [])
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newQuery = formData.get('query');
+    resetQuery(newQuery)
+  };
+
+  const handleClear = (e) => {
+    if (e.target.value === '') {
+      resetQuery(null)
+    }
+  }
 
   return (
-    <form className={styles.search_form}>
+    <form className={styles.search_form} onSubmit={handleSubmit}>
       <input
         id="query"
         name="query"
         className={styles.search_input}
         type="search"
         defaultValue={query != 'undefined' ? query : null}
-        placeholder='title, cast, crew' />
+        placeholder='title, cast, crew'
+        onInput={handleClear}
+      />
       <button type="submit" className={styles.magnifying_glass}>
         &#128269;
       </button>
@@ -34,31 +41,29 @@ const SearchForm = ({ query, resetQuery }) => {
 
 
 const MovieTVSwitch = ({ titletype, setTitletype }) => {
-  return (
-    <div className={styles.movie_tv_switch}>
+
+  const Radio = ({ type }) => {
+    return (
       <label>
         <input
           name='titletype'
           type="radio"
-          defaultChecked={titletype == 'movie'}
+          defaultChecked={titletype == type}
           onChange={
             (e) => {
-              if (e.target.checked) setTitletype('movie')
+              if (e.target.checked) setTitletype(type)
             }
           } />
-        movies
+        {type}
       </label>
+    )
+  }
+
+  return (
+    <div className={styles.movie_tv_switch}>
+      <Radio type='movie' />
       <br />
-      <label>
-        <input name='titletype' type="radio"
-          defaultChecked={titletype == 'tvSeries'}
-          onChange={
-            (e) => {
-              if (e.target.checked) setTitletype('tvSeries')
-            }
-          } />
-        tv
-      </label>
+      <Radio type='tvSeries' />
     </div>
   )
 }

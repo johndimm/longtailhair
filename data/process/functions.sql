@@ -62,7 +62,7 @@ select _all.*, nb.primaryName, tb.primaryTitle, coalesce(tp.characters, tp.categ
   join title_principals_agg as tp using (tconst, nconst)
   left join posters as p using(tconst)
   left join tmdb using (tconst)
-  where p.error_count = 0
+  where p.error_count is null or p.error_count = 0
 ;
 
 end $$ ;
@@ -148,7 +148,7 @@ join title_principals_agg as tp using (tconst)
 join name_basics_ex as nb using (nconst)
 left join posters as p using(tconst)
 left join tmdb using (tconst)
-where p.error_count = 0
+where p.error_count is null or p.error_count = 0
 -- where e.averageRating is not null
 order by e.popularity desc, ordering
 ;
@@ -160,6 +160,9 @@ select *
 from get_movies(2,  'Crime,Horror',1990, 2024, 'kill', null, 'movie')
 limit 3;
 
+select *
+from get_movies(2,  null, null, null, 'Present Time', null, null)
+;
 
 drop function if exists count_genres;
 create
