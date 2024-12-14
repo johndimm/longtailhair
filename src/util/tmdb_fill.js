@@ -5,7 +5,7 @@ const insertDB = async (tconst, jsonData) => {
     return await db.insertDB(tconst, jsonData)
 }
 
-export const getTheMovieDatabase = async (tconst, titletype) => {
+const get_tmdb_by_tconst = async (tconst, titletype) => {
     const key = process.env['TMDB_KEY']
 
     const url = 'https://api.themoviedb.org/3/find/' + tconst
@@ -21,6 +21,45 @@ export const getTheMovieDatabase = async (tconst, titletype) => {
     const response = await axios.request(options)
     const result = await response.data
     const data = result[tmdb_medium]
+    return data
+}
+
+const get_tmdb_by_search = async (titletype, title, year) => {
+    const key = process.env['TMDB_KEY']
+
+    const tmdb_medium = titletype == 'movie' ? 'movie' : 'tv'
+    const escTitle = encodeURIComponent(title)
+
+    const url = `https://api.themoviedb.org/3/search/${tmdb_medium}?query=${escTitle}&date=${year}`
+
+    var options = {
+        method: 'GET',
+        url: url,
+        params: { api_key: key, language: 'en-US' }
+    };
+
+    const response = await axios.request(options)
+    const result = await response.data
+    const data = result['results']
+    if (! data)
+        return null
+
+    // Return first exact match.
+    data.forEach ( (r, idx) => {
+        if (r['title'] == title) {
+            return [r]
+        }
+    })
+
+    return null
+}
+
+export const getTheMovieDatabase = async (tconst, r) => {
+    let data = await get_tmdb_by_tconst(tconst, r.titletype)
+    if (!data || data.length == 0) {
+       data = await get_tmdb_by_search (r.titletype, r.primarytitle, r.startyear)
+    }
+
     let jsonData = null
     if (data && data.length > 0 ) {
         jsonData = data[0]
@@ -52,19 +91,9 @@ export const tmdb_fill = async (_data) => {
 
     // Get a unique list of records with missing posters.
     const tconst_missing = {}
-    data.filter((r) => !r.tmdb_id)
-    
-    //!= -1 && (
-    //    r.poster_url == null 
-    //  || r.plot_summary == '' 
-    //  || r.plot_summary == null
-    // )
-      // || typeof r.plots_summary == 'undefined'
-
-
-    .forEach((r, idx) => {
+    data.filter((r) => !r.tmdb_id).forEach((r, idx) => {
         if (!(r.tconst in tconst_missing))
-          tconst_missing[r.tconst] = r.titletype
+          tconst_missing[r.tconst] = r
         console.log('missing:', r)
     })
     // console.log('missing tconst', tconst_missing)
