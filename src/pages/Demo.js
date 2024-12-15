@@ -1,6 +1,50 @@
 import styles from "@/styles/Demo.module.css"
 
 const Demo = () => {
+    const credits = [
+        {
+            img: '/imdb.jpg',
+            link: 'https://developer.imdb.com/non-commercial-datasets/',
+            text: <div>
+                The starting point is the free non-commercial data dump from imdb.  I wanted a fast way to get not just the list of actors and crew on a single movie but also the previous and next movie each of them made.  That would require many requests from an API.   This datadump from imdb lets me create a postgres database and a user-defined function that returns the local neighborhood of the collaboration graph in one gulp.
+            </div>
+        },
+        {
+            img: '/tmdb.png',
+            link: 'https://developer.themoviedb.org/reference/intro/getting-started',
+            text: <div>
+                For plot summaries, links to posters, and links to trailers.  Unfortunately these posters are mostly new creations rather than the actual posters from the time the movie was released.  They are simpler and easier to see as small images on a TV.  For the "real" posters, I used omdb.
+            </div>
+        },
+        {
+            img: '/amazon-rds.png',
+            link: 'https://aws.amazon.com/rds/postgresql/',
+            text: <div>
+                Amazon provides free postgres hosting for a year.  The 1G tiny server was too slow for this data so I upgraded to a small with 2 Gig.
+            </div>
+        },
+        {
+            img: '/vercel.jpg',
+            link: 'https://vercel.com/john-dimms-projects',
+            text: <div>
+                I use vercel to host all my react/nextjs apps.  
+            </div>
+        },
+        {
+            img: '/omdb.png',
+            link: 'https://www.omdbapi.com/',
+            text: <div>
+                OMDB has original posters, much preferred to the ones on TMDB.
+            </div>
+        },
+        {
+            img: '/github.jpg',
+            link: 'https://github.com/johndimm/longtailhair/blob/main/README.md',
+            text: <div>
+                The code is all here, including the scripts to massage the imdb data dump.
+            </div>
+        }
+    ]
     const pages = [
         {
             img: '/demo/top-movies.png',
@@ -14,7 +58,7 @@ const Demo = () => {
             link: '/?tconst=tt0110912',
             text: <div>
                 In the non-existent Universal Streaming Service I would now be watching the movie.  Instead, I get this page dedicated to the movie.  It lists the cast and crew and all available trailers.  The left column shows the movies made by the same people before, and the right column shows the ones made after. This one shows that John Travolta was making movies about talking dogs before Pulp Fiction revived his career.
-            
+
                 <p><i>I clicked on Quentin Tarantino...</i></p>
             </div>
         },
@@ -23,23 +67,23 @@ const Demo = () => {
             link: '/?nconst=nm0000233&titletype=movie',
             text: <div>This page lists all his films, as writer, directory, character, or self, in order of popularity
 
-   
-            <p><i>I clicked on "light"...</i></p>
+
+                <p><i>I clicked on "light"...</i></p>
 
             </div>
         },
         {
             img: '/demo/light-theme.png',
             text: <div>Switching to the light theme.  The dark theme shows only posters.  The light theme shrinks the poster and adds information:  the top four actors, and links to select the date, genres, or go to imdb for more.
-            
-            <p><i>I clicked on the genres Comedy, Drama in one of the movies...</i></p>
+
+                <p><i>I clicked on the genres Comedy, Drama in one of the movies...</i></p>
             </div>
         },
         {
             img: '/demo/comedy,drama.png',
             link: '/?genres=Comedy,Drama&titletype=movie',
             text: <div>These are the top movies over all time that have both Comedy and Drama in their genres list.
-               <p><i>I manipulated the date picker...</i></p>
+                <p><i>I manipulated the date picker...</i></p>
             </div>
         },
         {
@@ -59,27 +103,39 @@ const Demo = () => {
             </tbody></table>
     })
 
+    const htmlCredits = credits.map((page, idx) => {
+        return <table key={idx} className={styles.credits}>
+            <tbody><tr>
+                <td><a href={page.link}><img src={page.img} /></a></td>
+                <td><div className={styles.demo_text} >{page.text}</div></td>
+            </tr>
+            </tbody></table>
+    })
+
+
     return (
         <div className={styles.demo}>
-            <h1 className={styles.page_title}><a target='_blank' href='https://longtailhair.vercel.app/'>Long Tail</a> Demo</h1>
+            <h1 className={styles.page_title}><a target='_blank' href='https://longtailhair.vercel.app/'>Long Tail with Collaborations</a></h1>
             <div className={styles.intro}>
                 <p>
-                    
+                    Do you have trouble finding anything you really want to watch on Amazon Prime or Netflix?  Imagine if you will a distant future where there is a <i>Truly Universal Steaming Service</i> that has everything ever made. Sounds crazy but there is a precendent -- Spotify has more or less every audio recording ever made.  The app simulates such a service, up to the point of actually playing the movie.
+                </p>
 
-            I wrote this app because I have trouble finding anything I really want to watch on Amazon Prime or Netflix.  Imagine if you will a distant future where there is a <i>Truly Universal Steaming Service</i> that has everything ever made. Sounds crazy but there is a precendent -- Spotify has every audio recording ever made.  The app simulates such a service, up to the point of actually playing the movie.
-            </p>
+                <p>
+                    I used the non-commercial data dump from imdb as base and added posters, plot summaries, and trailers from The Movie Database and the Open Movie Database.  There are over a million tv and movie titles.
+                </p>
 
-            <p>
-            I used the non-commercial data dump from imdb as base and added posters, plot summaries, and trailers from The Movie Database.  There are over a million tv and movie titles.
-            </p>
-            <p>
-            I am not a movie buff, so I am not sure what you are looking for.  I have tried to make the app as useful as possible.  If you have any suggestions, please let me know.
-            </p>
-            <div className={styles.link_to_app}>
-            <a href="/">back to the app...</a>
-            </div>
+                <div className={styles.link_to_app}>
+                    <a href="/">back to the app...</a>
+                </div>
 
             </div>
+            <h1>Credits</h1>
+            <div width="100%">
+              {htmlCredits}
+            </div>
+
+            <h1 style={{clear:"both"}}>Tour</h1>
             {html}
         </div>
     )

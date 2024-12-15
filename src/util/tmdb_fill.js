@@ -45,13 +45,15 @@ const get_tmdb_by_search = async (titletype, title, year) => {
         return null
 
     // Return first exact match.
+    let exactMatch = null
     data.forEach ( (r, idx) => {
-        if (r['title'] == title) {
-            return [r]
+        if (r['name'] == title) {
+            exactMatch = [r]
+            return
         }
     })
 
-    return null
+    return exactMatch
 }
 
 export const getTheMovieDatabase = async (tconst, r) => {

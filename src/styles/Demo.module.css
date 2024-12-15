@@ -43,3 +43,13 @@
     font-size: 16pt;
     font-weight: 600;
 }
+
+.demo .credits  img {
+  width: 150px;
+}
+
+.demo .credits {
+    width: 450px;
+    display: inline-block;
+    margin-left: 20px;
+}

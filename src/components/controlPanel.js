@@ -135,7 +135,7 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
         <img className={styles.logo2} src="vercel.jpg" />
       </a>
       &nbsp;
-      <a href="https://github.com/johndimm/longtail/blob/main/README.md">
+      <a href="https://github.com/johndimm/longtailhair/blob/main/README.md">
         <img className={styles.logo2} src="github.jpg" />
       </a>
     </div>
