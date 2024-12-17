@@ -117,12 +117,13 @@
 
 .card .plot_summary {
     text-align: left;
+    margin-bottom: 5px;
 }
 
 .card .persons {
     column-count: 2;
     font-size: 90%;
-    margin: 10px;
+    margin: 0;
     text-align: left;
 }
 
@@ -157,7 +158,7 @@
 
 .card img {
     position: relative;
-    transition: transform .7s;
+    transition: transform 3s;
     z-index: 1;
     cursor: pointer;
 
@@ -221,7 +222,7 @@
     overflow: hidden;
     max-height: 180px;
     margin-bottom: 10px;
-    padding-left: 10px;
+    padding-left: 4px;
 }
 
 .search_page .card {
@@ -231,13 +232,13 @@
     display: inline-block;
 }
 
-.search_page .card img {
+.search_page .card_light img {
     max-height: 100%;
     float: right;
-    width: 37%;
+    width: 45%;
 }
 
-.search_page .car_black .plot_summary {
+.search_page .card_black .plot_summary {
     display: none;
 }
 
@@ -255,7 +256,8 @@
 }
 
 .search_page .card_black img {
-   width: 100%;
+   max-height: 100%;
+   max-width: 100%;
 }
 
 .search_page .card {
@@ -267,7 +269,7 @@
 .search_page .card_black {
     background-color: black;
     margin: 10px;
-    vertical-align: center;
+    vertical-align: top;
 }
 
 .center .card {
@@ -285,7 +287,8 @@
     background-color: white;
     overflow: auto;
     width: 400px;
-    height: 290px;
+    height: 340px;
+    margin-right: 3px;
 }
 
 
@@ -314,24 +317,27 @@
     height: 290px;
 }
 
-.search_page .card_light img:hover  {
-    transform: scale(1.0) ease 1s;
-    /* 140% zoom */
-    border-radius: 0px;
-    padding: 0px;
-    z-index: 100;
+.left .card img:hover, .right .card img:hover   {
+    transform: scale(1.4);
+    transition: transform 2s;
+    z-index: 101;
+    /*
+    border: 1px solid lightgray;
+    margin: 10px;
+    padding: 5px;
+    background-color: white;
+    */
 }
 
 .search_page .card_light .card_text {
     margin-right: 5px;
-    width: 60%;
+    width: 50%;
 }
 
 .search_page .card_light .plot_summary {
     background-color: white;
     color: black;
-    margin: 5px;
-    padding: 5px;
+
     z-index: 2;
     position: relative;
 }
@@ -343,12 +349,13 @@
 .search_page .plot_summary {
     background-color: rgb(240, 240, 240, 1);
     color: black;
-    margin: 5px;
-    padding: 5px;
     z-index: 2;
     position: relative;
 }
 
+.movie_page .card_light .card_text {
+   width: 60%;
+}
 
 .movie_page .page_title {
     position: relative;

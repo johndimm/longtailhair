@@ -1,19 +1,19 @@
-import styles from "@/styles/Demo.module.css"
+import styles from "@/styles/About.module.css"
 
-const Demo = () => {
+const About = () => {
     const credits = [
         {
             img: '/imdb.jpg',
             link: 'https://developer.imdb.com/non-commercial-datasets/',
             text: <div>
-                The starting point is the free non-commercial data dump from imdb.  I wanted a fast way to get not just the list of actors and crew on a single movie but also the previous and next movie each of them made.  That would require many requests from an API.   This datadump from imdb lets me create a postgres database and a user-defined function that returns the local neighborhood of the collaboration graph in one gulp.
+                The starting point is the free non-commercial data dump from IMDB.  I wanted a fast way to get not just the list of actors and crew on a single movie but also the previous and next movie each of them made.  That would require many requests from an API.   This datadump from IMDB lets me create a postgres database and a user-defined function that returns the local neighborhood of the collaboration graph in one gulp.
             </div>
         },
         {
             img: '/tmdb.png',
             link: 'https://developer.themoviedb.org/reference/intro/getting-started',
             text: <div>
-                For plot summaries, links to posters, and links to trailers.  Unfortunately these posters are mostly new creations rather than the actual posters from the time the movie was released.  They are simpler and easier to see as small images on a TV.  For the "real" posters, I used omdb.
+                For plot summaries, links to posters, and links to trailers.  Unfortunately these posters are mostly new creations rather than the actual posters from the time the movie was released.  They are simpler and easier to see as small images on a TV.  For the "real" posters, I used OMDB.
             </div>
         },
         {
@@ -27,21 +27,21 @@ const Demo = () => {
             img: '/vercel.jpg',
             link: 'https://vercel.com/john-dimms-projects',
             text: <div>
-                I use vercel to host all my react/nextjs apps.  
+                I use vercel to host all my react/nextjs apps.
             </div>
         },
         {
             img: '/omdb.png',
             link: 'https://www.omdbapi.com/',
             text: <div>
-                OMDB has original posters, much preferred to the ones on TMDB.
+                OMDB has original posters, much more interesting than the simplified posters on TMDB.
             </div>
         },
         {
             img: '/github.jpg',
             link: 'https://github.com/johndimm/longtailhair/blob/main/README.md',
             text: <div>
-                The code is all here, including the scripts to massage the imdb data dump.
+                The code is all here, including the scripts to massage the IMDB data dump.
             </div>
         }
     ]
@@ -49,7 +49,7 @@ const Demo = () => {
         {
             img: '/demo/top-movies.png',
             link: '/',
-            text: <div>These are the best movies of all time, according to imdb users, not critics.  You will probably disagree with the rankings, but they are useful for picking out the movies most people have seen and liked.  Everything is virtually here in this infinite scroll.
+            text: <div>These are the best movies of all time, according to IMDB users, not critics.  You will probably disagree with the rankings, but they are useful for picking out the movies most people have seen and liked.  Everything is virtually here in this infinite scroll.
                 <p><i>I clicked on Pulp Fiction...</i></p>
             </div>
         },
@@ -74,7 +74,7 @@ const Demo = () => {
         },
         {
             img: '/demo/light-theme.png',
-            text: <div>Switching to the light theme.  The dark theme shows only posters.  The light theme shrinks the poster and adds information:  the top four actors, and links to select the date, genres, or go to imdb for more.
+            text: <div>Switching to the light theme.  The dark theme shows only posters.  The light theme shrinks the poster and adds information:  the top four actors, and links to select the date, genres, or go to IMDB for more.
 
                 <p><i>I clicked on the genres Comedy, Drama in one of the movies...</i></p>
             </div>
@@ -115,30 +115,33 @@ const Demo = () => {
 
     return (
         <div className={styles.demo}>
+
+            <div className={styles.link_to_app}>
+                <a href="/">&lt; &lt; back to the app</a>
+            </div>
+
             <h1 className={styles.page_title}><a target='_blank' href='https://longtailhair.vercel.app/'>Long Tail with Collaborations</a></h1>
+
             <div className={styles.intro}>
                 <p>
                     Do you have trouble finding anything you really want to watch on Amazon Prime or Netflix?  Imagine if you will a distant future where there is a <i>Truly Universal Steaming Service</i> that has everything ever made. Sounds crazy but there is a precendent -- Spotify has more or less every audio recording ever made.  The app simulates such a service, up to the point of actually playing the movie.
                 </p>
 
                 <p>
-                    I used the non-commercial data dump from imdb as base and added posters, plot summaries, and trailers from The Movie Database and the Open Movie Database.  There are over a million tv and movie titles.
+                    I used the non-commercial data dump from IMDB as base and added posters, plot summaries, and trailers from The Movie Database and the Open Movie Database.  There are over a million tv and movie titles.
                 </p>
 
-                <div className={styles.link_to_app}>
-                    <a href="/">back to the app...</a>
-                </div>
 
             </div>
             <h1>Credits</h1>
             <div width="100%">
-              {htmlCredits}
+                {htmlCredits}
             </div>
 
-            <h1 style={{clear:"both"}}>Tour</h1>
+            <h1 style={{ clear: "both" }}>Tour</h1>
             {html}
         </div>
     )
 }
 
-export default Demo
+export default About

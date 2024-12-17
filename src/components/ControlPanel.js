@@ -63,7 +63,7 @@ const MovieTVSwitch = ({ titletype, setTitletype }) => {
     <div className={styles.movie_tv_switch}>
       <Radio type='movie' />
       <br />
-      <Radio type='tvSeries' />
+      <Radio type='tv' />
     </div>
   )
 }
@@ -138,6 +138,9 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
       <a href="https://github.com/johndimm/longtailhair/blob/main/README.md">
         <img className={styles.logo2} src="github.jpg" />
       </a>
+      <a href="https://github.com/johndimm/longtailhair/blob/main/README.md">
+        <img className={styles.logo2} src="omdb.png" />
+      </a>
     </div>
   )
 
@@ -175,7 +178,7 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
   const creditsWidget = (
     <div className={styles.widget}>
       <div className={styles.page_title}>
-        <a href='/Demo'>
+        <a href='/About' title='About this app...'>
           Long Tail
           <div style={{ fontFamily: 'Arial', fontSize: "10pt", fontWeight: "100" }}>with</div>
           <div style={{ fontSize: "12pt" }}>Collaborations</div>

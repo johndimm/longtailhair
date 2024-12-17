@@ -1,4 +1,5 @@
 # env local_imdb_postgres
+psql -c "drop schema if exists process; create schema process;"
 
 psql -f title-basics-start.sql
 psql -f title-principals-ex.sql
