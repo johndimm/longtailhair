@@ -129,7 +129,7 @@ where
  and
 (_nconst is null or actors_array @> string_to_array(_nconst, ','))
  and 
- (_titletype is null or tbe.titletype = _titletype)
+ (_titletype is null or (_titletype = 'movie' and tbe.titletype = 'movie') or (_titletype != 'movie' and tbe.titletype != 'movie'))
 
  order by 5 desc
  limit $1
@@ -198,7 +198,7 @@ where
  and
 (_nconst is null or actors_array @> string_to_array(_nconst, ','))
  and 
- (_titletype is null or titletype = _titletype)
+ (_titletype is null or (_titletype = 'movie' and tbe.titletype = 'movie') or (_titletype != 'movie' and tbe.titletype != 'movie'))
 
 group by 1
 order by 1

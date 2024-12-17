@@ -78,10 +78,24 @@ export const Card = ({
 
   const r1 = recs[0]
 
+  const isDirector = (r) => {
+    return r.role.split(', ').indexOf('director') != -1
+  }
+
+  const isNotDirector = (r) => {
+    return r.role.split(', ').indexOf('director') == -1
+  }
+  
+
   let slicedRecs = recs
   if (r1.place == 'genres' && r1.poster_url != null) {
-    // Get the top 4 actors.
-    slicedRecs = recs.slice(0, 4)
+    // Get the director.
+    const rec_director = recs.filter (isDirector)
+    if (rec_director.length > 0) {
+      slicedRecs = rec_director.concat(recs.filter(isNotDirector).slice(0,4 - rec_director.length))
+    } else {
+      slicedRecs = recs.slice(0, 4)
+    }
   }
 
   const persons = slicedRecs.map((rec, idx) => {
