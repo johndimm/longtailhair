@@ -52,8 +52,10 @@ export default function Main({ }) {
   }, [])
 
   useEffect(() => {
-    if (tconst)
+    if (tconst) {
+      hideSearchPage()
       setupMoviePage()
+    }
     else
       setupSearchPage()
   }, [tconst, nconst])
@@ -188,6 +190,9 @@ export default function Main({ }) {
   )
 
   setNavUrl()
+
+  if (!data)
+    return null
 
   return <>
     <Spinner isLoading={isLoading} />
