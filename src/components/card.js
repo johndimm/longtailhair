@@ -178,15 +178,19 @@ export const Card = ({
 
     external_links = <div className={styles.external_links}>
       <ul>
-      <li>
-         <a href={url} target="_where_to_watch">Google: where to watch</a>
-      </li>
-      <li>
-        <a href={rotten} target="rotten_tomatoes">Rotten Tomatoes</a>
-      </li>
-      <li>
-        <a href={letterboxd} target="letterboxd">Letterboxd</a>
-      </li>
+        <li>
+          <a target="_imdb" title={`${r1.titletype} in imdb`}
+            href={`https://www.imdb.com/title/${r1.tconst}/`}>Internet Movie Database</a>
+        </li>
+        <li>
+          <a href={url} target="_where_to_watch">Google: where to watch</a>
+        </li>
+        <li>
+          <a href={rotten} target="rotten_tomatoes">Rotten Tomatoes</a>
+        </li>
+        <li>
+          <a href={letterboxd} target="letterboxd">Letterboxd</a>
+        </li>
       </ul>
     </div>
 
@@ -225,8 +229,7 @@ export const Card = ({
           {r1.startyear}
         </span>
         <span>
-          <a target="_imdb" title={`${r1.titletype} in imdb`}
-            href={`https://www.imdb.com/title/${r1.tconst}/`}>{icon} imdb</a>
+          {icon}
         </span>
         <br />
         <span
