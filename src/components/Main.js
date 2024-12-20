@@ -194,6 +194,8 @@ export default function Main({ }) {
   if (!data)
     return null
 
+  console.log(`numMovies:${numMovies}`)
+
   return <>
     <Spinner isLoading={isLoading} />
     {movieHTML}
