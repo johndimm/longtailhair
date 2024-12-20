@@ -54,7 +54,7 @@ export const Card = ({
   const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
   // const [showingBigPic, setShowingBigPic] = useState(false)
 
-  
+
   const callbacks = useContext(CallbackContext)
   const { resetGenres, resetYear, resetMovie, resetActor, cardDim } = callbacks
 
@@ -65,10 +65,10 @@ export const Card = ({
       if (!poster_url || poster_url == '') {
         //console.log("useEffect sets card white", poster_url, primaryTitle)
         const className = theme == 'light' ? styles.card_white_light : styles.card_white
-        setTopClass(clsx(styles.card, className))     
+        setTopClass(clsx(styles.card, className))
       } else {
         const className = theme == 'light' ? styles.card_light : styles.card_black
-        setTopClass(clsx(styles.card, className))     
+        setTopClass(clsx(styles.card, className))
       }
     }
   }, [recs, theme])
@@ -85,14 +85,14 @@ export const Card = ({
   const isNotDirector = (r) => {
     return r.role.split(', ').indexOf('director') == -1
   }
-  
+
 
   let slicedRecs = recs
   if (r1.place == 'genres' && r1.poster_url != null) {
     // Get the director.
-    const rec_director = recs.filter (isDirector)
+    const rec_director = recs.filter(isDirector)
     if (rec_director.length > 0) {
-      slicedRecs = rec_director.concat(recs.filter(isNotDirector).slice(0,4 - rec_director.length))
+      slicedRecs = rec_director.concat(recs.filter(isNotDirector).slice(0, 4 - rec_director.length))
     } else {
       slicedRecs = recs.slice(0, 4)
     }
@@ -102,8 +102,8 @@ export const Card = ({
     return <Person
       key={idx}
       r={rec}
-      selectedPerson={selectedPerson} 
-      resetActor={resetActor}/>
+      selectedPerson={selectedPerson}
+      resetActor={resetActor} />
   })
 
   const genres = r1.genres ? r1.genres.replace(/,/g, ', ') : ''
@@ -129,10 +129,10 @@ export const Card = ({
         e.target.style.display = 'none'
       }} />
 
-      if (r1.place == 'center') {
-        poster = <a href={poster_url} target="_blank">{poster}</a>
-      }
-  } 
+    if (r1.place == 'center') {
+      poster = <a href={poster_url} target="_blank">{poster}</a>
+    }
+  }
 
   const center_poster = r1.place == 'center'
     ? poster
@@ -149,10 +149,10 @@ export const Card = ({
   const title = r1.primarytitle.length < 30
     ? <>{r1.primarytitle}</>
     : <span style={{ "display": "flex", "fontSize": "70%", "lineHeight": "1.2", "flexWrap": 'wrap', }}>{r1.primarytitle}</span>
-  
+
   let plot_sentence = r1.plot_summary
   if (r1.place != 'center')
-    plot_sentence = r1.plot_summary ? r1.plot_summary.substring(0,150) + '...' : ''
+    plot_sentence = r1.plot_summary ? r1.plot_summary.substring(0, 150) + '...' : ''
 
   const plotHtml = r1.plot_summary ?
     <div className={styles.plot_summary}>
@@ -161,11 +161,36 @@ export const Card = ({
     : null
 
   let style = {}
-  if (r1.place == 'genres' && theme == 'dark') 
+  if (r1.place == 'genres' && theme == 'dark')
     style = cardDim
 
-  const google_query = encodeURI(`where can I watch "${r1.primarytitle}" from ${r1.startyear}?`)
-  const where_to_watch = `https://www.google.com/search?q=${google_query}`
+  let external_links = null
+  if (r1.place == 'center') {
+    const item = `"${r1.primarytitle}" (${r1.startyear})`
+    const google_query = encodeURI(`where can I watch ${item}?`)
+    const url = `https://www.google.com/search?q=${google_query}`
+
+    const encodeItem = encodeURI(item)
+    const rotten = `https://www.rottentomatoes.com/search?search=${encodeItem}`
+
+    const letterboxItem = encodeURI(`${r1.primarytitle} ${r1.startyear}`)
+    const letterboxd = `https://letterboxd.com/search/${letterboxItem}`
+
+    external_links = <div className={styles.external_links}>
+      <ul>
+      <li>
+         <a href={url} target="_where_to_watch">Google: where to watch</a>
+      </li>
+      <li>
+        <a href={rotten} target="rotten_tomatoes">Rotten Tomatoes</a>
+      </li>
+      <li>
+        <a href={letterboxd} target="letterboxd">Letterboxd</a>
+      </li>
+      </ul>
+    </div>
+
+  }
 
   return <div className={topClass} style={style}>
 
@@ -210,9 +235,7 @@ export const Card = ({
           onClick={() => resetGenres(r1.genres)}>
           {genres}
         </span>
-        <div className={styles.where_to_watch}>
-           <a href={where_to_watch} target="_blank">where to watch...</a>
-        </div>
+        {external_links}
       </div>
 
 
@@ -247,9 +270,9 @@ export const Sidebar = ({
       key={idx}
       recs={recs}
       selectedPerson={selectedPerson}
-      position="sidebar" 
+      position="sidebar"
       isScrolling={isScrolling}
-      theme={theme}/>
+      theme={theme} />
 
   })
 }
