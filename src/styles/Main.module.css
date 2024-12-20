@@ -384,3 +384,7 @@
     width: 100%;
 }
 
+.card .where_to_watch {
+    font-style: italic;
+}
+

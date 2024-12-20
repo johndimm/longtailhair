@@ -97,9 +97,10 @@ const Movie = ({
   let titletype
   let backdrop
   if (center_persons.length > 0) {
-    tmdb_id = center_persons[0].tmdb_id
-    titletype = center_persons[0].titletype
-    backdrop = center_persons[0].backdrop_url
+    const cp = center_persons[0]
+    tmdb_id = cp.tmdb_id
+    titletype = cp.titletype
+    backdrop = cp.backdrop_url
   }
 
   if (backdrop) {
@@ -109,6 +110,7 @@ const Movie = ({
 
   if (!data || data.length == 0)
     return <Spinner isLoading={isLoading} />
+
 
   return <div className={styles.movie_page}>
 
@@ -147,6 +149,7 @@ const Movie = ({
 
     <div className={styles.center}>
       {center}
+
       {backdrop}
       <Trailer tmdb_id={tmdb_id} titletype={titletype} />
     </div>

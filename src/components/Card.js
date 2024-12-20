@@ -164,6 +164,9 @@ export const Card = ({
   if (r1.place == 'genres' && theme == 'dark') 
     style = cardDim
 
+  const google_query = encodeURI(`where can I watch "${r1.primarytitle}" from ${r1.startyear}?`)
+  const where_to_watch = `https://www.google.com/search?q=${google_query}`
+
   return <div className={topClass} style={style}>
 
     <div className={styles.card_text}>
@@ -207,6 +210,9 @@ export const Card = ({
           onClick={() => resetGenres(r1.genres)}>
           {genres}
         </span>
+        <div className={styles.where_to_watch}>
+           <a href={where_to_watch} target="_blank">where to watch...</a>
+        </div>
       </div>
 
 
