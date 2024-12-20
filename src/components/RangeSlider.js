@@ -91,7 +91,6 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
     } else {
       setMaxval(val)
     }
-    console.log("newEnd: ", val)
     return
 
     // console.log("newEnd", val)
