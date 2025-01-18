@@ -144,7 +144,8 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
     <div className={styles.range}>
 
       <div className={styles.range_slider}>
-        <span className={styles.range_selected} style={fillBlueStyle}></span>
+        <span className={styles.range_selected} style={fillBlueStyle}>
+        </span>
       </div>
 
       <div className={styles.range_input}
