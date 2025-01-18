@@ -97,16 +97,16 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
     if (!yearstart || !yearend)
       return
 
-    const delta = Math.max(yearend - yearstart, 1)
-    updateDates(parseInt(yearstart) - delta, parseInt(yearend) - delta)
+    const delta = Math.max(yearend - yearstart, 0)
+    updateDates(parseInt(yearstart) - delta - 1, parseInt(yearstart) - 1)
   }
 
   const goRight = (e) => {
     if (!yearstart || !yearend)
       return
 
-    const delta = Math.max(yearend - yearstart, 1)
-    updateDates(parseInt(yearstart) + delta, parseInt(yearend) + delta)
+    const delta = Math.max(yearend - yearstart, 0)
+    updateDates(parseInt(yearend) + 1, parseInt(yearend) + 1 + delta)
   }
 
   const newCardDim = (e) => {
@@ -191,6 +191,9 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
 
   const genresWidget = (
     <div className={styles.genres_widget}>
+
+
+      
       <Genres
         genres={genres}
         query={query}
@@ -218,6 +221,7 @@ const ControlPanel = ({ actorName, setTheme, theme }) => {
         goRight={goRight}
         yearstart={yearstart}
         yearend={yearend} />
+
 
       <button className={styles.resetButton} onClick={resetAll}>reset</button>
       <br />
