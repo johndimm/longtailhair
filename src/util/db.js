@@ -27,6 +27,28 @@ async function performSQLQuery(query) {
     }
 }
 
+exports.get_movie_tconst = function (tconst) {
+  if (tconst == 'undefined')
+    return []
+
+  const cmd = `select * from get_movie_tconst('${tconst}');`
+  console.log(cmd)
+
+	return performSQLQuery(cmd);
+};
+
+exports.get_only_movie = function (title, date) {
+  if (title == 'undefined')
+    return []
+
+  const titleEsc =title.replace(/'/g,"''")
+
+  const cmd = `select * from get_only_movie('${titleEsc}', ${date});`
+  console.log(cmd)
+
+	return performSQLQuery(cmd);
+};
+
 exports.get_movie = function (tconst) {
   if (tconst == 'undefined')
     return []
@@ -95,7 +117,7 @@ exports.insertDB = async function (tconst, jsonData) {
 
 exports.markPoster = async function (tconst) {
     const cmd = `update posters set error_count = error_count + 1 where tconst='${tconst}'`
-    return performSQLQuery(cmd)
+    return await performSQLQuery(cmd)
 }
 
 exports.insertOMDB = async function (tconst, jsonData) {
@@ -106,5 +128,26 @@ exports.insertOMDB = async function (tconst, jsonData) {
    values ('${tconst}', '${jsonDataString}', '${jsonData.Poster}', '${plot}')`
 
    
-   return performSQLQuery(cmd)
+   return await performSQLQuery(cmd)
+}
+
+exports.setUserRating = async function (user_id, tconst, rating) {
+  const cmd = `insert into user_ratings (user_id, tconst, rating) 
+  values (${user_id}, '${tconst}', ${rating}) 
+  ON CONFLICT (user_id, tconst) DO UPDATE SET 
+  rating=EXCLUDED.rating`
+
+  return await performSQLQuery(cmd)
+}
+
+exports.getUserRatings = async function (user_id) {
+  const cmd = `select 
+    user_id, ur.tconst, tbe.primarytitle as title, ur.rating, 
+    coalesce(p.url, tmdb.poster_path) as poster_url
+    from user_ratings as ur
+    join title_basics_ex as tbe using (tconst)
+    left join tmdb using (tconst)
+    left join posters as p on p.tconst = ur.tconst and p.error_count < 1
+    order by 3`
+  return await performSQLQuery(cmd)
 }
