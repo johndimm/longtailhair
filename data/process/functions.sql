@@ -1,5 +1,99 @@
 \pset pager 0
 
+
+drop function if exists get_movie_tconst;
+create or replace function get_movie_tconst(
+  _tconst text)
+  returns table (
+tconst text,
+titletype text,
+title text,
+year integer,
+averagerating double precision,
+numvotes integer,
+genres text,
+poster_url text
+)  language plpgsql IMMUTABLE as 
+$$ 
+begin 
+return query 
+select 
+  tb.tconst, 
+  tb.titletype,
+  tb.primaryTitle as title, 
+  tb.startYear as year, 
+  tb.averagerating, 
+  tb.numvotes, 
+  tb.genres, 
+  p.url as poster_url
+  from title_basics_ex as tb
+  left join posters as p on p.tconst = tb.tconst and p.error_count < 1
+  where tb.tconst = _tconst
+;
+end $$ ;
+
+
+select * from get_movie_tconst('tt0039689');
+
+drop function if exists get_only_movie;
+create or replace function get_only_movie(
+  _title text,
+  _year int)
+  returns table (
+tconst text,
+nconst text,
+-- career_order bigint,
+-- place text,
+primaryname text,
+primarytitle text,
+role text,
+startyear integer,
+averagerating double precision,
+numvotes integer,
+genres text,
+age integer,
+poster_url text,
+plot_summary text,
+titletype text,
+tmdb_id integer,
+backdrop_url text
+)  language plpgsql IMMUTABLE as 
+$$ 
+begin 
+
+return query 
+select tb.tconst, nb.nconst, nb.primaryName, tb.primaryTitle, coalesce(tp.characters, tp.category) as role, tb.startYear, tb.averagerating, tb.numvotes, tb.genres, tb.startYear - nb.birthYear as age, 
+  coalesce(p.url, tmdb.poster_path) as poster_url, 
+  tmdb.overview as plot_summary,
+  tb.titletype,
+  tmdb.tmdb_id,
+  backdrop_path as backdrop_url
+  from title_basics_ex as tb
+  join title_principals_agg as tp using (tconst)
+  join name_basics_ex as nb using (nconst)
+
+  left join tmdb using (tconst)
+  left join posters as p on p.tconst = tb.tconst and p.error_count < 1
+  where tb.startyear = _year 
+  and (
+    --lower(tb.primarytitle) like  '%' || lower(_title) || '%'
+    --or 
+    -- lower(_title) like  '%' || lower(tb.primarytitle) || '%'
+    -- or
+    fulltext @@ to_tsquery('english', replace(_title,' ',' & '))
+    or
+    _title = tb.primarytitle
+  )
+  order by abs (length(_title) - length(tb.primarytitle))
+  limit 1
+;
+
+end $$ ;
+
+select * from get_only_movie ('The Killing Fields', 1984);
+  
+
+
 drop function if exists get_movie;
 create
 or replace function get_movie(
@@ -124,7 +218,7 @@ where
  and
  (_endyear is null or tbe.startyear <= _endyear::integer)
  and
- (_query is null or fulltext @@ to_tsquery('english', replace(_query,' ',' & ')))
+ (_query is null or _query = tbe.primarytitle or fulltext @@ to_tsquery('english', replace(_query,' ',' & ')))
  and
 (_nconst is null or actors_array @> string_to_array(_nconst, ','))
  and 
