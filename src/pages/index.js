@@ -20,7 +20,7 @@ export default function Index() {
   const [paramsProcessed, setParamsProcessed] = useState(false)
   const [cardDim, setCardDim] = useState({width: 310, height:450})
 
-  const { tconst, nconst, genres, year, yearstart, yearend, query, titletype, numMovies } = router.query
+  const { tconst, nconst, genres, year, yearstart, yearend, query, titletype, numMovies, page } = router.query
 
   useEffect(() => {
     if (router.isReady) {
@@ -41,8 +41,8 @@ export default function Index() {
   }
 
   const resetGenres = (genres) => {
-    resetNumMovies()
-    setMovie(null)
+    //resetNumMovies()
+    //setMovie(null)
     setGenres(genres)
   }
 
@@ -121,6 +121,6 @@ export default function Index() {
   }
 
   return <CallbackContext.Provider value={callbacks}>
-    <Main />
+   <Main />
   </CallbackContext.Provider >
 }

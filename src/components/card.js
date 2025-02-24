@@ -3,15 +3,162 @@ import styles from "@/styles/Main.module.css";
 import { CallbackContext } from '@/components/Main'
 import clsx from 'clsx'
 
+
+const UserRating = ({ user_id, tconst, user_rating }) => {
+  const [rating, setRating] = useState(user_rating)
+
+  const dbSet = (user_id, _tconst, _rating) => {
+    const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}`
+    console.log(url)
+    fetch(url)
+    setRating(_rating)
+  }
+
+  const ratings = [
+    {
+      rating: -2,
+      icon: '👎',
+      definition: 'Saw it, did not like it'
+    },
+    {
+      rating: -1,
+      icon: '😑',
+      definition: 'Probably will not see it'
+    },
+    {
+      rating: 1,
+      icon: '🤔',
+      definition: 'Want to see it'
+    },
+    {
+      rating: 2,
+      icon: '👍',
+      definition: 'Saw it, liked it'
+    },
+  ]
+
+
+  const buttonsHtml = ratings.map((r, idx) => {
+    if (r.rating == rating) {
+      return <span key={idx}>{r.icon}</span>
+    } else {
+      return <button title={r.definition} key={idx} onClick={() => dbSet(user_id, tconst, r.rating)}>{r.icon}</button>
+    }
+  })
+
+  return (
+    <div className={styles.rating_buttons}>
+      {buttonsHtml}
+    </div>
+  )
+}
+
 const StarRating = ({ score }) => {
-  const filledStars = Math.round(score / 2.5);
+  const filledStars = Math.round(score / 2.0);
 
   const stars = Array.from({ length: filledStars }, (v, i) => (
-    <span key={i}>&#9733;</span>
+    <span className={styles.star_rating} key={i}>&#9733;</span>
   ));
 
-  return <span className={styles.star_rating}>{stars}</span>
+  return <span>{stars}</span>
 }
+
+const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
+  const nStars = user_rating > 0 ? user_rating : 0
+
+  // console.log("editStarRating: ", user_rating, nStars)
+
+  const stars = Array.from({ length: 5 }, (v, i) => {
+    const style = i < nStars
+      ? { color: "blue", cursor: "pointer" }
+      : { color: "white", cursor: "pointer" }
+    return <span
+      className={styles.star_rating}
+      style={style}
+      key={i}
+      onClick={() => dbSet(user_id, tconst, i + 1)}
+    >&#9733;</span>
+  });
+
+  return <div>
+    <span >{stars}</span>
+  </div>
+}
+
+
+const Ratings = (({ user_id, tconst, user_rating, averagerating }) => {
+  const [rating, setRating] = useState(user_rating)
+
+  useEffect( () => {
+    setRating(user_rating)
+  }, [tconst])
+
+  // console.log(`tconst:${tconst}, user_rating:${user_rating}, rating:${rating}`)
+
+  const dbSet = (user_id, _tconst, _rating) => {
+    const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}`
+    console.log(url)
+    fetch(url)
+    setRating(_rating)
+  }
+
+  const interested = user_rating == -1
+  const not_interested = user_rating == -2
+  const interested_id = 'interested-' + tconst
+  const not_interested_id = 'not-interested-' + tconst
+  const interest_level_name = 'interest-' + tconst
+
+  return (
+    <div>
+
+      <table><tbody>
+        <tr>
+          <td>
+            imdb:</td>
+          <td>
+            <StarRating score={averagerating} />
+          </td>
+        </tr>
+
+        <tr>
+          <td style={{ verticalAlign: "top" }}>
+            watched:
+          </td>
+          <td>
+            <EditStarRating user_id={user_id} tconst={tconst} user_rating={rating}
+              dbSet={dbSet} />
+          </td>
+        </tr>
+
+        <tr>
+          <td style={{ verticalAlign: "top" }}>
+            interested:
+          </td>
+          <td>
+            <label htmlFor={not_interested_id}>
+              <input id={not_interested_id} name={interest_level_name} type='radio'
+                checked={rating == -2}
+
+                onChange={() => dbSet(user_id, tconst, -2)} />
+              no
+            </label>
+
+            <label htmlFor={interested_id}>
+              <input id={interested_id} name={interest_level_name} type='radio'
+                checked={rating == -1}
+
+                onChange={() => dbSet(user_id, tconst, -1)} />
+              yes
+            </label>
+          </td>
+        </tr>
+
+      </tbody></table>
+
+
+    </div>
+  )
+})
 
 const markPosterError = (tconst) => {
   console.log("marking failed poster from ", tconst)
@@ -24,7 +171,7 @@ const Person = ({ r, selectedPerson, resetActor }) => {
   const roleStyle = r.role.indexOf('[') != -1
     ? { "fontStyle": "italic" }
     : { "fontStyle": "normal" }
-  const role = r.role.replace(/\[/g, '').replace(/\]/g, '').replace(/_/g, ' ')
+  const role = r.role.replace(/\[/g, '').replace(/\]/g, '').replace(/_/g, ' ').replace(/,.*/, '')
 
   const style = r.nconst == selectedPerson
     ? { "color": "red" }
@@ -52,11 +199,12 @@ export const Card = ({
   theme
 }) => {
   const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
-  // const [showingBigPic, setShowingBigPic] = useState(false)
 
 
   const callbacks = useContext(CallbackContext)
   const { resetGenres, resetYear, resetMovie, resetActor, cardDim } = callbacks
+
+  // console.log(recs)
 
   useEffect(() => {
     if (recs && recs.length > 0) {
@@ -108,8 +256,8 @@ export const Card = ({
 
   const genres = r1.genres ? r1.genres.replace(/,/g, ', ') : ''
 
-  const goToMovie = () => {
-    resetMovie(r1.tconst)
+  const goToMovie = (tconst) => {
+    resetMovie(tconst)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -118,7 +266,7 @@ export const Card = ({
     const poster_url = r1.poster_url.replace('w200', 'w400').replace('SX300', 'SX600')
     poster = <img
       src={poster_url}
-      onClick={goToMovie}
+      onClick={() => goToMovie(r1.tconst)}
       onLoad={(e) => {
         e.target.style.display = 'inline-block'
       }}
@@ -196,55 +344,60 @@ export const Card = ({
 
   }
 
+  // console.log("user_rating_msg", r1.user_rating_msg)
+
   return <div className={topClass} style={style}>
 
-    <div className={styles.card_text}>
 
-      <div>
-        <div onClick={goToMovie}>
-          <div className={styles.movie_title}>
-            {title}
+      <div className={styles.card_text}>
+
+        <div>
+          <div onClick={() => goToMovie(r1.tconst)}>
+            <div className={styles.movie_title}>
+              {title}
+            </div>
+
+            <hr />
+            {center_poster}
+            {plotHtml}
+
           </div>
 
-          <hr />
-          {center_poster}
-          {plotHtml}
+          <div className={styles.persons}>
+            {persons}
+          </div>
 
         </div>
 
-        <div className={styles.persons}>
-          {persons}
-        </div>
+        <div className={styles.metadata}>
+
+          <Ratings user_id={1} tconst={r1.tconst} user_rating={r1.user_rating} averagerating={r1.averagerating} />
+
+
+            <span
+              className={styles.year}
+              title={`Show only movies made in ${r1.startyear}`}
+              onClick={() => resetYear(r1.startyear)}>
+              {r1.startyear}
+            </span>
+            <span className={styles.icon}>
+              {icon}
+            </span>
+    
+            <span
+              className={styles.genres}
+              title={`Show only movies that include the genres ${r1.genres}`}
+              onClick={() => resetGenres(r1.genres)}>
+              {genres}
+            </span>
+          </div>
+          {external_links}
+          <div style={{fontStyle:'italic'}}>
+          {r1.user_rating_msg}
+          </div>
 
       </div>
-
-
-      <div className={styles.metadata}>
-        <StarRating score={r1.averagerating} />
-
-        <span
-          className={styles.year}
-          title={`Show only movies made in ${r1.startyear}`}
-          onClick={() => resetYear(r1.startyear)}>
-          {r1.startyear}
-        </span>
-        <span>
-          {icon}
-        </span>
-        <br />
-        <span
-          className={styles.genres}
-          title={`Show only movies that include the genres ${r1.genres}`}
-          onClick={() => resetGenres(r1.genres)}>
-          {genres}
-        </span>
-        {external_links}
-      </div>
-
-
-    </div>
-
-    {right_poster}
+      {right_poster}
   </div>
 }
 

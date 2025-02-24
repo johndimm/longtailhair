@@ -67,6 +67,9 @@ const Movie = ({
   const callbacks = useContext(CallbackContext)
   const { resetGenres, resetYear, resetMovie } = callbacks
 
+  if (!tconst)
+    return
+
   // console.log(tconst)
 
   const getData = async () => {

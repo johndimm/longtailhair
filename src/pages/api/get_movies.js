@@ -3,7 +3,7 @@ import { tmdb_fill } from '@/util/tmdb_fill'
 
 export default async function handler (req, res) {
   const {
-		query: { numMovies, genres, yearstart, yearend, query, nconst, titletype }
+		query: { numMovies, genres, yearstart, yearend, query, nconst, titletype, orderBy, ratingsFilter }
 	} = req
 
   const _numMovies = numMovies ? numMovies : null
@@ -13,8 +13,10 @@ export default async function handler (req, res) {
   const _query = query ? query : null
   const _nconst = nconst ? nconst : null
   const _titletype = titletype ? titletype : null
+  const _orderBy = orderBy ? orderBy : null
+  const _ratingsFilter = ratingsFilter ? ratingsFilter : null
 
-  const data = await db.get_movies(numMovies, _genres, _yearstart, _yearend, _query, _nconst, _titletype)
+  const data = await db.get_movies(numMovies, _genres, _yearstart, _yearend, _query, _nconst, _titletype, null, _orderBy, _ratingsFilter)
 
   await tmdb_fill(data)
   
