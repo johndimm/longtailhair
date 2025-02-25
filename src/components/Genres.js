@@ -86,7 +86,7 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsF
         setCheckedItems(newCheckedItems)
         // console.log(checkedItems, newCheckedItems)
 
-        console.log(" **** resetGenres")
+        // console.log(" **** resetGenres")
         resetGenres(newCheckedItems.join(','))
     };
 
@@ -116,7 +116,7 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsF
         )
     })
 
-    console.log(" ***** render Genres")
+    // console.log(" ***** render Genres")
     return <div className={styles.genres}>
         {genresListHtml}
     </div>

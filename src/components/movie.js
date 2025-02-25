@@ -53,24 +53,18 @@ const Trailer = ({ tmdb_id, titletype }) => {
   }
 
   return <div className={styles.trailers}>{trailers}</div>
-
 }
 
 const Movie = ({
   tconst,
-  hideSearchPage
+  hideSearchPage,
+  nconst
 }) => {
   const [data, setData] = useState([])
-  const [nconst, setNconst] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetYear, resetMovie } = callbacks
-
-  if (!tconst)
-    return
-
-  // console.log(tconst)
+  const { resetMovie } = callbacks
 
   const getData = async () => {
     setIsLoading(true)
@@ -86,8 +80,6 @@ const Movie = ({
 
   useEffect(() => {
     getData()
-    //    if (tconst)
-    //      window.history.pushState({}, '', "?tconst=" + tconst);
   }, [tconst])
 
   const center_persons = data.filter(r => r.place == 'center')
@@ -113,7 +105,6 @@ const Movie = ({
 
   if (!data || data.length == 0)
     return <Spinner isLoading={isLoading} />
-
 
   return <div className={styles.movie_page}>
 

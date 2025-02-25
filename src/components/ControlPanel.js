@@ -216,9 +216,9 @@ const ControlPanel = ({ actorName, setTheme, theme,
     })
 
     const style = showControlPanel
-        ? { display: "inline-block" }
+        ? { display: "block" }
         : { display: "none" }
-    console.log(" **** render ControlPanel")
+    // console.log(" **** render ControlPanel")
     return (
         <div className={styles.controls} style={style}>
             <div className={styles.controls_content} >

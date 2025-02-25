@@ -52,36 +52,9 @@ export default function Main({ }) {
 
     setData(result)
 
-    // Count the number of movies.  The results have every actor.
-    const tconsts = {}
-    result.forEach((r, idx) => {
-      tconsts[r.tconst] = 1
-    })
 
-    const nReturnedMovies = Object.keys(tconsts).length
-    console.log(" ****** nReturnedMovies", nReturnedMovies, "numMovies", numMovies)
 
-    if (nReturnedMovies >= numMovies)
-      return
-
-    if (ratingsFilter != 'recommendations')
-      return
-
-    if (nReturnedMovies < 5 && nReturnedMovies > 0) {
-      const user_id = 1
-      const recsUrl = `api/get_recommendations?user_id=${user_id}&titletype=${titletype}`
-      console.log(" ***** getting more ai recs")
-      // Now waiting, so make sure this doesn't get called again while waiting.
-      fetch(recsUrl)
-    }
-    if (nReturnedMovies == 0) {
-      console.log(" ******* getting more simple recs")
-      const user_id = 1
-      await fetch(`/api/topoff_recommendations?user_id=${user_id}&titletype=${titletype}`)
-
-      // Recursive call will not come back here because we just added records.
-      getData()
-    }
+ 
   }
 
   const setupSearchPage = () => {
@@ -162,8 +135,6 @@ export default function Main({ }) {
     }
   }
 
-
-
   const setNavUrl = () => {
     let navUrl = ''
     if (tconst) {
@@ -201,67 +172,24 @@ export default function Main({ }) {
     }
   }
 
-  // onScroll={onScroll}
+  setNavUrl()
 
-  const SearchResultsHTML = (() => (
-    <div
-      id="search_page"
-      className={styles.search_page}
-      style={{ ...searchPageVisible, "backgroundColor": theme == 'light' ? 'white' : 'black' }}
+  if (!data)
+    return null
 
-    >
-      <Head>
-        <meta
-          name='viewport'
-          content='width=device-width, initial-scale=0.7, maximum-scale=10.0, minimum-scale=0.1, user-scalable=yes'
-        />
-      </Head>
-
-      <Banner
-        showControlPanel={showControlPanel}
-        toggleShowControlPanel={toggleShowControlPanel}
-      />
-      <ControlPanel
-        setTheme={setTheme}
-        theme={theme}
-        setRatingsFilter={setRatingsFilter}
-        setSortOrder={setSortOrder}
-        toggleShowControlPanel={toggleShowControlPanel}
-        sortOrder={sortOrder}
-        ratingsFilter={ratingsFilter}
-        showControlPanel={showControlPanel} />
-      <Sidebar
-        data={data}
-        place='genres'
-        selectedPerson={nconst}
-        isScrolling={isScrolling}
-        theme={theme}
-      />
-
-    </div>
-  ))
-
-  const MovieHTML = (() => (
+  //console.log(" **** render Main")
+  return <>
+    <Spinner isLoading={isLoading} />
     <div
       className={styles.movie}
       style={moviePageVisible}
     >
       <Movie
         tconst={tconst}
+        nconst={nconst}
         hideSearchPage={hideSearchPage}
       />
     </div>
-  ))
-
-  setNavUrl()
-
-  if (!data)
-    return null
-
-  console.log(" **** render Main")
-  return <>
-    <Spinner isLoading={isLoading} />
-    <MovieHTML />
     <div
       onScroll={onScroll}
       id="search_page"

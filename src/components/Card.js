@@ -89,7 +89,7 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
 const Ratings = (({ user_id, tconst, user_rating, averagerating }) => {
   const [rating, setRating] = useState(user_rating)
 
-  useEffect( () => {
+  useEffect(() => {
     setRating(user_rating)
   }, [tconst])
 
@@ -299,10 +299,21 @@ export const Card = ({
     : <span style={{ "display": "flex", "fontSize": "70%", "lineHeight": "1.2", "flexWrap": 'wrap', }}>{r1.primarytitle}</span>
 
   let plot_sentence = r1.plot_summary
-  if (r1.place != 'center')
-    plot_sentence = r1.plot_summary ? r1.plot_summary.substring(0, 150) + '...' : ''
 
-  const plotHtml = r1.plot_summary ?
+  if (r1.place != 'center') {
+    if (r1.user_rating_msg && !r1.user_rating_msg.includes('is a popular')) {
+      plot_sentence = r1.user_rating_msg 
+    }
+    // Should be able to cut off only if longer than 150, but no.
+    if (plot_sentence && plot_sentence == r1.plot_summary && plot_sentence != '') {
+      plot_sentence = plot_sentence.substring(0, 150) + '...'
+    }
+  }
+
+  console.log("plot_sentence", plot_sentence)
+  // console.log("user_rating_msg", r1.user_rating_msg)
+
+  const plotHtml = plot_sentence ?
     <div className={styles.plot_summary}>
       {plot_sentence}
     </div>
@@ -349,55 +360,52 @@ export const Card = ({
   return <div className={topClass} style={style}>
 
 
-      <div className={styles.card_text}>
+    <div className={styles.card_text}>
 
-        <div>
-          <div onClick={() => goToMovie(r1.tconst)}>
-            <div className={styles.movie_title}>
-              {title}
-            </div>
-
-            <hr />
-            {center_poster}
-            {plotHtml}
-
+      <div>
+        <div onClick={() => goToMovie(r1.tconst)}>
+          <div className={styles.movie_title}>
+            {title}
           </div>
 
-          <div className={styles.persons}>
-            {persons}
-          </div>
+          <hr />
+          {center_poster}
+          {plotHtml}
 
         </div>
 
-        <div className={styles.metadata}>
-
-          <Ratings user_id={1} tconst={r1.tconst} user_rating={r1.user_rating} averagerating={r1.averagerating} />
-
-
-            <span
-              className={styles.year}
-              title={`Show only movies made in ${r1.startyear}`}
-              onClick={() => resetYear(r1.startyear)}>
-              {r1.startyear}
-            </span>
-            <span className={styles.icon}>
-              {icon}
-            </span>
-    
-            <span
-              className={styles.genres}
-              title={`Show only movies that include the genres ${r1.genres}`}
-              onClick={() => resetGenres(r1.genres)}>
-              {genres}
-            </span>
-          </div>
-          {external_links}
-          <div style={{fontStyle:'italic'}}>
-          {r1.user_rating_msg}
-          </div>
+        <div className={styles.persons}>
+          {persons}
+        </div>
 
       </div>
-      {right_poster}
+
+      <div className={styles.metadata}>
+
+        <Ratings user_id={1} tconst={r1.tconst} user_rating={r1.user_rating} averagerating={r1.averagerating} />
+
+
+        <span
+          className={styles.year}
+          title={`Show only movies made in ${r1.startyear}`}
+          onClick={() => resetYear(r1.startyear)}>
+          {r1.startyear}
+        </span>
+        <span className={styles.icon}>
+          {icon}
+        </span>
+
+        <span
+          className={styles.genres}
+          title={`Show only movies that include the genres ${r1.genres}`}
+          onClick={() => resetGenres(r1.genres)}>
+          {genres}
+        </span>
+      </div>
+      {external_links}
+
+    </div>
+    {right_poster}
   </div>
 }
 

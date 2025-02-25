@@ -38,7 +38,8 @@ async function getClaudeRecommendations(prompt) {
   });
 
   const message = await anthropic.messages.create({
-    model: "claude-3-opus-20240229",
+    // model: "claude-3-opus-20240229",
+    model: "claude-3-7-sonnet-20250219",
     max_tokens: 4000,
     system: `You are a movie recommendation expert. Provide recommendations in the exact JSON format requested.  
     Please wrap strings in double quotes.  Return a valid JSON array.`,
@@ -87,7 +88,7 @@ Please provide recommendations in this exact JSON format.  Do not add any introd
   "year": 1962,
   "tconst": "tt0053198",
   "title": "The 400 Blows",
-  "why_recommended": "because you like french new wave"
+  "why_recommended": "Recommended because you like french new wave."
   }
 ]
 
@@ -144,7 +145,7 @@ const populateUserRatings = async (recs) => {
 
   for (let i=0; i<recs.length; i++) {
     const r = recs[i]
-    const msg = `${r.title}: ${r.why_recommended}`.replace(/'/g, "''")
+    const msg = r.why_recommended.replace(/'/g, "''")
     const cmd = `  
     insert into user_ratings
     (user_id, tconst, rating, msg)
@@ -189,13 +190,36 @@ const populateUserRatings = async (recs) => {
   return {result: true}
 }
 
-export default async function handler(req, res) {
-  const {
-    query: { user_id, titletype, genres }
-  } = req
+export const getAIRecs = async (user_id, titletype, genres) => {
+    const recs = await aiRecs(user_id, titletype, genres)
+    const json = await populateUserRatings(recs)
+    return json
+}
 
-  const recs = await aiRecs(user_id, titletype, genres)
-  const json = await populateUserRatings(recs)
 
-  res.status(200).json(json)
+export const getSimpleRecs = async (user_id, titletype, genres) => {
+    let actualTitletype
+    let msg
+    if (titletype == 'movie') {
+        actualTitletype = 'movie'
+        msg = " is a popular movie."
+    } else {
+        actualTitletype = 'tvSeries'
+        msg = " is a popular tv series."
+    }
+
+    const addRecs = `
+  insert into user_ratings
+  (user_id, tconst, rating, msg)
+  select ${user_id} as user_id, tbe.tconst, -3 as rating, concat(tbe.primarytitle,'${msg}') as msg
+  from title_basics_ex as tbe
+  left join user_ratings as ur on ur.tconst = tbe.tconst and ur.user_id=${user_id}
+  where ur.tconst is null
+  and tbe.titletype = '${actualTitletype}'
+  and ('${genres}' in ('undefined', 'null') or string_to_array(tbe.genres::text, ',') @> string_to_array('${genres}'::text, ',') )
+  order by tbe.popularity desc
+  limit 4
+`
+    const json = await db.performQuery(addRecs)
+    return json
 }
