@@ -82,7 +82,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
     )
 
     const zoom = theme == 'dark'
-        ? <div className={styles.card_dim_slider} >zoom
+        ? <div className={styles.card_dim_slider} >
             <input type="range"
                 min="150" max="600"
                 defaultValue="310"
@@ -159,6 +159,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
                 </h3>
                 <ul>
                     {themesOptions}
+                    {zoom}
                 </ul>
             </div>
         )
@@ -251,6 +252,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
                         <SortOrderWidget />
                         <ThemesWidget />
                     </div>
+
                     <div>
                         <button className={styles.resetButton} onClick={resetAll}>reset</button>
                         <button className={styles.resetButton} onClick={toggleShowControlPanel}>close</button>

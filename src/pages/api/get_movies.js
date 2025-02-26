@@ -27,9 +27,7 @@ export default async function handler(req, res) {
 
   await runQuery()
 
-
   if (ratingsFilter == 'recommendations') {
-
     // Count the number of movies.  The results have every actor.
     const tconsts = {}
     data.forEach((r, idx) => {
@@ -37,24 +35,13 @@ export default async function handler(req, res) {
     })
 
     const nReturnedMovies = Object.keys(tconsts).length
-    // console.log(" ****** nReturnedMovies", nReturnedMovies, "numMovies", numMovies)
 
     const user_id = 1
 
     if (nReturnedMovies < 5) {
-      //const user_id = 1
-      //const recsUrl = `api/get_recommendations?user_id=${user_id}&titletype=${titletype}&genres=${genres}`
-      // console.log(" ***** getting more ai recs")
-      // Now waiting, so make sure this doesn't get called again while waiting.
-      // fetch(recsUrl)
       getAIRecs(user_id, titletype, genres)
     }
     if (nReturnedMovies == 0) {
-      //console.log(" ******* getting more simple recs")
-      //const user_id = 1
-      //await fetch(`/api/topoff_recommendations?user_id=${user_id}&titletype=${titletype}&genres=${genres}`)
-
-      //await runQuery()
       await getSimpleRecs(user_id, titletype, genres)
       await runQuery()
     }

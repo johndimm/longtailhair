@@ -3,7 +3,7 @@ import styles from "@/styles/Main.module.css";
 import { CallbackContext } from '@/components/Main'
 import clsx from 'clsx'
 
-
+/*
 const UserRating = ({ user_id, tconst, user_rating }) => {
   const [rating, setRating] = useState(user_rating)
 
@@ -52,6 +52,7 @@ const UserRating = ({ user_id, tconst, user_rating }) => {
     </div>
   )
 }
+*/
 
 const StarRating = ({ score }) => {
   const filledStars = Math.round(score / 2.0);
@@ -65,8 +66,6 @@ const StarRating = ({ score }) => {
 
 const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
   const nStars = user_rating > 0 ? user_rating : 0
-
-  // console.log("editStarRating: ", user_rating, nStars)
 
   const stars = Array.from({ length: 5 }, (v, i) => {
     const style = i < nStars
@@ -86,7 +85,7 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
 }
 
 
-const Ratings = (({ user_id, tconst, user_rating, averagerating }) => {
+const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
   const [rating, setRating] = useState(user_rating)
 
   useEffect(() => {
@@ -95,11 +94,13 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating }) => {
 
   // console.log(`tconst:${tconst}, user_rating:${user_rating}, rating:${rating}`)
 
-  const dbSet = (user_id, _tconst, _rating) => {
+  const dbSet = async (user_id, _tconst, _rating) => {
+    // User gave a rating.
     const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}`
     console.log(url)
-    fetch(url)
+    await fetch(url)
     setRating(_rating)
+    getData()
   }
 
   const interested = user_rating == -1
@@ -125,7 +126,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating }) => {
             watched:
           </td>
           <td>
-            <EditStarRating user_id={user_id} tconst={tconst} user_rating={rating}
+            <EditStarRating user_id={user_id} tconst={tconst} user_rating={rating} getData={getData}
               dbSet={dbSet} />
           </td>
         </tr>
@@ -196,15 +197,12 @@ export const Card = ({
   recs,
   selectedPerson,
   isScrolling,
-  theme
+  theme,
+  getData
 }) => {
   const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
-
-
   const callbacks = useContext(CallbackContext)
   const { resetGenres, resetYear, resetMovie, resetActor, cardDim } = callbacks
-
-  // console.log(recs)
 
   useEffect(() => {
     if (recs && recs.length > 0) {
@@ -233,7 +231,6 @@ export const Card = ({
   const isNotDirector = (r) => {
     return r.role.split(', ').indexOf('director') == -1
   }
-
 
   let slicedRecs = recs
   if (r1.place == 'genres' && r1.poster_url != null) {
@@ -302,16 +299,13 @@ export const Card = ({
 
   if (r1.place != 'center') {
     if (r1.user_rating_msg && !r1.user_rating_msg.includes('is a popular')) {
-      plot_sentence = r1.user_rating_msg 
+      plot_sentence = r1.user_rating_msg
     }
     // Should be able to cut off only if longer than 150, but no.
     if (plot_sentence && plot_sentence == r1.plot_summary && plot_sentence != '') {
       plot_sentence = plot_sentence.substring(0, 150) + '...'
     }
   }
-
-  console.log("plot_sentence", plot_sentence)
-  // console.log("user_rating_msg", r1.user_rating_msg)
 
   const plotHtml = plot_sentence ?
     <div className={styles.plot_summary}>
@@ -355,11 +349,7 @@ export const Card = ({
 
   }
 
-  // console.log("user_rating_msg", r1.user_rating_msg)
-
   return <div className={topClass} style={style}>
-
-
     <div className={styles.card_text}>
 
       <div>
@@ -382,8 +372,9 @@ export const Card = ({
 
       <div className={styles.metadata}>
 
-        <Ratings user_id={1} tconst={r1.tconst} user_rating={r1.user_rating} averagerating={r1.averagerating} />
-
+        <Ratings user_id={1} tconst={r1.tconst}
+          user_rating={r1.user_rating} averagerating={r1.averagerating}
+          getData={getData} />
 
         <span
           className={styles.year}
@@ -414,7 +405,8 @@ export const Sidebar = ({
   place,
   selectedPerson,
   isScrolling,
-  theme
+  theme,
+  getData
 }) => {
 
   // Aggregate multiple actors in the same film.
@@ -436,7 +428,8 @@ export const Sidebar = ({
       selectedPerson={selectedPerson}
       position="sidebar"
       isScrolling={isScrolling}
-      theme={theme} />
+      theme={theme}
+      getData={getData} />
 
   })
 }

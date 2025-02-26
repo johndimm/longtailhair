@@ -17,7 +17,7 @@ export default function Main({ }) {
   const router = useRouter()
 
   const [data, setData] = useState([])
-  const [actorName, setActorName] = useState()
+  // const [actorName, setActorName] = useState()
   const [isLoading, setIsLoading] = useState(false)
   const [moviePageVisible, setMoviePageVisible] = useState({ "visibility": "hidden" })
   const [searchPageVisible, setSearchPageVisible] = useState({ "visibility": "visible" })
@@ -28,18 +28,15 @@ export default function Main({ }) {
   const [showControlPanel, setShowControlPanel] = useState(false)
   const [ratingsFilter, setRatingsFilter] = useState('all')
   const [sortOrder, setSortOrder] = useState('popularity desc')
-  // const [sortOrder, setSortOrder] = useState('year')
-
 
   const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetYear, resetMovie, resetActor,
-    resetQuery, setYearstart, setYearend, setTitletype, setNumMovies,
+  const { setNumMovies,
     tconst, nconst, titletype, genres,
     query, yearstart, yearend, numMovies } = callbacks
 
   const getData = async () => {
     const url = `/api/get_movies?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&numMovies=${numMovies}&query=${query}&nconst=${nconst}&titletype=${titletype}&orderBy=${sortOrder}&ratingsFilter=${ratingsFilter}`
-    // const url = "/api/get_recommendations?user_id=1"
+
     console.log(url)
 
     setIsLoading(true)
@@ -47,14 +44,7 @@ export default function Main({ }) {
     const result = await response.json()
     setIsLoading(false)
 
-    if (!result)
-      return
-
     setData(result)
-
-
-
- 
   }
 
   const setupSearchPage = () => {
@@ -91,11 +81,13 @@ export default function Main({ }) {
       setupSearchPage()
   }, [tconst, nconst])
 
+  /*
   useEffect(() => {
     //if (!nconst)
     setActorName('')
 
   }, [nconst])
+  */
 
   useEffect(() => {
     if (!router.isReady)
@@ -108,18 +100,14 @@ export default function Main({ }) {
     setShowControlPanel(!showControlPanel)
   }
 
-  if (!data || data.length == 0)
-    return null
+
 
   const isBottom = (el) => {
-    // console.log(`scrollTop:${el.scrollTop}, clientHeight:${el.clientHeight}, scrollHeight:${el.scrollHeight}`)
-    //return false
     return el.scrollTop + el.clientHeight + 1 > el.scrollHeight
   }
 
   const onScroll = (e) => {
     e.preventDefault()
-    // console.log("onScroll, isScrolling:", isScrolling)
     setIsScrolling(true);
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
@@ -130,7 +118,6 @@ export default function Main({ }) {
 
     const el = e.nativeEvent.srcElement
     if (isBottom(el)) {
-      // Get twice as many movies.
       setNumMovies(numMovies + NUM_MOVIES)
     }
   }
@@ -177,7 +164,6 @@ export default function Main({ }) {
   if (!data)
     return null
 
-  //console.log(" **** render Main")
   return <>
     <Spinner isLoading={isLoading} />
     <div
@@ -223,10 +209,9 @@ export default function Main({ }) {
         selectedPerson={nconst}
         isScrolling={isScrolling}
         theme={theme}
+        getData={getData}
       />
 
     </div>
   </>
 }
-
-//    <SearchResultsHTML />

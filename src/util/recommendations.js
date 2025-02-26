@@ -31,8 +31,6 @@ async function getChatgptRecommendations(prompt) {
 }
 
 async function getClaudeRecommendations(prompt) {
-  // You'll implement this using Anthropic's API client
-  // This is a placeholder showing the expected structure
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
   });
@@ -158,35 +156,6 @@ const populateUserRatings = async (recs) => {
     await db.performQuery(cmd)
   }
 
-  /*
-  const titles = recs.map ( (r, idx) => {
-    return `'${r.title}'`
-  })
-  const titleList = titles.join(',')
-
-  const cmd = `
-  insert into user_ratings
-  (user_id, tconst, rating, msg)
-  select ${user_id}, tbe.tconst, -3, 
-  `
-  */
-
-/*
-  const user_id = 1
-  const rowList = recs.map ( (r, idx) => {
-    const msg = `${r.title}: ${r.why_recommended}`.replace(/'/g, "''")
-    return `(${user_id}, '${r.tconst}', -3, '${msg}')`
-  })
-
-  const cmd = `
-   INSERT INTO user_ratings 
-     (user_id, tconst, rating, msg) 
-   values ${rowList.join(',')}
-   on conflict (user_id, tconst) do nothing
-*/
-   
-
-  // return await db.performQuery(cmd)
   return {result: true}
 }
 
@@ -195,7 +164,6 @@ export const getAIRecs = async (user_id, titletype, genres) => {
     const json = await populateUserRatings(recs)
     return json
 }
-
 
 export const getSimpleRecs = async (user_id, titletype, genres) => {
     let actualTitletype
