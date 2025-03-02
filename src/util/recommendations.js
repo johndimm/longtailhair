@@ -70,7 +70,7 @@ const aiRecs = async (user_id, titletype, genres) => {
 
   const intro = `
 
-Provide a JSON array of 10 movie recommendations **not listed anywhere in this prompt** (including "haven't seen," "would like to," or "rated" sections). Follow these rules:  
+Provide a JSON array of 30 movie recommendations **not listed anywhere in this prompt** (including "haven't seen," "would like to," or "rated" sections). Follow these rules:  
 
 1. All movies listed in any section (whether rated, to watch, or not to watch) should be excluded.
 
@@ -112,7 +112,8 @@ Movies to Exclude (DO NOT RECOMMEND THESE):
     if (!moviesRatedAs.hasOwnProperty(r.rating)) {
       moviesRatedAs[r.rating] = []
     }
-    moviesRatedAs[r.rating].push(`"${r.title}"\n`)
+    //moviesRatedAs[r.rating].push(`"${r.title}"\n`)
+    moviesRatedAs[r.rating].push(`"${r.tconst}"\n`)
   })
 
   let ratingsConstants = [
@@ -124,6 +125,7 @@ Movies to Exclude (DO NOT RECOMMEND THESE):
   ratings.forEach ( (rating, idx) => [
     ratingsConstants.push({"id": rating, "msg": `Rated ${rating}:\n`})
   ])
+  
   let report = ''
   ratingsConstants.forEach ( ( rating, idx) => {
     if (moviesRatedAs[rating.id])
@@ -173,6 +175,7 @@ const populateUserRatings = async (recs, user_id) => {
     select ${user_id}, tbe.tconst, -3, '${msg}'
     from title_basics_ex as tbe
     where lower(tbe.primarytitle) = lower('${title}')
+    -- where tbe.tconst = '${r.tconst}'
     and startyear = ${r.year}
     on conflict (user_id, tconst) do nothing
     `
