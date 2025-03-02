@@ -78,7 +78,7 @@ function isNullish (query) {
     return !query || query === 'undefined' || query === 'null' || query === ''
 }
 exports.get_movies = function (numMovies, genres, yearstart, yearend, 
-  query, nconst, titletype, movieList, orderBy, ratingsFilter) {
+  query, nconst, titletype, movieList, orderBy, ratingsFilter, user_id) {
     const _genres = isNullish(genres) ? null : `'${genres}'`
     const _yearstart = isNullish(yearstart) ? null : yearstart
     const _yearend = isNullish(yearend) ? null : yearend
@@ -89,7 +89,7 @@ exports.get_movies = function (numMovies, genres, yearstart, yearend,
     const _ratingsFilter = isNullish(ratingsFilter) ? null : `'${ratingsFilter}'`
 
     // console.log(query, _query)
-	const data = performSQLQuery(`select * from get_movies(${numMovies}, ${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype}, ${movieList}, ${_orderBy}, ${_ratingsFilter});`);
+	const data = performSQLQuery(`select * from get_movies(${numMovies}, ${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype}, ${movieList}, ${_orderBy}, ${_ratingsFilter}, ${user_id});`);
     return data
 };
 
@@ -176,5 +176,18 @@ exports.getUserRatings = async function (user_id) {
 }
 
 exports.performQuery = async function (query) {
+  return await performSQLQuery(query)
+}
+
+exports.register = async function (email, name) {
+  const cmd = `
+    insert into users (email,name) values ('${email}', '${name}') on conflict (email) do nothing
+  `
+  await performSQLQuery(cmd)
+
+  const query = `
+    select id as user_id from users where email='${email}'
+  `
+
   return await performSQLQuery(query)
 }

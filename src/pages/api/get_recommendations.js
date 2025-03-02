@@ -134,13 +134,11 @@ Above all, do NOT return any of the ${movies} listed in this prompt!
   //return await getChatgptRecommendations(prompt)
 }
 
-const populateUserRatings = async (recs) => {
+const populateUserRatings = async (recs, user_id) => {
   if (!recs)
     return null
 
   console.log("ai recs len:", recs.length)
-
-  const user_id = 1
 
   for (let i=0; i<recs.length; i++) {
     const r = recs[i]
@@ -157,35 +155,6 @@ const populateUserRatings = async (recs) => {
     await db.performQuery(cmd)
   }
 
-  /*
-  const titles = recs.map ( (r, idx) => {
-    return `'${r.title}'`
-  })
-  const titleList = titles.join(',')
-
-  const cmd = `
-  insert into user_ratings
-  (user_id, tconst, rating, msg)
-  select ${user_id}, tbe.tconst, -3, 
-  `
-  */
-
-/*
-  const user_id = 1
-  const rowList = recs.map ( (r, idx) => {
-    const msg = `${r.title}: ${r.why_recommended}`.replace(/'/g, "''")
-    return `(${user_id}, '${r.tconst}', -3, '${msg}')`
-  })
-
-  const cmd = `
-   INSERT INTO user_ratings 
-     (user_id, tconst, rating, msg) 
-   values ${rowList.join(',')}
-   on conflict (user_id, tconst) do nothing
-*/
-   
-
-  // return await db.performQuery(cmd)
   return {result: true}
 }
 
@@ -195,7 +164,7 @@ export default async function handler(req, res) {
   } = req
 
   const recs = await aiRecs(user_id, titletype, genres)
-  const json = await populateUserRatings(recs)
+  const json = await populateUserRatings(recs, user_id)
 
   res.status(200).json(json)
 }

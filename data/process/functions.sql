@@ -188,7 +188,8 @@ or replace function get_movies (
   _titletype text,
   _movieList text[] default null,
   _orderBy text default 'popularity desc',
-  _rating_filter text default 'all'
+  _rating_filter text default 'all',
+  _user_id integer default null
 )
 returns table (
 tconst text,
@@ -235,6 +236,9 @@ where
  --( _genres is null or fg.genres_array @> string_to_array(_genres::text, ',') )
  --and
 
+ (_user_id is null or ur.user_id is null or ur.user_id = _user_id)
+ and
+
 (_genres is null or string_to_array(tbe.genres::text, ',') @> string_to_array(_genres::text, ',') )
 and
 
@@ -256,11 +260,11 @@ and
 
 and
 (
-  (_rating_filter = 'rated' and ur.rating is not null)
+  (_rating_filter = 'rated' and ur.rating between 1 and 5)
   or
   (_rating_filter = 'not rated' and ur.rating is null)
   or 
-  (_rating_filter = 'watchlist' and ur.rating = -1)
+  (_rating_filter = 'interested' and ur.rating = -1)
   or
   (_rating_filter = 'recommendations' and ur.rating = -3)
   or

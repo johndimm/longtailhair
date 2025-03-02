@@ -15,7 +15,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
     const { resetGenres, resetMovie, resetActor,
         resetQuery, resetYearstart, resetYearend, setTitletype, setNumMovies,
         nconst, titletype, genres,
-        query, yearstart, yearend, setCardDim } = callbacks
+        query, yearstart, yearend, setCardDim, user } = callbacks
     // const [showGenres, setShowGenres] = useState(true)
 
     //if (!showControlPanel)
@@ -83,6 +83,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
 
     const zoom = theme == 'dark'
         ? <div className={styles.card_dim_slider} >
+            zoom:
             <input type="range"
                 min="150" max="600"
                 defaultValue="310"
@@ -159,14 +160,17 @@ const ControlPanel = ({ actorName, setTheme, theme,
                 </h3>
                 <ul>
                     {themesOptions}
-                    {zoom}
+
                 </ul>
             </div>
         )
     })
 
     const RatingsWidget = (() => {
-        const ratings = ['all', 'rated', 'not rated', 'watchlist', 'recommendations']
+        if (!user.id)
+            return null
+
+        const ratings = ['all', 'rated', 'not rated', 'interested', 'recommendations']
         console.log('ratingsFilter', ratingsFilter)
         const ratingsOptions = ratings.map((rating, idx) => {
             const style = rating == ratingsFilter
@@ -178,7 +182,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
         return (
             <div className={styles.widget}>
                 <h3>
-                    Filters
+                    Ratings
                 </h3>
                 <ul>
                     {ratingsOptions}
@@ -219,7 +223,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
     const style = showControlPanel
         ? { display: "block" }
         : { display: "none" }
-    // console.log(" **** render ControlPanel")
+    console.log(" **** render ControlPanel, user_id:", user.id)
     return (
         <div className={styles.controls} style={style}>
             <div className={styles.controls_content} >
@@ -236,30 +240,42 @@ const ControlPanel = ({ actorName, setTheme, theme,
                 </div>
 
                 <div className={styles.right_controls}>
-                    <div className={styles.date_widget}>
-                        <YearPicker
-                            setParentYearstart={resetYearstart}
-                            setParentYearend={resetYearend}
-                            goLeft={goLeft}
-                            goRight={goRight}
-                            yearstart={yearstart}
-                            yearend={yearend} />
+
+                    <div className={styles.widget}>
+                        {credits}
                     </div>
-                    <br />
-                    <div className={styles.bottom_widgets}>
+
+                    <div className={styles.menu}>
                         <SourcesWidget />
                         <RatingsWidget />
                         <SortOrderWidget />
                         <ThemesWidget />
                     </div>
 
-                    <div>
-                        <button className={styles.resetButton} onClick={resetAll}>reset</button>
-                        <button className={styles.resetButton} onClick={toggleShowControlPanel}>close</button>
+                    <div className={styles.bottom_widgets}>
+
+                        <div className={styles.date_widget}>
+                            <YearPicker
+                                setParentYearstart={resetYearstart}
+                                setParentYearend={resetYearend}
+                                goLeft={goLeft}
+                                goRight={goRight}
+                                yearstart={yearstart}
+                                yearend={yearend} />
+                        </div>
+
+
+                        <div >
+                            {zoom}
+                        </div>
+
+                        <div>
+                            <button className={styles.resetButton} onClick={resetAll}>reset</button>
+                            <button className={styles.resetButton} onClick={toggleShowControlPanel}>close</button>
+                        </div>
+
                     </div>
-                    <div className={styles.widget}>
-                        {credits}
-                    </div>
+
                 </div>
             </div>
         </div>

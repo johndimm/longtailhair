@@ -16,7 +16,7 @@
     right: 50%;
     position: absolute;
     border-radius: 5px;
-    background-color: #1b53c0;
+    background-color: #ffae42;
 }
 
 .range_input {
@@ -79,6 +79,7 @@
     margin-right: 5px;
     transform: rotate(180deg);
     font-size: 24pt;
+    color: gray;
 }
 
 .date_right_arrow {
@@ -86,6 +87,7 @@
     cursor: pointer;
     margin-left: 5px;
     font-size: 24pt;
+    color: gray;
 }
 
 .clear_button {

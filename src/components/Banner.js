@@ -1,11 +1,45 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react'
 import { CallbackContext } from '@/components/Main'
 import Actor from "@/components/Actor"
-import YearPicker from "@/components/YearPicker"
-import Genres from "@/components/Genres"
+//import YearPicker from "@/components/YearPicker"
+//import Genres from "@/components/Genres"
 import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
+import { signIn, signOut, useSession } from "next-auth/react";
 
+const registerUser = async (email, name, setUser) => {
+  const url = `/api/register?email=${email}&name=${name}`
+  const response = await fetch(url)
+  const result = await response.json()
+  setUser({id:result.user_id, email: email, name: name})
+}
+
+const AuthButton = ( {setUser} ) => {
+  const { data: session } = useSession();
+
+  useEffect( () => {
+    if (session) {
+      registerUser(session.user.email, session.user.name, setUser)
+    }
+  }, [session])
+
+  if (session) {
+    const shortName = session.user.name.replace(/ .*/, '')
+    return (
+      <div>
+        <p>{shortName}</p>
+        <button onClick={() => signOut()}>Sign out</button>
+      </div>
+    );
+  }
+
+//  return <button onClick={() => signIn("google")}>Sign in with Google</button>;
+  return (
+    <div className={styles.sign_in}>
+    <button onClick={() => signIn("github")} title='To rate movies and get recommendations'>sign in with GitHub</button>
+    </div>
+  )
+}
 
 const SearchForm = ({ query, resetQuery }) => {
   const handleSubmit = (e) => {
@@ -47,7 +81,7 @@ const Banner = ({ actorName, setTheme, theme, showControlPanel, toggleShowContro
   const { resetGenres, resetMovie, resetActor,
     resetQuery, resetYearstart, resetYearend, setTitletype, setNumMovies,
     nconst, titletype, genres,
-    query, yearstart, yearend, setCardDim } = callbacks
+    query, yearstart, yearend, setCardDim, setUser } = callbacks
   //const [showGenres, setShowGenres] = useState(false)
 
   //useEffect(() => {
@@ -146,6 +180,7 @@ const Banner = ({ actorName, setTheme, theme, showControlPanel, toggleShowContro
         <span className={gearStyle} onClick={toggleShowControlPanel}>&#x2699;</span>
       </div>
       {searchWidget}
+      <AuthButton setUser={setUser}/>
     </div>
   )
 }

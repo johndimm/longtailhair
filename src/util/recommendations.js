@@ -64,22 +64,27 @@ const aiRecs = async (user_id, titletype, genres) => {
     titletypeInstruction = 'Respond only with tv series, not movies!'
   }
   let genresFilter = ''
-  if (genres) {
+  if (genres && genres != 'undefined' && genres != 'null') {
     genresFilter = `Return only movies in the genre ${genres}`
   }
 
   const intro = `
-Here are some ${movies} I liked and some I didn't like.  
 
-What are your top 20 recommendations for ${movies} I have NOT yet seen and are NOT listed below.  I want to hear about ${movies} I have not rated.  
+Provide a JSON array of 10 movie recommendations **not listed anywhere in this prompt** (including "haven't seen," "would like to," or "rated" sections). Follow these rules:  
+
+1. All movies listed in any section (whether rated, to watch, or not to watch) should be excluded.
+
+2. Do not repeat any titles mentioned in the prompt, even if the model thinks they fit the recommendation criteria.
+
+3. Double-check each recommendation against all provided lists before finalizing.
+
 
 ${titletypeInstruction}
 ${genresFilter}
 
-Put a blank line between each recommendation.
+Do not include any text outside the JSON array.
 
-Respond with json like this, so I can parse it using JSON.parse in javascript.  Do not begin your response with "json".  
-Please provide recommendations in this exact JSON format.  Do not add any introductory text, do not wrap it in a single field named 'text', just give the response as a valid JSON array.;
+Please provide recommendations in this exact JSON format.  Do not add any introductory text, do not wrap it in a single field named 'text', just give the response as a valid JSON array.
 
 [
   {
@@ -92,9 +97,8 @@ Please provide recommendations in this exact JSON format.  Do not add any introd
 
 Please double-check the tconst to make sure it is correct for the films you have picked.
 
-Here are the ${movies}.  If there are none, respond by giving an assortment of different kinds of ${movies} from different eras.  
+Movies to Exclude (DO NOT RECOMMEND THESE):
 
-Above all, do NOT return any of the ${movies} listed in this prompt!
 `
 
   const data = await db.getUserRatings(user_id)
@@ -112,13 +116,13 @@ Above all, do NOT return any of the ${movies} listed in this prompt!
   })
 
   let ratingsConstants = [
-    {"id": -2, "msg": "I haven't seen these movies and I don't want to:\n"},
-    {"id": -1, "msg": "I haven't seen these movies but I would like to:\n"}
+    {"id": -2, "msg": "I haven't seen these and don't want to:\n"},
+    {"id": -1, "msg": "I haven't seen these but want to:\n"}
   ]
   
   const ratings = [1, 2, 3, 4, 5]
   ratings.forEach ( (rating, idx) => [
-    ratingsConstants.push({"id": rating, "msg": `I give these movies a rating of ${rating}:\n`})
+    ratingsConstants.push({"id": rating, "msg": `Rated ${rating}:\n`})
   ])
   let report = ''
   ratingsConstants.forEach ( ( rating, idx) => {
@@ -129,27 +133,46 @@ Above all, do NOT return any of the ${movies} listed in this prompt!
   const prompt = intro + report
   console.log("prompt", prompt)
 
-  return await getClaudeRecommendations(prompt)
+  const recs = await getClaudeRecommendations(prompt)
   //return await getChatgptRecommendations(prompt)
+
+  let newRecs = []
+  let nOld = 0
+  let nNew = 0
+  recs.forEach( r => {
+    if (!existingTitle[r.title]) {
+      newRecs.push(r)
+      nNew++
+    } else {
+      nOld++
+    }
+  })
+
+  console.log("already rated movies:", nOld, "new:", nNew)
+  console.log("complete response from AI:", recs)
+
+  return newRecs
 }
 
-const populateUserRatings = async (recs) => {
+const populateUserRatings = async (recs, user_id) => {
   if (!recs)
     return null
 
+  console.log("recommendations for movies not rated: ", recs)
+
   console.log("ai recs len:", recs.length)
 
-  const user_id = 1
 
   for (let i=0; i<recs.length; i++) {
     const r = recs[i]
     const msg = r.why_recommended.replace(/'/g, "''")
+    const title = r.title.replace(/'/g, "''")
     const cmd = `  
     insert into user_ratings
     (user_id, tconst, rating, msg)
     select ${user_id}, tbe.tconst, -3, '${msg}'
     from title_basics_ex as tbe
-    where lower(tbe.primarytitle) = lower('${r.title}')
+    where lower(tbe.primarytitle) = lower('${title}')
     and startyear = ${r.year}
     on conflict (user_id, tconst) do nothing
     `
@@ -161,7 +184,7 @@ const populateUserRatings = async (recs) => {
 
 export const getAIRecs = async (user_id, titletype, genres) => {
     const recs = await aiRecs(user_id, titletype, genres)
-    const json = await populateUserRatings(recs)
+    const json = await populateUserRatings(recs, user_id)
     return json
 }
 

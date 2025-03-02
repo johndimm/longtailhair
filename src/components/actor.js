@@ -31,7 +31,7 @@ const Actor = ({ nconst, actorName, resetActor }) => {
     profilePicture = <img onClick={(e) => resetActor(nconst)} src={url_prefix + data["profile_path"]} />
   } else {
     profilePicture = <div className={styles.profile_picture}>
-      <img className={styles.logo_credit} src="/graph-logo.webp" />
+      <img className={styles.logo_credit} src="/graph-logo-60.jpg" />
     </div>
   }
 

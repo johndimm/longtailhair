@@ -109,6 +109,44 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
   const not_interested_id = 'not-interested-' + tconst
   const interest_level_name = 'interest-' + tconst
 
+  const user_ratings = (
+
+    <tr>
+      <td style={{ verticalAlign: "top" }}>
+        watched:
+      </td>
+      <td>
+        <EditStarRating user_id={user_id} tconst={tconst} user_rating={rating} getData={getData}
+          dbSet={dbSet} />
+      </td>
+    </tr>
+  )
+
+  const interest = (
+    <tr>
+      <td style={{ verticalAlign: "top" }}>
+        interested:
+      </td>
+      <td>
+        <label htmlFor={not_interested_id}>
+          <input id={not_interested_id} name={interest_level_name} type='radio'
+            checked={rating == -2}
+
+            onChange={() => dbSet(user_id, tconst, -2)} />
+          no
+        </label>
+
+        <label htmlFor={interested_id}>
+          <input id={interested_id} name={interest_level_name} type='radio'
+            checked={rating == -1}
+
+            onChange={() => dbSet(user_id, tconst, -1)} />
+          yes
+        </label>
+      </td>
+    </tr>
+  )
+
   return (
     <div>
 
@@ -121,42 +159,11 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
           </td>
         </tr>
 
-        <tr>
-          <td style={{ verticalAlign: "top" }}>
-            watched:
-          </td>
-          <td>
-            <EditStarRating user_id={user_id} tconst={tconst} user_rating={rating} getData={getData}
-              dbSet={dbSet} />
-          </td>
-        </tr>
+        {(user_id) ? user_ratings: null}
+        {(user_id) ? interest: null}
 
-        <tr>
-          <td style={{ verticalAlign: "top" }}>
-            interested:
-          </td>
-          <td>
-            <label htmlFor={not_interested_id}>
-              <input id={not_interested_id} name={interest_level_name} type='radio'
-                checked={rating == -2}
-
-                onChange={() => dbSet(user_id, tconst, -2)} />
-              no
-            </label>
-
-            <label htmlFor={interested_id}>
-              <input id={interested_id} name={interest_level_name} type='radio'
-                checked={rating == -1}
-
-                onChange={() => dbSet(user_id, tconst, -1)} />
-              yes
-            </label>
-          </td>
-        </tr>
-
-      </tbody></table>
-
-
+      </tbody>
+      </table>
     </div>
   )
 })
@@ -202,7 +209,7 @@ export const Card = ({
 }) => {
   const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
   const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetYear, resetMovie, resetActor, cardDim } = callbacks
+  const { resetGenres, resetYear, resetMovie, resetActor, cardDim, user } = callbacks
 
   useEffect(() => {
     if (recs && recs.length > 0) {
@@ -372,9 +379,9 @@ export const Card = ({
 
       <div className={styles.metadata}>
 
-        <Ratings user_id={1} tconst={r1.tconst}
+        <Ratings user_id={user.id} tconst={r1.tconst}
           user_rating={r1.user_rating} averagerating={r1.averagerating}
-          getData={getData} />
+          getData={getData}  />
 
         <span
           className={styles.year}

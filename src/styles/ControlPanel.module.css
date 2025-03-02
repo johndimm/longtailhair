@@ -91,6 +91,8 @@
 .card_dim_slider {
     width: 100px;
     clear: both;
+    margin-left: 30px;
+    margin-right: 50px;
 }
 
 .banner .credits {
@@ -134,7 +136,7 @@
     margin-top: 10px;
     padding-left: 20px;
     padding-right: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 0;
     text-align: center;
 }
 
@@ -159,13 +161,14 @@
     vertical-align: middle;
     font-size: 10pt;
     margin-left: 10px;
+    margin-right: 20px;
     height: 64px;
 }
 
 .controls .genres_widget {
     width: 500px;
     text-align: center;
-    vertical-align: bottom;
+    vertical-align: top;
     overflow-y: auto;
     margin: 10px;
     display: inline-block;
@@ -173,7 +176,7 @@
 }
 
 .controls .right_controls {
-    margin-top: 20px;
+    margin-top: 10px;
     width: 500px;
     display: inline-block;
 
@@ -187,17 +190,28 @@
     margin-top: 10px;
 }
 
+.controls .menu {
+    width: 100%;
+    display: flex;
+    margin: 20px;
+    margin-top: 0;
+    align-items: top;
+    justify-content: center;
+}
+
 .controls .bottom_widgets {
     width: 100%;
     display: flex;
     margin: 20px;
-    align-items: top;
+    margin-top: 0;
+    align-items: baseline;
     justify-content: center;
 }
 
 .controls .resetButton {
     padding: 5px;
     margin: 5px;
+    height: 30px;
     font-size: 12pt;
 }
 
@@ -222,4 +236,15 @@
 
 .controls .logo2 {
     height: 16px;
+}
+
+.sign_in {
+    font-size: 100%;
+}
+
+.sign_in button {
+    cursor: pointer;
+    width: 60px;
+    height: 60px;
+    white-space: normal;
 }

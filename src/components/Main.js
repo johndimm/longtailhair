@@ -32,10 +32,11 @@ export default function Main({ }) {
   const callbacks = useContext(CallbackContext)
   const { setNumMovies,
     tconst, nconst, titletype, genres,
-    query, yearstart, yearend, numMovies } = callbacks
+    query, yearstart, yearend, numMovies, user } = callbacks
 
   const getData = async () => {
-    const url = `/api/get_movies?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&numMovies=${numMovies}&query=${query}&nconst=${nconst}&titletype=${titletype}&orderBy=${sortOrder}&ratingsFilter=${ratingsFilter}`
+    const user_id = user ? user.id : null
+    const url = `/api/get_movies?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&numMovies=${numMovies}&query=${query}&nconst=${nconst}&titletype=${titletype}&orderBy=${sortOrder}&ratingsFilter=${ratingsFilter}&user_id=${user_id}`
 
     console.log(url)
 
