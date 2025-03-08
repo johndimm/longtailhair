@@ -276,6 +276,7 @@
     width: 310px;
     height: 500px;
     margin: 10px;
+    scrollbar-width: none;
 }
 
 .search_page .card_black {
@@ -292,15 +293,17 @@
     background-color: black;
     color: white;
     overflow: auto;
+
 }
 
 .search_page .card_white_light {
     color: black;
     background-color: white;
     overflow: auto;
-    width: 400px;
-    height: 390px;
+    width: 450px;
+    height: 330px;
     margin-right: 3px;
+    scrollbar-width: none;
 }
 
 
@@ -327,6 +330,7 @@
     overflow: auto;
     width: 450px;
     height: 330px;
+    scrollbar-width: none;
 }
 
 .left .card img:hover, .right .card img:hover   {
@@ -429,6 +433,16 @@
     padding: 5px;
     background-color: darkblue; 
 
+}
+
+.request_recs {
+    margin: 2px;
+
+}
+
+.request_recs button {
+    font-weight: 600;
+    padding: 3px;
 }
 
 

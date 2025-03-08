@@ -4,6 +4,8 @@ import { Card, Sidebar } from "./Card"
 import { CallbackContext } from '@/components/Main'
 import Spinner from "@/components/Spinner"
 import Head from 'next/head'
+import RequestRecs from "@/components/RequestRecs"
+
 
 const Trailer = ({ tmdb_id, titletype }) => {
   const [data, setData] = useState([])
@@ -58,15 +60,19 @@ const Trailer = ({ tmdb_id, titletype }) => {
 const Movie = ({
   tconst,
   hideSearchPage,
-  nconst
+  nconst,
+  setRatingsFilter,
+  ratingsFilter,
+  getData,
+  aiModel
 }) => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
   const callbacks = useContext(CallbackContext)
-  const { resetMovie } = callbacks
+  const { resetMovie, user, resetGenres, resetQuery, resetYearstart, resetYearend } = callbacks
 
-  const getData = async () => {
+  const getMovieData = async () => {
     setIsLoading(true)
     const url = `/api/get_movie/${tconst}`
     const response = await fetch(url)
@@ -79,7 +85,7 @@ const Movie = ({
   }
 
   useEffect(() => {
-    getData()
+    getMovieData()
   }, [tconst])
 
   const center_persons = data.filter(r => r.place == 'center')
@@ -103,6 +109,25 @@ const Movie = ({
     backdrop = <img className={styles.backdrop} src={backdrop_url} />
   }
 
+
+  const generateSingleMovieRecs = async () => {
+    const url = `/api/get_single_recs?tconst=${tconst}&titletype=${titletype}&user_id=${user.id}&aiModel=${aiModel}`
+    const response = await fetch(url)
+    const data = await response.json()
+    const alreadyRecs = ratingsFilter == 'recommendations'
+    setRatingsFilter('recommendations')
+    resetMovie(null)
+    resetGenres(null)
+    resetQuery(null)
+    resetYearstart(null)
+    resetYearend(null)
+    if (alreadyRecs)
+      getData()
+    setTimeout(() => {
+      document.querySelector('#search_page').scrollTo({ top: 0, behavior: 'smooth' })
+    }, 1000)
+  }
+
   if (!data || data.length == 0)
     return <Spinner isLoading={isLoading} />
 
@@ -118,6 +143,7 @@ const Movie = ({
     <Spinner isLoading={isLoading} />
 
     <div className={styles.controls} style={{ "marginTop": "10px" }}>
+
 
       <span className={styles.page_title} style={{ "cursor": "pointer" }} title="go back" onClick={() => resetMovie(null)}>
 
@@ -143,9 +169,13 @@ const Movie = ({
 
     <div className={styles.center}>
       {center}
-
+      <RequestRecs user={user} generateRecs={generateSingleMovieRecs} buttonText="Generate recommendations based on this movie"/>
+      <br />
       {backdrop}
       <Trailer tmdb_id={tmdb_id} titletype={titletype} />
+      <div className={styles.request_recs}>
+
+      </div>
     </div>
 
     <div className={styles.right}>

@@ -26,9 +26,9 @@ const AuthButton = ( {setUser} ) => {
   if (session) {
     const shortName = session.user.name.replace(/ .*/, '')
     return (
-      <div>
+      <div className={styles.sign_in}>
         <p>{shortName}</p>
-        <button onClick={() => signOut()}>Sign out</button>
+        <button  onClick={() => signOut()}>Sign out</button>
       </div>
     );
   }
@@ -36,7 +36,7 @@ const AuthButton = ( {setUser} ) => {
 //  return <button onClick={() => signIn("google")}>Sign in with Google</button>;
   return (
     <div className={styles.sign_in}>
-    <button onClick={() => signIn("github")} title='To rate movies and get recommendations'>sign in with GitHub</button>
+    <button onClick={() => signIn("google")} title='To rate movies and get recommendations'>sign in with Google</button>
     </div>
   )
 }
@@ -161,6 +161,33 @@ const Banner = ({ actorName, setTheme, theme, showControlPanel, toggleShowContro
   )
 
 
+  const credits = (
+    <div className={styles.credits}>
+        <a href="https://developer.imdb.com/non-commercial-datasets/">
+            <img className={styles.logo} src="imdb.jpg" />
+        </a>
+        &nbsp;
+        <a href="https://developer.themoviedb.org/reference/intro/getting-started">
+            <img className={styles.logo} src="tmdb.png" />
+        </a>
+        &nbsp;
+        <a href="https://aws.amazon.com/rds/postgresql/">
+            <img className={styles.logo} src="amazon-rds.png" />
+        </a>
+        <br />
+        <a href="https://vercel.com/john-dimms-projects">
+            <img className={styles.logo2} src="vercel.jpg" />
+        </a>
+        &nbsp;
+        <a href="https://github.com/johndimm/longtailhair/blob/main/README.md">
+            <img className={styles.logo2} src="github.jpg" />
+        </a>
+        <a href="https://github.com/johndimm/longtailhair/blob/main/README.md">
+            <img className={styles.logo2} src="omdb.png" />
+        </a>
+    </div>
+)
+
   const searchWidget = (
     <div className={styles.search_widget}>
       <SearchForm query={query} resetQuery={resetQuery} />
@@ -181,6 +208,7 @@ const Banner = ({ actorName, setTheme, theme, showControlPanel, toggleShowContro
       </div>
       {searchWidget}
       <AuthButton setUser={setUser}/>
+
     </div>
   )
 }

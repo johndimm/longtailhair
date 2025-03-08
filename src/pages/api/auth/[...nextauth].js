@@ -1,5 +1,5 @@
 import NextAuth from "next-auth";
-//import GoogleProvider from "next-auth/providers/google";
+import GoogleProvider from "next-auth/providers/google";
 import GitHub from "next-auth/providers/github";
 
 export default NextAuth({
@@ -12,6 +12,10 @@ export default NextAuth({
       clientId: process.env.AUTH_GITHUB_ID,
       clientSecret: process.env.AUTH_GITHUB_SECRET,
     }),
+    GoogleProvider({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    })
 
   ],
   secret: process.env.AUTH_SECRET, // Required for JWT encryption

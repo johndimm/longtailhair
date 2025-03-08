@@ -5,17 +5,21 @@ import YearPicker from "@/components/YearPicker"
 import Genres from "@/components/Genres"
 import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
-
+import RequestRecs from "@/components/RequestRecs"
 
 const ControlPanel = ({ actorName, setTheme, theme,
-    ratingsFilter, setRatingsFilter, sortOrder, setSortOrder, toggleShowControlPanel,
-    showControlPanel }) => {
+    ratingsFilter, resetRatingsFilter, sortOrder, setSortOrder, toggleShowControlPanel,
+    showControlPanel, aiModel, setAiModel }) => {
 
     const callbacks = useContext(CallbackContext)
     const { resetGenres, resetMovie, resetActor,
         resetQuery, resetYearstart, resetYearend, setTitletype, setNumMovies,
         nconst, titletype, genres,
         query, yearstart, yearend, setCardDim, user } = callbacks
+
+    const [recsCounts, setRecsCounts] = useState({ nOld: 0, nNew: 0 })
+
+
     // const [showGenres, setShowGenres] = useState(true)
 
     //if (!showControlPanel)
@@ -54,32 +58,6 @@ const ControlPanel = ({ actorName, setTheme, theme,
         setCardDim(style)
     }
 
-    const credits = (
-        <div className={styles.credits}>
-            <a href="https://developer.imdb.com/non-commercial-datasets/">
-                <img className={styles.logo} src="imdb.jpg" />
-            </a>
-            &nbsp;
-            <a href="https://developer.themoviedb.org/reference/intro/getting-started">
-                <img className={styles.logo} src="tmdb.png" />
-            </a>
-            &nbsp;
-            <a href="https://aws.amazon.com/rds/postgresql/">
-                <img className={styles.logo} src="amazon-rds.png" />
-            </a>
-            <br />
-            <a href="https://vercel.com/john-dimms-projects">
-                <img className={styles.logo2} src="vercel.jpg" />
-            </a>
-            &nbsp;
-            <a href="https://github.com/johndimm/longtailhair/blob/main/README.md">
-                <img className={styles.logo2} src="github.jpg" />
-            </a>
-            <a href="https://github.com/johndimm/longtailhair/blob/main/README.md">
-                <img className={styles.logo2} src="omdb.png" />
-            </a>
-        </div>
-    )
 
     const zoom = theme == 'dark'
         ? <div className={styles.card_dim_slider} >
@@ -134,7 +112,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
             return <li key={idx} style={style} onClick={() => setTitletype(source)}>{source}</li>
         })
         return (
-            <div className={styles.widget}>
+            <div>
                 <h3>
                     Source
                 </h3>
@@ -154,7 +132,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
             return <li key={idx} style={style} onClick={() => setTheme(_theme)}>{_theme}</li>
         })
         return (
-            <div className={styles.widget}>
+            <div>
                 <h3>
                     Theme
                 </h3>
@@ -167,8 +145,9 @@ const ControlPanel = ({ actorName, setTheme, theme,
     })
 
     const RatingsWidget = (() => {
-        if (!user.id)
-            return null
+        const style = user.id
+            ? { color: 'black' }
+            : { color: 'gray' }
 
         const ratings = ['all', 'rated', 'not rated', 'interested', 'recommendations']
         console.log('ratingsFilter', ratingsFilter)
@@ -176,13 +155,19 @@ const ControlPanel = ({ actorName, setTheme, theme,
             const style = rating == ratingsFilter
                 ? { fontWeight: 600, fontStyle: 'italic' }
                 : { fontWeight: 200 }
-            return <li key={idx} style={style} onClick={() => setRatingsFilter(rating)}>{rating}</li>
+            return <li key={idx} style={style} onClick={() => {
+                if (user.id) resetRatingsFilter(rating)
+                }}>{rating}</li>
         })
 
+        const tooltip = user.id 
+        ? ""
+        : "sign in to rate and get recommendations"
+
         return (
-            <div className={styles.widget}>
+            <div className={styles.widget} style={style} title={tooltip}>
                 <h3>
-                    Ratings
+                    Filters
                 </h3>
                 <ul>
                     {ratingsOptions}
@@ -190,6 +175,70 @@ const ControlPanel = ({ actorName, setTheme, theme,
 
             </div>
         )
+    })
+
+    const getRecommendations = () => {
+
+        const url = `/api/get_recommendations?user_id=${user.id}&titletype=${titletype}&genres=${genres}&aiModel=${aiModel}`
+        console.log(url)
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                console.log("===> recommendations:", data)
+                setRecsCounts(data)
+                resetRatingsFilter('recommendations')
+                resetMovie(null)
+                resetGenres(null)
+                resetQuery(null)
+                resetYearstart(null)
+                resetYearend(null)
+            })
+
+    }
+
+    const RecommendationsWidget = (() => {
+        const aiModels = ["Claude", "ChatGPT", "DeepSeek", "Gemini"]
+        const recsOptions = aiModels.map((source, idx) => {
+            const defaultChecked = source == 'DeepSeek'
+            return <div key={idx}>
+                <input type="radio" id={source} name="model" value={source} 
+                  defaultChecked={defaultChecked} disabled= {!user.id}/>
+                <label htmlFor={source} onClick={() => setAiModel(source)}>{source}</label>
+            </div>
+        })
+
+        const style = user.id
+            ? { color: 'black' }
+            : { color: 'gray' }
+
+        const tooltip = user.id 
+        ? ""
+        : "sign in to rate and get recommendations"
+
+        return (
+            <div className={styles.widget} style={style} title={tooltip}>
+                <h3>
+                    Recommendations
+                </h3>
+
+                <ul>
+
+                    <li>
+                        models
+                        <ul>
+                            {recsOptions}
+                        </ul>
+                    </li>
+                    <li><RequestRecs user={user} generateRecs={getRecommendations} buttonText="generate" /></li>
+                    <ul>
+                        <li>already rated: {recsCounts.nOld}</li>
+                        <li>new: {recsCounts.nNew}</li>
+                    </ul>
+                </ul>
+
+            </div>
+        )
+
     })
 
     const SortOrderWidget = (() => {
@@ -241,15 +290,15 @@ const ControlPanel = ({ actorName, setTheme, theme,
 
                 <div className={styles.right_controls}>
 
-                    <div className={styles.widget}>
-                        {credits}
-                    </div>
-
                     <div className={styles.menu}>
-                        <SourcesWidget />
-                        <RatingsWidget />
+                        <div className={styles.widget}>
+                            <SourcesWidget />
+                            <br />
+                            <ThemesWidget />
+                        </div>
                         <SortOrderWidget />
-                        <ThemesWidget />
+                        <RatingsWidget />
+                        <RecommendationsWidget />
                     </div>
 
                     <div className={styles.bottom_widgets}>

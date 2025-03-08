@@ -100,7 +100,8 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
     console.log(url)
     await fetch(url)
     setRating(_rating)
-    getData()
+    if (getData)
+      getData()
   }
 
   const interested = user_rating == -1
@@ -240,15 +241,20 @@ export const Card = ({
   }
 
   let slicedRecs = recs
-  if (r1.place == 'genres' && r1.poster_url != null) {
-    // Get the director.
+  if (r1.place == 'genres') { 
+    // Show director first.
     const rec_director = recs.filter(isDirector)
+
+    // Show only 4 to 6 persons.
+    const numPersons = r1.poster_url != null ? 4 : 10
     if (rec_director.length > 0) {
-      slicedRecs = rec_director.concat(recs.filter(isNotDirector).slice(0, 4 - rec_director.length))
+      slicedRecs = rec_director.concat(
+        recs.filter(isNotDirector).slice(0, numPersons - rec_director.length)
+      )
     } else {
-      slicedRecs = recs.slice(0, 4)
+      slicedRecs = recs.slice(0, numPersons)
     }
-  }
+  } 
 
   const persons = slicedRecs.map((rec, idx) => {
     return <Person

@@ -28,6 +28,7 @@ export default function Main({ }) {
   const [showControlPanel, setShowControlPanel] = useState(false)
   const [ratingsFilter, setRatingsFilter] = useState('all')
   const [sortOrder, setSortOrder] = useState('popularity desc')
+  const [aiModel, setAiModel] = useState('DeepSeek')
 
   const callbacks = useContext(CallbackContext)
   const { setNumMovies,
@@ -101,8 +102,6 @@ export default function Main({ }) {
     setShowControlPanel(!showControlPanel)
   }
 
-
-
   const isBottom = (el) => {
     return el.scrollTop + el.clientHeight + 1 > el.scrollHeight
   }
@@ -160,6 +159,12 @@ export default function Main({ }) {
     }
   }
 
+
+
+  const resetRatingsFilter = (_ratingsFilter) => {
+    setRatingsFilter(_ratingsFilter)
+  }
+
   setNavUrl()
 
   if (!data)
@@ -175,6 +180,10 @@ export default function Main({ }) {
         tconst={tconst}
         nconst={nconst}
         hideSearchPage={hideSearchPage}
+        setRatingsFilter={setRatingsFilter}
+        ratingsFilter={ratingsFilter}
+        getData={getData}
+        aiModel={aiModel}
       />
     </div>
     <div
@@ -198,12 +207,14 @@ export default function Main({ }) {
       <ControlPanel
         setTheme={setTheme}
         theme={theme}
-        setRatingsFilter={setRatingsFilter}
+        resetRatingsFilter={resetRatingsFilter}
         setSortOrder={setSortOrder}
         toggleShowControlPanel={toggleShowControlPanel}
         sortOrder={sortOrder}
         ratingsFilter={ratingsFilter}
-        showControlPanel={showControlPanel} />
+        showControlPanel={showControlPanel} 
+        aiModel={aiModel}
+        setAiModel={setAiModel}/>
       <Sidebar
         data={data}
         place='genres'

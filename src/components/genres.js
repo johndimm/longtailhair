@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react'
 import styles from "@/styles/Genres.module.css"
 import { CallbackContext } from '@/components/Main'
 import { useRouter } from 'next/router';
+import GenresHistogram from '@/components/GenresHistogram'
 
 const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsFilter }) => {
     const router = useRouter()
@@ -9,7 +10,7 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsF
     const [checkedItems, setCheckedItems] = useState([]) //genres ? genres.split(',') : [])
 
     const callbacks = useContext(CallbackContext)
-    const { resetGenres } = callbacks
+    const { resetGenres, user } = callbacks
 
     const genresList = [
         'Action',
@@ -54,7 +55,7 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsF
 
     const countGenres = async () => {
         //return
-        const url = `api/count_genres?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&query=${query}&nconst=${nconst}&titletype=${titletype}&ratingsFilter=${ratingsFilter}`
+        const url = `api/count_genres?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&query=${query}&nconst=${nconst}&titletype=${titletype}&ratingsFilter=${ratingsFilter}&user_id=${user.id}`
 
         const response = await fetch(url)
         const result = await response.json()
@@ -116,9 +117,16 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsF
         )
     })
 
+    const genresHistogramData = genresList.map((genre, idx) => {
+        return {genre: genre, count: genresCounts[genre]}
+    })
+
     // console.log(" ***** render Genres")
     return <div className={styles.genres}>
-        {genresListHtml}
+       <GenresHistogram 
+       initialData={genresHistogramData} 
+       initialGenres={checkedItems}
+       resetGenres={resetGenres} />
     </div>
 }
 

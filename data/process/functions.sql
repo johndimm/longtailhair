@@ -12,7 +12,7 @@ averagerating double precision,
 numvotes integer,
 genres text,
 poster_url text,
-user_rating integer
+rating integer
 )  language plpgsql IMMUTABLE as 
 $$ 
 begin 
@@ -25,10 +25,12 @@ select
   tb.averagerating, 
   tb.numvotes, 
   tb.genres, 
-  p.url as poster_url,
-  ur.rating as user_rating
+  -- p.url as poster_url,
+  coalesce(p.url, tmdb.poster_path) as poster_url,
+  ur.rating
   from title_basics_ex as tb
   left join user_ratings as ur using (tconst)
+  left join tmdb using (tconst)
   left join posters as p on p.tconst = tb.tconst and p.error_count < 1
   where tb.tconst = _tconst
 ;
@@ -360,7 +362,8 @@ or replace function count_genres(
   _query text,
   _nconst text,
   _titletype text,
-  _rating_filter text default 'all'
+  _rating_filter text default 'all',
+  _user_id integer default null
 )
 returns table (
   genre text,
@@ -380,6 +383,10 @@ where
 -- ( _genres is null or fg.genres_array @> string_to_array(_genres::text, ',') )
 -- and
 
+ (_user_id is null or ur.user_id is null or ur.user_id = _user_id)
+ and
+
+
 (_genres is null or string_to_array(tbe.genres::text, ',') @> string_to_array(_genres::text, ',') )
 and
 
@@ -395,7 +402,7 @@ and
 
 and
 (
-  (_rating_filter = 'rated' and ur.rating is not null)
+  (_rating_filter = 'rated' and ur.rating between 1 and 5)
   or
   (_rating_filter = 'not rated' and ur.rating is null)
   or 

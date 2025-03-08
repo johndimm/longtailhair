@@ -95,9 +95,10 @@
     margin-right: 50px;
 }
 
-.banner .credits {
-    margin-top: 20px;
-    margin-bottom: 20px;
+.credits {
+    margin-left: 40px;
+    margin-top: 10px;
+    display: inline-block;
 }
 
 .banner .movie_tv_switch, .banner .theme_switch {
@@ -149,7 +150,7 @@
     position: relative;
     text-align: left;
     vertical-align: middle;
-    margin: 16px;
+    margin: 5px;
     display: inline-block;
     font-size:80%;
 }
@@ -177,7 +178,7 @@
 
 .controls .right_controls {
     margin-top: 10px;
-    width: 500px;
+    width: 450px;
     display: inline-block;
 
 }
@@ -193,8 +194,8 @@
 .controls .menu {
     width: 100%;
     display: flex;
-    margin: 20px;
-    margin-top: 0;
+    margin: 10px;
+    margin-top: 20px;
     align-items: top;
     justify-content: center;
 }
@@ -230,11 +231,11 @@
     margin-bottom: 5px;
 }
 
-.controls .logo {
+.logo {
     height: 24px;
 }
 
-.controls .logo2 {
+.logo2 {
     height: 16px;
 }
 
@@ -244,7 +245,6 @@
 
 .sign_in button {
     cursor: pointer;
-    width: 60px;
-    height: 60px;
     white-space: normal;
+    padding: 5px;
 }

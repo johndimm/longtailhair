@@ -31,7 +31,9 @@ exports.get_movie_tconst = function (tconst) {
   if (tconst == 'undefined')
     return []
 
-  const cmd = `select * from get_movie_tconst('${tconst}');`
+  const cmd = `
+    select tconst, title, rating, year, poster_url, genres
+    from get_movie_tconst('${tconst}');`
   console.log(cmd)
 
 	return performSQLQuery(cmd);
@@ -93,7 +95,7 @@ exports.get_movies = function (numMovies, genres, yearstart, yearend,
     return data
 };
 
-exports.count_genres = function (genres, yearstart, yearend, query, nconst, titletype, ratingsFilter) {
+exports.count_genres = function (genres, yearstart, yearend, query, nconst, titletype, ratingsFilter, user_id) {
     const _genres = isNullish(genres) ? null : `'${genres}'`
     const _yearstart = isNullish(yearstart) ? null : yearstart
     const _yearend = isNullish(yearend) ? null : yearend
@@ -102,7 +104,7 @@ exports.count_genres = function (genres, yearstart, yearend, query, nconst, titl
     const _titletype = isNullish(titletype) ? null : `'${titletype}'`
     const _ratingsFilter = isNullish(ratingsFilter) ? null : `'${ratingsFilter}'`
     // console.log(query, _query)
-	return performSQLQuery(`select * from count_genres(${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype}, ${_ratingsFilter} );`);
+	return performSQLQuery(`select * from count_genres(${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype}, ${_ratingsFilter}, ${user_id} );`);
 }
 
 exports.insertDB = async function (tconst, jsonData) {
@@ -165,12 +167,13 @@ exports.setUserRating = async function (user_id, tconst, rating) {
 
 exports.getUserRatings = async function (user_id) {
   const cmd = `select 
-    user_id, ur.tconst, tbe.primarytitle as title, ur.rating, 
+    ur.user_id, ur.tconst, tbe.primarytitle as title, ur.rating, tbe.startyear as year,
     coalesce(p.url, tmdb.poster_path) as poster_url
     from user_ratings as ur
     join title_basics_ex as tbe using (tconst)
     left join tmdb using (tconst)
     left join posters as p on p.tconst = ur.tconst and p.error_count < 1
+    where ur.user_id = ${user_id}
     order by 3`
   return await performSQLQuery(cmd)
 }

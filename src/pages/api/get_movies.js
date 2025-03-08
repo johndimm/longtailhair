@@ -28,6 +28,8 @@ export default async function handler(req, res) {
 
   await runQuery()
 
+  /*
+
   if (ratingsFilter == 'recommendations') {
     // Count the number of movies.  The results have every actor.
     const tconsts = {}
@@ -37,7 +39,7 @@ export default async function handler(req, res) {
 
     const nReturnedMovies = Object.keys(tconsts).length
 
-    if (nReturnedMovies < 5) {
+    if (nReturnedMovies == 4) {
       getAIRecs(_user_id, titletype, genres)
     }
     if (nReturnedMovies == 0) {
@@ -45,6 +47,7 @@ export default async function handler(req, res) {
       await runQuery()
     }
   }
+    */
 
   res.status(200).json(data)
 }
