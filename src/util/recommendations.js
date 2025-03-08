@@ -34,7 +34,16 @@ async function getDeepseekRecommendations(prompt) {
   });
 
   const response = completion.choices[0].message.content
-  const json = JSON.parse(response)
+
+  let json = {}
+  try {
+    json = JSON.parse(response)
+  }
+  catch (e) {
+    console.log("Error parsing JSON from ai", e)
+    console.log("response from ai:", response)
+    json = {"response": response }
+  }
 
   return json
 }

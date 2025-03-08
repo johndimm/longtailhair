@@ -199,10 +199,10 @@ const ControlPanel = ({ actorName, setTheme, theme,
     const RecommendationsWidget = (() => {
         const aiModels = ["Claude", "ChatGPT", "DeepSeek", "Gemini"]
         const recsOptions = aiModels.map((source, idx) => {
-            const defaultChecked = source == 'DeepSeek'
+            const defaultChecked = source == aiModel
             return <div key={idx}>
                 <input type="radio" id={source} name="model" value={source} 
-                  defaultChecked={defaultChecked} disabled= {!user.id}/>
+                  defaultChecked={defaultChecked} disabled= {!user.id} onClick={() => setAiModel(source)}/>
                 <label htmlFor={source} onClick={() => setAiModel(source)}>{source}</label>
             </div>
         })
@@ -272,7 +272,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
     const style = showControlPanel
         ? { display: "block" }
         : { display: "none" }
-    console.log(" **** render ControlPanel, user_id:", user.id)
+    console.log(" **** render ControlPanel, user_id:", user.id, " aiModel:", aiModel)
     return (
         <div className={styles.controls} style={style}>
             <div className={styles.controls_content} >
