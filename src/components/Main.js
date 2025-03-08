@@ -196,7 +196,7 @@ export default function Main({ }) {
       <Head>
         <meta
           name='viewport'
-          content='width=device-width, initial-scale=0.7, maximum-scale=10.0, minimum-scale=0.1, user-scalable=yes'
+          content='width=device-width, initial-scale=0.6, user-scalable=yes'
         />
       </Head>
 
