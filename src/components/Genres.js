@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import styles from "@/styles/Genres.module.css"
 import { CallbackContext } from '@/components/Main'
 import { useRouter } from 'next/router';
+import GenresHistogram from '@/components/GenresHistogram'
 
-const Genres = ({ genres, query, yearstart, yearend, nconst, titletype }) => {
+const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsFilter }) => {
     const router = useRouter()
     const [genresCounts, setGenresCounts] = useState([])
     const [checkedItems, setCheckedItems] = useState([]) //genres ? genres.split(',') : [])
 
     const callbacks = useContext(CallbackContext)
-    const { resetGenres } = callbacks
+    const { resetGenres, user } = callbacks
 
     const genresList = [
         'Action',
@@ -42,17 +43,19 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype }) => {
     ]
 
     useEffect(() => {
+
         if (!router.isReady)
             return
 
+        // console.log(" ==== initializing Genres")
         setCheckedItems(genres ? genres.split(',') : [])
-        //setTimeout (countGenres, 2000)
         countGenres()
-    }, [genres, query, yearstart, yearend, nconst, titletype])
+
+    }, [genres, query, yearstart, yearend, nconst, titletype, ratingsFilter])
 
     const countGenres = async () => {
         //return
-        const url = `api/count_genres?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&query=${query}&nconst=${nconst}&titletype=${titletype}`
+        const url = `api/count_genres?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&query=${query}&nconst=${nconst}&titletype=${titletype}&ratingsFilter=${ratingsFilter}&user_id=${user.id}`
 
         const response = await fetch(url)
         const result = await response.json()
@@ -83,6 +86,8 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype }) => {
 
         setCheckedItems(newCheckedItems)
         // console.log(checkedItems, newCheckedItems)
+
+        // console.log(" **** resetGenres")
         resetGenres(newCheckedItems.join(','))
     };
 
@@ -99,19 +104,29 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype }) => {
         // console.log(`genre ${genre}, count[${count}] disabledFlag ${disabledFlag}`)
         return (
             <div key={idx} className={styles.checkbox_line}>
-                <input id={genre} name={genre} type='checkbox' value={genre} disabled={disabledFlag}
-                    checked={checked} onChange={handleCheckboxChange} />
-                &nbsp;
-                <span className={styles.genre_name} onClick={() => {
-                    selectOneGenre(genre)
-                }}>{genre}</span>
-                <span className={styles.genre_count}>{count}</span>
+                <label htmlFor="{genre}">
+                    <input id={genre} name={genre} type='checkbox' value={genre} disabled={disabledFlag}
+                        checked={checked} onChange={handleCheckboxChange} />
+                    &nbsp;
+                    <span className={styles.genre_name} onClick={() => {
+                        selectOneGenre(genre)
+                    }}>{genre}</span>
+                    <span className={styles.genre_count}>{count}</span>
+                </label>
             </div>
         )
     })
 
+    const genresHistogramData = genresList.map((genre, idx) => {
+        return {genre: genre, count: genresCounts[genre]}
+    })
+
+    // console.log(" ***** render Genres")
     return <div className={styles.genres}>
-        {genresListHtml}
+       <GenresHistogram 
+       initialData={genresHistogramData} 
+       initialGenres={checkedItems}
+       resetGenres={resetGenres} />
     </div>
 }
 

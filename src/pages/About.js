@@ -117,7 +117,7 @@ const About = () => {
         <div className={styles.demo}>
 
             <div className={styles.link_to_app}>
-                <a href="/">&lt; &lt; back to the app</a>
+                <a href="/">&lt; &lt; back to long tail</a>
             </div>
 
             <h1 className={styles.page_title}><a target='_blank' href='https://longtailhair.vercel.app/'>Long Tail with Collaborations</a></h1>

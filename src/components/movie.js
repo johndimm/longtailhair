@@ -4,6 +4,8 @@ import { Card, Sidebar } from "./Card"
 import { CallbackContext } from '@/components/Main'
 import Spinner from "@/components/Spinner"
 import Head from 'next/head'
+import RequestRecs from "@/components/RequestRecs"
+
 
 const Trailer = ({ tmdb_id, titletype }) => {
   const [data, setData] = useState([])
@@ -53,23 +55,24 @@ const Trailer = ({ tmdb_id, titletype }) => {
   }
 
   return <div className={styles.trailers}>{trailers}</div>
-
 }
 
 const Movie = ({
   tconst,
-  hideSearchPage
+  hideSearchPage,
+  nconst,
+  setRatingsFilter,
+  ratingsFilter,
+  getData,
+  aiModel
 }) => {
   const [data, setData] = useState([])
-  const [nconst, setNconst] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
 
   const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetYear, resetMovie } = callbacks
+  const { resetMovie, user, resetGenres, resetQuery, resetYearstart, resetYearend } = callbacks
 
-  // console.log(tconst)
-
-  const getData = async () => {
+  const getMovieData = async () => {
     setIsLoading(true)
     const url = `/api/get_movie/${tconst}`
     const response = await fetch(url)
@@ -82,9 +85,7 @@ const Movie = ({
   }
 
   useEffect(() => {
-    getData()
-    //    if (tconst)
-    //      window.history.pushState({}, '', "?tconst=" + tconst);
+    getMovieData()
   }, [tconst])
 
   const center_persons = data.filter(r => r.place == 'center')
@@ -108,9 +109,27 @@ const Movie = ({
     backdrop = <img className={styles.backdrop} src={backdrop_url} />
   }
 
+
+  const generateSingleMovieRecs = async () => {
+    const url = `/api/get_single_recs?tconst=${tconst}&titletype=${titletype}&user_id=${user.id}&aiModel=${aiModel}`
+    const response = await fetch(url)
+    const data = await response.json()
+    const alreadyRecs = ratingsFilter == 'recommendations'
+    setRatingsFilter('recommendations')
+    resetMovie(null)
+    resetGenres(null)
+    resetQuery(null)
+    resetYearstart(null)
+    resetYearend(null)
+    if (alreadyRecs)
+      getData()
+    setTimeout(() => {
+      document.querySelector('#search_page').scrollTo({ top: 0, behavior: 'smooth' })
+    }, 1000)
+  }
+
   if (!data || data.length == 0)
     return <Spinner isLoading={isLoading} />
-
 
   return <div className={styles.movie_page}>
 
@@ -124,6 +143,7 @@ const Movie = ({
     <Spinner isLoading={isLoading} />
 
     <div className={styles.controls} style={{ "marginTop": "10px" }}>
+
 
       <span className={styles.page_title} style={{ "cursor": "pointer" }} title="go back" onClick={() => resetMovie(null)}>
 
@@ -149,9 +169,13 @@ const Movie = ({
 
     <div className={styles.center}>
       {center}
-
+      <RequestRecs user={user} generateRecs={generateSingleMovieRecs} buttonText="Generate recommendations based on this movie"/>
+      <br />
       {backdrop}
       <Trailer tmdb_id={tmdb_id} titletype={titletype} />
+      <div className={styles.request_recs}>
+
+      </div>
     </div>
 
     <div className={styles.right}>

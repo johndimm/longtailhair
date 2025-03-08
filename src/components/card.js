@@ -3,15 +3,171 @@ import styles from "@/styles/Main.module.css";
 import { CallbackContext } from '@/components/Main'
 import clsx from 'clsx'
 
+/*
+const UserRating = ({ user_id, tconst, user_rating }) => {
+  const [rating, setRating] = useState(user_rating)
+
+  const dbSet = (user_id, _tconst, _rating) => {
+    const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}`
+    console.log(url)
+    fetch(url)
+    setRating(_rating)
+  }
+
+  const ratings = [
+    {
+      rating: -2,
+      icon: '👎',
+      definition: 'Saw it, did not like it'
+    },
+    {
+      rating: -1,
+      icon: '😑',
+      definition: 'Probably will not see it'
+    },
+    {
+      rating: 1,
+      icon: '🤔',
+      definition: 'Want to see it'
+    },
+    {
+      rating: 2,
+      icon: '👍',
+      definition: 'Saw it, liked it'
+    },
+  ]
+
+
+  const buttonsHtml = ratings.map((r, idx) => {
+    if (r.rating == rating) {
+      return <span key={idx}>{r.icon}</span>
+    } else {
+      return <button title={r.definition} key={idx} onClick={() => dbSet(user_id, tconst, r.rating)}>{r.icon}</button>
+    }
+  })
+
+  return (
+    <div className={styles.rating_buttons}>
+      {buttonsHtml}
+    </div>
+  )
+}
+*/
+
 const StarRating = ({ score }) => {
-  const filledStars = Math.round(score / 2.5);
+  const filledStars = Math.round(score / 2.0);
 
   const stars = Array.from({ length: filledStars }, (v, i) => (
-    <span key={i}>&#9733;</span>
+    <span className={styles.star_rating} key={i}>&#9733;</span>
   ));
 
-  return <span className={styles.star_rating}>{stars}</span>
+  return <span>{stars}</span>
 }
+
+const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
+  const nStars = user_rating > 0 ? user_rating : 0
+
+  const stars = Array.from({ length: 5 }, (v, i) => {
+    const style = i < nStars
+      ? { color: "blue", cursor: "pointer" }
+      : { color: "white", cursor: "pointer" }
+    return <span
+      className={styles.star_rating}
+      style={style}
+      key={i}
+      onClick={() => dbSet(user_id, tconst, i + 1)}
+    >&#9733;</span>
+  });
+
+  return <div>
+    <span >{stars}</span>
+  </div>
+}
+
+
+const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
+  const [rating, setRating] = useState(user_rating)
+
+  useEffect(() => {
+    setRating(user_rating)
+  }, [tconst])
+
+  // console.log(`tconst:${tconst}, user_rating:${user_rating}, rating:${rating}`)
+
+  const dbSet = async (user_id, _tconst, _rating) => {
+    // User gave a rating.
+    const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}`
+    console.log(url)
+    await fetch(url)
+    setRating(_rating)
+    if (getData)
+      getData()
+  }
+
+  const interested = user_rating == -1
+  const not_interested = user_rating == -2
+  const interested_id = 'interested-' + tconst
+  const not_interested_id = 'not-interested-' + tconst
+  const interest_level_name = 'interest-' + tconst
+
+  const user_ratings = (
+
+    <tr>
+      <td style={{ verticalAlign: "top" }}>
+        watched:
+      </td>
+      <td>
+        <EditStarRating user_id={user_id} tconst={tconst} user_rating={rating} getData={getData}
+          dbSet={dbSet} />
+      </td>
+    </tr>
+  )
+
+  const interest = (
+    <tr>
+      <td style={{ verticalAlign: "top" }}>
+        interested:
+      </td>
+      <td>
+        <label htmlFor={not_interested_id}>
+          <input id={not_interested_id} name={interest_level_name} type='radio'
+            checked={rating == -2}
+
+            onChange={() => dbSet(user_id, tconst, -2)} />
+          no
+        </label>
+
+        <label htmlFor={interested_id}>
+          <input id={interested_id} name={interest_level_name} type='radio'
+            checked={rating == -1}
+
+            onChange={() => dbSet(user_id, tconst, -1)} />
+          yes
+        </label>
+      </td>
+    </tr>
+  )
+
+  return (
+    <div>
+
+      <table><tbody>
+        <tr>
+          <td>
+            imdb:</td>
+          <td>
+            <StarRating score={averagerating} />
+          </td>
+        </tr>
+
+        {(user_id) ? user_ratings: null}
+        {(user_id) ? interest: null}
+
+      </tbody>
+      </table>
+    </div>
+  )
+})
 
 const markPosterError = (tconst) => {
   console.log("marking failed poster from ", tconst)
@@ -24,7 +180,7 @@ const Person = ({ r, selectedPerson, resetActor }) => {
   const roleStyle = r.role.indexOf('[') != -1
     ? { "fontStyle": "italic" }
     : { "fontStyle": "normal" }
-  const role = r.role.replace(/\[/g, '').replace(/\]/g, '').replace(/_/g, ' ')
+  const role = r.role.replace(/\[/g, '').replace(/\]/g, '').replace(/_/g, ' ').replace(/,.*/, '')
 
   const style = r.nconst == selectedPerson
     ? { "color": "red" }
@@ -49,14 +205,12 @@ export const Card = ({
   recs,
   selectedPerson,
   isScrolling,
-  theme
+  theme,
+  getData
 }) => {
   const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
-  // const [showingBigPic, setShowingBigPic] = useState(false)
-
-
   const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetYear, resetMovie, resetActor, cardDim } = callbacks
+  const { resetGenres, resetYear, resetMovie, resetActor, cardDim, user } = callbacks
 
   useEffect(() => {
     if (recs && recs.length > 0) {
@@ -86,17 +240,21 @@ export const Card = ({
     return r.role.split(', ').indexOf('director') == -1
   }
 
-
   let slicedRecs = recs
-  if (r1.place == 'genres' && r1.poster_url != null) {
-    // Get the director.
+  if (r1.place == 'genres') { 
+    // Show director first.
     const rec_director = recs.filter(isDirector)
+
+    // Show only 4 to 6 persons.
+    const numPersons = r1.poster_url != null ? 4 : 10
     if (rec_director.length > 0) {
-      slicedRecs = rec_director.concat(recs.filter(isNotDirector).slice(0, 4 - rec_director.length))
+      slicedRecs = rec_director.concat(
+        recs.filter(isNotDirector).slice(0, numPersons - rec_director.length)
+      )
     } else {
-      slicedRecs = recs.slice(0, 4)
+      slicedRecs = recs.slice(0, numPersons)
     }
-  }
+  } 
 
   const persons = slicedRecs.map((rec, idx) => {
     return <Person
@@ -108,8 +266,8 @@ export const Card = ({
 
   const genres = r1.genres ? r1.genres.replace(/,/g, ', ') : ''
 
-  const goToMovie = () => {
-    resetMovie(r1.tconst)
+  const goToMovie = (tconst) => {
+    resetMovie(tconst)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -118,7 +276,7 @@ export const Card = ({
     const poster_url = r1.poster_url.replace('w200', 'w400').replace('SX300', 'SX600')
     poster = <img
       src={poster_url}
-      onClick={goToMovie}
+      onClick={() => goToMovie(r1.tconst)}
       onLoad={(e) => {
         e.target.style.display = 'inline-block'
       }}
@@ -151,10 +309,18 @@ export const Card = ({
     : <span style={{ "display": "flex", "fontSize": "70%", "lineHeight": "1.2", "flexWrap": 'wrap', }}>{r1.primarytitle}</span>
 
   let plot_sentence = r1.plot_summary
-  if (r1.place != 'center')
-    plot_sentence = r1.plot_summary ? r1.plot_summary.substring(0, 150) + '...' : ''
 
-  const plotHtml = r1.plot_summary ?
+  if (r1.place != 'center') {
+    if (r1.user_rating_msg && !r1.user_rating_msg.includes('is a popular')) {
+      plot_sentence = r1.user_rating_msg
+    }
+    // Should be able to cut off only if longer than 150, but no.
+    if (plot_sentence && plot_sentence == r1.plot_summary && plot_sentence != '') {
+      plot_sentence = plot_sentence.substring(0, 150) + '...'
+    }
+  }
+
+  const plotHtml = plot_sentence ?
     <div className={styles.plot_summary}>
       {plot_sentence}
     </div>
@@ -197,11 +363,10 @@ export const Card = ({
   }
 
   return <div className={topClass} style={style}>
-
     <div className={styles.card_text}>
 
       <div>
-        <div onClick={goToMovie}>
+        <div onClick={() => goToMovie(r1.tconst)}>
           <div className={styles.movie_title}>
             {title}
           </div>
@@ -218,9 +383,11 @@ export const Card = ({
 
       </div>
 
-
       <div className={styles.metadata}>
-        <StarRating score={r1.averagerating} />
+
+        <Ratings user_id={user.id} tconst={r1.tconst}
+          user_rating={r1.user_rating} averagerating={r1.averagerating}
+          getData={getData}  />
 
         <span
           className={styles.year}
@@ -228,22 +395,20 @@ export const Card = ({
           onClick={() => resetYear(r1.startyear)}>
           {r1.startyear}
         </span>
-        <span>
+        <span className={styles.icon}>
           {icon}
         </span>
-        <br />
+
         <span
           className={styles.genres}
           title={`Show only movies that include the genres ${r1.genres}`}
           onClick={() => resetGenres(r1.genres)}>
           {genres}
         </span>
-        {external_links}
       </div>
-
+      {external_links}
 
     </div>
-
     {right_poster}
   </div>
 }
@@ -253,7 +418,8 @@ export const Sidebar = ({
   place,
   selectedPerson,
   isScrolling,
-  theme
+  theme,
+  getData
 }) => {
 
   // Aggregate multiple actors in the same film.
@@ -275,7 +441,8 @@ export const Sidebar = ({
       selectedPerson={selectedPerson}
       position="sidebar"
       isScrolling={isScrolling}
-      theme={theme} />
+      theme={theme}
+      getData={getData} />
 
   })
 }

@@ -1,0 +1,134 @@
+/* Main container */
+.genreContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  background-color: rgba(230, 230, 230, 1);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
+
+/* Title styling */
+.genreTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  color: #333;
+}
+
+/* Selection area for tags */
+.genreSelectionArea {
+  margin-bottom: 0.75rem;
+  min-height: 30px;
+  max-height: 60px;
+  overflow-y: auto;
+}
+
+/* Genre tags container */
+.genreTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+/* Individual genre tag */
+.genreTag {
+  display: flex;
+  align-items: center;
+  padding: 0.15rem 0.5rem;
+  background-color: #ff7f0e;
+  color: white;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+}
+
+/* Remove button for tags */
+.genreTagRemove {
+  margin-left: 0.25rem;
+  color: white;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0.15rem;
+}
+
+.genreTagRemove:hover {
+  color: #ffe0c0;
+}
+
+/* Message when no genres are selected */
+.genreEmptySelection {
+  color: #6b7280;
+  font-style: italic;
+  font-size: 0.7rem;
+}
+
+/* Chart container with adjusted height */
+.genreChartContainer {
+  height: 200px;
+  width: 100%;
+  margin: 0.5rem 0;
+  margin-bottom: 0;
+}
+
+/* Clickable bars styling */
+.genreBar {
+  cursor: pointer;
+}
+
+.genreBar:hover {
+  opacity: 0.8;
+}
+
+/* Genre labels styling */
+.genreLabel {
+  font-size: 0.65rem;
+  fill: #666;
+  cursor: pointer;
+}
+
+/* Selected genre label styling */
+.selected {
+  fill: #ff7f0e;
+  font-weight: bold;
+}
+
+/* Footer area with instructions and button */
+.genreFooter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+/* Apply filter button */
+.genreApplyButton {
+  padding: 0.25rem 0.75rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.genreApplyButton:hover {
+  background-color: #2563eb;
+}
+
+/* Loading state */
+.genreLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #6b7280;
+  font-size: 0.8rem;
+}

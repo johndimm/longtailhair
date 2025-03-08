@@ -143,6 +143,23 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
   return (
     <div className={styles.range}>
 
+<div className={styles.range_year}>
+
+<span
+  onClick={goLeft}
+  className={styles.date_left_arrow}>&#10148;
+</span>
+
+{rangeEndpoints}
+
+<span
+  onClick={goRight}
+  className={styles.date_right_arrow} >&#10148;
+</span>
+
+</div>
+
+
       <div className={styles.range_slider}>
         <span className={styles.range_selected} style={fillBlueStyle}>
         </span>
@@ -173,21 +190,7 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
 
       </div>
 
-      <div className={styles.range_year}>
 
-        <span
-          onClick={goLeft}
-          className={styles.date_left_arrow}>&#10148;
-        </span>
-
-        {rangeEndpoints}
-
-        <span
-          onClick={goRight}
-          className={styles.date_right_arrow} >&#10148;
-        </span>
-
-      </div>
 
     </div>
   )

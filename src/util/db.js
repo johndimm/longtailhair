@@ -31,7 +31,9 @@ exports.get_movie_tconst = function (tconst) {
   if (tconst == 'undefined')
     return []
 
-  const cmd = `select * from get_movie_tconst('${tconst}');`
+  const cmd = `
+    select tconst, title, rating, year, poster_url, genres
+    from get_movie_tconst('${tconst}');`
   console.log(cmd)
 
 	return performSQLQuery(cmd);
@@ -56,30 +58,53 @@ exports.get_movie = function (tconst) {
 	return performSQLQuery(`select * from get_movie('${tconst}');`);
 };
 
+exports.get_movie_list = function (movieList) {
+  const quotedMovieList = movieList.map ( (m, idx) => {
+    return `"${m}"`
+  })
+  const cmd = `select * from get_movies(100, null, null, null, null, null, null,'{${quotedMovieList}}');`
+  console.log(cmd)
+  return performSQLQuery(cmd)
+}
+
+exports.recommend_movie_list = function (user_id, movieList) {
+  const quotedMovieList = movieList.map ( (m, idx) => {
+    return `"${m}"`
+  })
+  const cmd = `select * from recommend_movie_list(${user_id},'{${quotedMovieList}}');`
+  console.log(cmd)
+  return performSQLQuery(cmd)
+}
+
 function isNullish (query) {
     return !query || query === 'undefined' || query === 'null' || query === ''
 }
-exports.get_movies = function (numMovies, genres, yearstart, yearend, query, nconst, titletype) {
+exports.get_movies = function (numMovies, genres, yearstart, yearend, 
+  query, nconst, titletype, movieList, orderBy, ratingsFilter, user_id) {
     const _genres = isNullish(genres) ? null : `'${genres}'`
     const _yearstart = isNullish(yearstart) ? null : yearstart
     const _yearend = isNullish(yearend) ? null : yearend
     const _query = isNullish(query) ? null : `'${query}'`
     const _nconst = isNullish(nconst) ? null : `'${nconst}'`
     const _titletype = isNullish(titletype) ? null : `'${titletype}'`
+    const _orderBy = isNullish(orderBy) ? null : `'${orderBy}'`
+    const _ratingsFilter = isNullish(ratingsFilter) ? null : `'${ratingsFilter}'`
+
     // console.log(query, _query)
-	const data = performSQLQuery(`select * from get_movies(${numMovies}, ${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype});`);
+	const data = performSQLQuery(`select * from get_movies(${numMovies}, ${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype}, ${movieList}, ${_orderBy}, ${_ratingsFilter}, ${user_id});`);
     return data
 };
 
-exports.count_genres = function (genres, yearstart, yearend, query, nconst, titletype) {
+exports.count_genres = function (genres, yearstart, yearend, query, nconst, titletype, ratingsFilter, user_id) {
     const _genres = isNullish(genres) ? null : `'${genres}'`
     const _yearstart = isNullish(yearstart) ? null : yearstart
     const _yearend = isNullish(yearend) ? null : yearend
     const _query = isNullish(query) ? null : `'${query}'`
     const _nconst = isNullish(nconst) ? null : `'${nconst}'`
     const _titletype = isNullish(titletype) ? null : `'${titletype}'`
+    const _ratingsFilter = isNullish(ratingsFilter) ? null : `'${ratingsFilter}'`
     // console.log(query, _query)
-	return performSQLQuery(`select * from count_genres(${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype} );`);
+	return performSQLQuery(`select * from count_genres(${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype}, ${_ratingsFilter}, ${user_id} );`);
 }
 
 exports.insertDB = async function (tconst, jsonData) {
@@ -134,20 +159,38 @@ exports.insertOMDB = async function (tconst, jsonData) {
 exports.setUserRating = async function (user_id, tconst, rating) {
   const cmd = `insert into user_ratings (user_id, tconst, rating) 
   values (${user_id}, '${tconst}', ${rating}) 
-  ON CONFLICT (user_id, tconst) DO UPDATE SET 
-  rating=EXCLUDED.rating`
+  ON CONFLICT (user_id, tconst) DO UPDATE 
+  SET rating=EXCLUDED.rating`
 
   return await performSQLQuery(cmd)
 }
 
 exports.getUserRatings = async function (user_id) {
   const cmd = `select 
-    user_id, ur.tconst, tbe.primarytitle as title, ur.rating, 
+    ur.user_id, ur.tconst, tbe.primarytitle as title, ur.rating, tbe.startyear as year,
     coalesce(p.url, tmdb.poster_path) as poster_url
     from user_ratings as ur
     join title_basics_ex as tbe using (tconst)
     left join tmdb using (tconst)
     left join posters as p on p.tconst = ur.tconst and p.error_count < 1
+    where ur.user_id = ${user_id}
     order by 3`
   return await performSQLQuery(cmd)
+}
+
+exports.performQuery = async function (query) {
+  return await performSQLQuery(query)
+}
+
+exports.register = async function (email, name) {
+  const cmd = `
+    insert into users (email,name) values ('${email}', '${name}') on conflict (email) do nothing
+  `
+  await performSQLQuery(cmd)
+
+  const query = `
+    select id as user_id from users where email='${email}'
+  `
+
+  return await performSQLQuery(query)
 }
