@@ -150,10 +150,10 @@ const ControlPanel = ({ actorName, setTheme, theme,
             : { color: 'gray' }
 
         const ratings = [
-            {dbName:'all', displayName:'everything'}, 
-            {dbName:'rated', displayName:'rated by me'}, 
-            {dbName:'not rated', displayName:'not yet rated'}, 
-            {dbName:'recommendations', displayName:'recommendations'}
+            { dbName: 'all', displayName: 'everything' },
+            { dbName: 'rated', displayName: 'rated by me' },
+            { dbName: 'not rated', displayName: 'not yet rated' },
+            { dbName: 'recommendations', displayName: 'recommendations' }
         ]
         console.log('ratingsFilter', ratingsFilter)
         const ratingsOptions = ratings.map((rating, idx) => {
@@ -162,12 +162,12 @@ const ControlPanel = ({ actorName, setTheme, theme,
                 : { fontWeight: 200 }
             return <li key={idx} style={style} onClick={() => {
                 if (user.id) resetRatingsFilter(rating.dbName)
-                }}>{rating.displayName}</li>
+            }}>{rating.displayName}</li>
         })
 
-        const tooltip = user.id 
-        ? ""
-        : "sign in to rate and get recommendations"
+        const tooltip = user.id
+            ? ""
+            : "sign in to rate and get recommendations"
 
         return (
             <div className={styles.widget} style={style} title={tooltip}>
@@ -205,9 +205,9 @@ const ControlPanel = ({ actorName, setTheme, theme,
         const aiModels = ["Claude", "ChatGPT", "DeepSeek", "Gemini"]
         const recsOptions = aiModels.map((source, idx) => {
             const defaultChecked = source == aiModel
-            return <div key={idx} style={{'whiteSpace':'nowrap'}}>
-                <input type="radio" id={source} name="model" value={source} 
-                  defaultChecked={defaultChecked} disabled= {!user.id} onClick={() => setAiModel(source)}/>
+            return <div key={idx} style={{ 'whiteSpace': 'nowrap' }}>
+                <input type="radio" id={source} name="model" value={source}
+                    defaultChecked={defaultChecked} disabled={!user.id} onClick={() => setAiModel(source)} />
                 <label htmlFor={source} onClick={() => setAiModel(source)}>{source}</label>
             </div>
         })
@@ -216,9 +216,9 @@ const ControlPanel = ({ actorName, setTheme, theme,
             ? { color: 'black' }
             : { color: 'gray' }
 
-        const tooltip = user.id 
-        ? ""
-        : "sign in to rate and get recommendations"
+        const tooltip = user.id
+            ? ""
+            : "sign in to rate and get recommendations"
 
         return (
             <div className={styles.widget} style={style} title={tooltip}>
@@ -229,16 +229,16 @@ const ControlPanel = ({ actorName, setTheme, theme,
                 <ul>
 
                     <li>
-                        models
-                        <ul>
-                            {recsOptions}
-                        </ul>
+                        <b>models</b>
+
+                        {recsOptions}
+
                     </li>
-                    <li><RequestRecs user={user} generateRecs={getRecommendations} buttonText="generate" /></li>
-                    <ul>
-                        <li>already rated: {recsCounts.nOld}</li>
-                        <li>new: {recsCounts.nNew}</li>
-                    </ul>
+                </ul>
+                <div><RequestRecs user={user} generateRecs={getRecommendations} buttonText="generate from ratings" /></div>
+                <ul>
+                    <li>already rated: {recsCounts.nOld}</li>
+                    <li>new: {recsCounts.nNew}</li>
                 </ul>
 
             </div>

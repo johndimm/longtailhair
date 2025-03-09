@@ -27,7 +27,7 @@ const AuthButton = ( {setUser} ) => {
     const shortName = session.user.name.replace(/ .*/, '')
     return (
       <div className={styles.sign_in}>
-        <p>{shortName}</p>
+        <p style={{marginBottom: "5px"}}>{shortName}</p>
         <button  onClick={() => signOut()}>Sign out</button>
       </div>
     );

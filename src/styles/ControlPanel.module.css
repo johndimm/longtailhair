@@ -155,7 +155,7 @@
     font-size:80%;
     color: black;
     border: 1px solid gray;
-    padding: 5px;
+    padding: 8px;
 }
 
 .controls .date_widget {
@@ -176,6 +176,7 @@
     overflow-y: auto;
     margin: 10px;
     display: inline-block;
+    margin-right: 30px;
 
 }
 
