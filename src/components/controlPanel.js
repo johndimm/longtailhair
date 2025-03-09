@@ -205,7 +205,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
         const aiModels = ["Claude", "ChatGPT", "DeepSeek", "Gemini"]
         const recsOptions = aiModels.map((source, idx) => {
             const defaultChecked = source == aiModel
-            return <div key={idx}>
+            return <div key={idx} style={{'whiteSpace':'nowrap'}}>
                 <input type="radio" id={source} name="model" value={source} 
                   defaultChecked={defaultChecked} disabled= {!user.id} onClick={() => setAiModel(source)}/>
                 <label htmlFor={source} onClick={() => setAiModel(source)}>{source}</label>
