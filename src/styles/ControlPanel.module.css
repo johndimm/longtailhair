@@ -154,6 +154,8 @@
     display: inline-block;
     font-size:80%;
     color: black;
+    border: 1px solid gray;
+    padding: 5px;
 }
 
 .controls .date_widget {

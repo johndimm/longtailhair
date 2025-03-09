@@ -149,15 +149,20 @@ const ControlPanel = ({ actorName, setTheme, theme,
             ? { color: 'black' }
             : { color: 'gray' }
 
-        const ratings = ['all', 'rated', 'not rated', 'interested', 'recommendations']
+        const ratings = [
+            {dbName:'all', displayName:'everything'}, 
+            {dbName:'rated', displayName:'rated by me'}, 
+            {dbName:'not rated', displayName:'not yet rated'}, 
+            {dbName:'recommendations', displayName:'recommendations'}
+        ]
         console.log('ratingsFilter', ratingsFilter)
         const ratingsOptions = ratings.map((rating, idx) => {
-            const style = rating == ratingsFilter
+            const style = rating.dbName == ratingsFilter
                 ? { fontWeight: 600, fontStyle: 'italic' }
                 : { fontWeight: 200 }
             return <li key={idx} style={style} onClick={() => {
-                if (user.id) resetRatingsFilter(rating)
-                }}>{rating}</li>
+                if (user.id) resetRatingsFilter(rating.dbName)
+                }}>{rating.displayName}</li>
         })
 
         const tooltip = user.id 

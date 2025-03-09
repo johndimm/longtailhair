@@ -9,7 +9,9 @@ select
     tp.nconst, -- (string) - alphanumeric unique identifier of the name/person
     min(tp.ordering) as ordering, -- (integer) – a number to uniquely identify rows for a given titleId
     string_agg(tp.category, ', ' ) as category,
-    string_agg(tp.characters, ', ') as characters -- (string) - the name of the character played if applicable, else '\N'
+    string_agg(tp.characters, ', ') as characters, -- (string) - the name of the character played if applicable, else '\N'
+    nb.primaryName,
+    nb.birthYear
 from
     -- raw_data.title_principals as tp
     process.title_principals_ex as tp
