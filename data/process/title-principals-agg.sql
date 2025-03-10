@@ -7,11 +7,11 @@ create table title_principals_agg as
 select 
     tp.tconst, -- (string) - alphanumeric unique identifier of the title
     tp.nconst, -- (string) - alphanumeric unique identifier of the name/person
+    nb.primaryName,
+    nb.birthYear,
     min(tp.ordering) as ordering, -- (integer) – a number to uniquely identify rows for a given titleId
     string_agg(tp.category, ', ' ) as category,
-    string_agg(tp.characters, ', ') as characters, -- (string) - the name of the character played if applicable, else '\N'
-    nb.primaryName,
-    nb.birthYear
+    string_agg(tp.characters, ', ') as characters -- (string) - the name of the character played if applicable, else '\N'
 from
     -- raw_data.title_principals as tp
     process.title_principals_ex as tp
@@ -21,7 +21,7 @@ join
     raw_data.name_basics as nb using (nconst)
 --join
 --    title_principals_ex as tpe using (tconst, nconst)
-group by 1,2
+group by 1,2,3,4
 ;
 
 create index idx_tpa_tconst on title_principals_agg(tconst);

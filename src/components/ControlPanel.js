@@ -223,7 +223,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
         return (
             <div className={styles.widget} style={style} title={tooltip}>
                 <h3>
-                    Recommendations
+                    Devtools
                 </h3>
 
                 <ul>
@@ -235,7 +235,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
 
                     </li>
                 </ul>
-                <div><RequestRecs user={user} generateRecs={getRecommendations} buttonText="generate from ratings" /></div>
+                <div><RequestRecs user={user} generateRecs={getRecommendations} buttonText="run now!" /></div>
                 <ul>
                     <li>already rated: {recsCounts.nOld}</li>
                     <li>new: {recsCounts.nNew}</li>

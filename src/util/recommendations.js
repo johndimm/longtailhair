@@ -33,7 +33,10 @@ async function getDeepseekRecommendations(prompt) {
     ],
   });
 
-  const response = completion.choices[0].message.content
+  const response = {}
+  //if (completion & completion["choices"]){
+    response = completion.choices[0].message.content
+  //}
 
   let json = {}
   try {
@@ -58,7 +61,10 @@ async function getChatgptRecommendations(prompt) {
 
   const completion = await openai.chat.completions.create({
     // model: "gpt-4o-mini",
+    // model: "03-mini",
+    // model: "gpt-4.5-preview",
     model: "gpt-4o",
+    reasoning_effort: "medium",
     store: true,
     messages: [
       { "role": "user", "content": prompt },
@@ -101,7 +107,7 @@ async function getClaudeRecommendations(prompt) {
   return json
 }
 
-const aiRecs = async (user_id, titletype, genres, aiModel, user_ratings_recs) => {
+export const aiRecsPrompt = async (user_id, titletype, genres, aiModel, user_ratings_recs) => {
 
   // Clear out any previous recommendations
   await db.performQuery(`delete from user_ratings where user_id=${user_id} and rating=-3`)
@@ -118,6 +124,8 @@ const aiRecs = async (user_id, titletype, genres, aiModel, user_ratings_recs) =>
   }
 
   const intro = `
+
+Hello ${aiModel}!
 
 Provide a JSON array of 30 ${movies} recommendations **not listed anywhere in this prompt** (including "haven't seen," "would like to," or "rated" sections). Follow these rules:  
 
@@ -147,7 +155,7 @@ For "why_recommended", provide a reference to a ${movies} I have seen to explan 
 
 Try to find ${movies} that are not well-known.  Pick ${movies} with good ratings but low popularity.  Do not pick highly popular ${movies}.
 
-Prefer similarity with ${movies} I have rated highly, and average ratings, over popularity.
+Similarity with ${movies} I have rated highly counts much more than popularity.
 
 Please double-check the tconst to make sure it is correct for the films you have picked.
 
@@ -181,7 +189,10 @@ ${movies} to Exclude (DO NOT RECOMMEND THESE):
 
   const prompt = intro + report
   console.log("prompt", prompt)
+  return prompt
+}
 
+const usePrompt = async (prompt, aiModel) => {
   let recs
   if (aiModel == 'Claude') {
     recs = await getClaudeRecommendations(prompt)
@@ -193,6 +204,12 @@ ${movies} to Exclude (DO NOT RECOMMEND THESE):
     recs = await getGeminiRecommendations(prompt)
   }
 
+  return recs
+}
+
+export const aiRecs = async (user_id, titletype, genres, aiModel, user_ratings_recs) => {
+  const prompt = await aiRecsPrompt(user_id, titletype, genres, aiModel, user_ratings_recs)
+  const recs = await usePrompt(prompt, aiModel)
   return recs
 }
 
@@ -252,7 +269,7 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code) => {
   cmd = `
   insert into user_ratings
   (user_id, tconst, rating, msg)
-  select ${user_id} as user_id, tbe.tconst, -3, why_recommended as msg
+  select ${user_id} as user_id, tbe.tconst, ${code}, why_recommended as msg
   from tmp
   join title_basics_ex as tbe on lower(tbe.primarytitle) = lower(tmp.title) and startyear = tmp.year
   on conflict (user_id, tconst) do nothing
@@ -260,19 +277,6 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code) => {
     `
   await db.performQuery(cmd)
 
-/*
-    insert into user_ratings
-    (user_id, tconst, rating, msg)
-    select ${user_id}, tbe.tconst, -3, '${msg}'
-    from title_basics_ex as tbe
-    where lower(tbe.primarytitle) = lower('${title}')
-    -- where tbe.tconst = '${r.tconst}'
-    and startyear = ${r.year}
-    on conflict (user_id, tconst) do nothing
-    await db.performQuery(cmd)
-    `
- }
-    */
 
 return { nOld: nOld, nNew: nNew }
 }
@@ -280,26 +284,28 @@ return { nOld: nOld, nNew: nNew }
 export const getAIRecs = async (user_id, titletype, genres, aiModel) => {
   const user_ratings_recs = await db.getUserRatings(user_id)
 
-  const recs = await aiRecs(user_id, titletype, genres, aiModel, user_ratings_recs)
+  const prompt = await aiRecsPrompt(user_id, titletype, genres, aiModel, user_ratings_recs)
+  const recs = await usePrompt(prompt, aiModel)
   const json = await populateUserRatings(recs, user_id, user_ratings_recs, -3)
   return json
 }
 
 export const getMovieAIRecs = async (user_id, tconst, _aiModel) => {
-  const movies = await db.get_movie_tconst(tconst)
+  const user_ratings_recs = await db.get_movie_tconst(tconst)
   const titletype = 'movie'
 
   let genres = ''
-  if (movies.length > 0) {
-    const movie = movies[0]
+  if (user_ratings_recs.length > 0) {
+    const movie = user_ratings_recs[0]
     movie.rating = 5
     genres = movie.genres
   }
 
   const aiModel = _aiModel ? _aiModel : 'DeepSeek'
 
-  const recs = await aiRecs(user_id, titletype, genres, aiModel, movies)
-  const json = await populateUserRatings(recs, user_id, movies, -3)
+  const prompt = await aiRecsPrompt(user_id, titletype, genres, aiModel, user_ratings_recs)
+  const recs = await usePrompt(prompt, aiModel)
+  const json = await populateUserRatings(recs, user_id, user_ratings_recs, -3)
   return json
 }
 
