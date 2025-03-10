@@ -3,57 +3,6 @@ import styles from "@/styles/Main.module.css";
 import { CallbackContext } from '@/components/Main'
 import clsx from 'clsx'
 
-/*
-const UserRating = ({ user_id, tconst, user_rating }) => {
-  const [rating, setRating] = useState(user_rating)
-
-  const dbSet = (user_id, _tconst, _rating) => {
-    const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}`
-    console.log(url)
-    fetch(url)
-    setRating(_rating)
-  }
-
-  const ratings = [
-    {
-      rating: -2,
-      icon: '👎',
-      definition: 'Saw it, did not like it'
-    },
-    {
-      rating: -1,
-      icon: '😑',
-      definition: 'Probably will not see it'
-    },
-    {
-      rating: 1,
-      icon: '🤔',
-      definition: 'Want to see it'
-    },
-    {
-      rating: 2,
-      icon: '👍',
-      definition: 'Saw it, liked it'
-    },
-  ]
-
-
-  const buttonsHtml = ratings.map((r, idx) => {
-    if (r.rating == rating) {
-      return <span key={idx}>{r.icon}</span>
-    } else {
-      return <button title={r.definition} key={idx} onClick={() => dbSet(user_id, tconst, r.rating)}>{r.icon}</button>
-    }
-  })
-
-  return (
-    <div className={styles.rating_buttons}>
-      {buttonsHtml}
-    </div>
-  )
-}
-*/
-
 const StarRating = ({ score }) => {
   const filledStars = Math.round(score / 2.0);
 

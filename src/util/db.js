@@ -157,12 +157,25 @@ exports.insertOMDB = async function (tconst, jsonData) {
 }
 
 exports.setUserRating = async function (user_id, tconst, rating) {
-  const cmd = `insert into user_ratings (user_id, tconst, rating) 
+  let cmd = `insert into user_ratings (user_id, tconst, rating) 
   values (${user_id}, '${tconst}', ${rating}) 
   ON CONFLICT (user_id, tconst) DO UPDATE 
   SET rating=EXCLUDED.rating`
 
-  return await performSQLQuery(cmd)
+  await performSQLQuery(cmd)
+
+  cmd = `
+  select count(*) as cnt 
+  from user_ratings 
+  where user_id=${user_id} and rating != 3`
+  const result = await performSQLQuery(cmd)
+  const nRatings = result[0].cnt
+
+  const json = {"count": nRatings}
+  console.log(json)
+
+  return json
+
 }
 
 exports.getUserRatings = async function (user_id) {

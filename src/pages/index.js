@@ -18,7 +18,8 @@ export default function Index() {
   const [_titletype, setTitletype] = useState('movie')
   const [_numMovies, setNumMovies] = useState(NUM_MOVIES)
   const [paramsProcessed, setParamsProcessed] = useState(false)
-  const [cardDim, setCardDim] = useState({width: 310, height:450})
+  // const [cardDim, setCardDim] = useState({width: 310, height:450})
+  const [cardDim, setCardDim] = useState()
   const [_user, setUser] = useState({id:null, email:null, name:null})
 
   const { tconst, nconst, genres, year, yearstart, yearend, query, titletype, numMovies, page } = router.query
@@ -100,7 +101,7 @@ export default function Index() {
 
   const callbacks = {
     resetGenres: resetGenres,
-    resetYear: resetYear,
+    // resetYear: resetYear,
     resetYearstart: resetYearstart,
     resetYearend: resetYearend,
     resetQuery: resetQuery,
@@ -108,7 +109,7 @@ export default function Index() {
     resetActor: resetActor,
     setTitletype: setTitletype,
     setNumMovies: setNumMovies,
-    resetNumMovies: resetNumMovies,
+    // resetNumMovies: resetNumMovies,
     setUser: setUser,
     tconst: _tconst,
     nconst: _nconst,
