@@ -127,39 +127,54 @@ export const aiRecsPrompt = async (user_id, titletype, genres, aiModel, user_rat
 
 Hello ${aiModel}!
 
-Provide a JSON array of 30 ${movies} recommendations **not listed anywhere in this prompt** (including "haven't seen," "would like to," or "rated" sections). Follow these rules:  
+You are a movie and tv show recommendation expert.
 
-1. Every ${movies} listed in any section (whether rated, to watch, or not to watch) should be excluded.
+Provide a JSON array of 30 recommendations based on my ratings below.  
 
-2. Do not repeat any titles mentioned in the prompt, even if the model thinks they fit the recommendation criteria.
+The recommendations should not include any of the titles listed anywhere in this prompt,
+(including "haven't seen," "would like to," or "rated" sections). 
+
+Follow these rules:  
+
+1. Every title listed in any section should be excluded.
+(whether rated, to watch, or not to watch) 
+
+2. Do not repeat any titles mentioned in the prompt, 
+even if the model thinks they fit the recommendation criteria.
 
 3. Double-check each recommendation against all provided lists before finalizing.
 
 ${titletypeInstruction}
 ${genresFilter}
 
+Please provide recommendations in this exact JSON format. 
+
 Do not include any text outside the JSON array.
 
-Please provide recommendations in this exact JSON format.  Do not add any introductory text, do not wrap it in a single field named 'text', just give the response as a valid JSON array.
+Do not add any introductory text, do not wrap it in a single field named 'text', 
+just give the response as a valid JSON array.
 
 [
   {
   "year": 1962,
-  "tconst": "tt0053198",
   "title": "The 400 Blows",
   "why_recommended": "Recommended because you like french new wave."
   }
 ]
 
-For "why_recommended", provide a reference to a ${movies} I have seen to explan why this ${movies} is recommended.  
+For "why_recommended", provide a reference to a ${movies} I have seen 
+to explan why this ${movies} is recommended.  
 
-Try to find ${movies} that are not well-known.  Pick ${movies} with good ratings but low popularity.  Do not pick highly popular ${movies}.
+Try to find ${movies} that are not well-known.  
+
+Pick ${movies} with good ratings but low popularity.  
+
+Do not pick highly popular ${movies}.
 
 Similarity with ${movies} I have rated highly counts much more than popularity.
 
-Please double-check the tconst to make sure it is correct for the films you have picked.
+Here are the rated ${movies} to Exclude (DO NOT RECOMMEND THESE):
 
-${movies} to Exclude (DO NOT RECOMMEND THESE):
 `
 
   const moviesRatedAs = {}
@@ -279,6 +294,14 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code) => {
 
 
 return { nOld: nOld, nNew: nNew }
+}
+
+export const getAIRecsPrompt = async (user_id, titletype, genres, aiModel) => {
+  const user_ratings_recs = await db.getUserRatings(user_id)
+
+  const prompt = await aiRecsPrompt(user_id, titletype, genres, aiModel, user_ratings_recs)
+
+  return {"prompt": prompt}
 }
 
 export const getAIRecs = async (user_id, titletype, genres, aiModel) => {

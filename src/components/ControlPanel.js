@@ -18,6 +18,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
         query, yearstart, yearend, setCardDim, user } = callbacks
 
     const [recsCounts, setRecsCounts] = useState({ nOld: 0, nNew: 0 })
+    const [prompt, setPrompt] = useState()
 
 
     // const [showGenres, setShowGenres] = useState(true)
@@ -201,6 +202,22 @@ const ControlPanel = ({ actorName, setTheme, theme,
 
     }
 
+    const showPrompt = async (e) => {
+        if (prompt) { 
+            setPrompt(null)
+            return
+        }
+        
+        const url = `/api/get_prompt?user_id=${user.id}&titletype=${titletype}&genres=${genres}&aiModel=${aiModel}`
+        const response = await fetch(url)
+        const result = await response.json()
+        setPrompt(result.prompt)
+    }
+
+    const promptStyle = prompt 
+      ? {display: 'inline-block'}
+      : {display: 'none'}
+
     const RecommendationsWidget = (() => {
         const aiModels = ["Claude", "ChatGPT", "DeepSeek", "Gemini"]
         const recsOptions = aiModels.map((source, idx) => {
@@ -220,6 +237,10 @@ const ControlPanel = ({ actorName, setTheme, theme,
             ? ""
             : "sign in to rate and get recommendations"
 
+        const showPromptButtonStyle = prompt 
+          ? {fontWeight: 600}
+          : {}
+
         return (
             <div className={styles.widget} style={style} title={tooltip}>
                 <h3>
@@ -237,6 +258,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
                 </ul>
                 <div><RequestRecs user={user} generateRecs={getRecommendations} buttonText="run now!" /></div>
                 <ul>
+                    <li onClick={showPrompt} style={showPromptButtonStyle}>show prompt</li>
                     <li>already rated: {recsCounts.nOld}</li>
                     <li>new: {recsCounts.nNew}</li>
                 </ul>
@@ -332,6 +354,12 @@ const ControlPanel = ({ actorName, setTheme, theme,
 
                 </div>
             </div>
+            <div className={styles.prompt} style={promptStyle}>
+              <pre>
+            {prompt}
+            </pre>
+            </div>
+
         </div>
     )
 }
