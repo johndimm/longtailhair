@@ -165,7 +165,7 @@ just give the response as a valid JSON array.
 For "why_recommended", provide a reference to a ${movies} I have seen 
 to explan why this ${movies} is recommended.  
 
-Try to find ${movies} that are not well-known.  
+Try to find titles that are not well-known.  
 
 Pick ${movies} with good ratings but low popularity.  
 
