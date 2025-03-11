@@ -252,3 +252,11 @@
     white-space: normal;
     padding: 5px;
 }
+
+.prompt {
+    text-align: left;
+    background-color: white;
+    border: 1px solid black;
+    padding: 20px;
+    display: inline-block;
+}
