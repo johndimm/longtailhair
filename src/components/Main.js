@@ -28,7 +28,7 @@ export default function Main({ }) {
   const [showControlPanel, setShowControlPanel] = useState(false)
   const [ratingsFilter, setRatingsFilter] = useState('all')
   const [sortOrder, setSortOrder] = useState('popularity desc')
-  const [aiModel, setAiModel] = useState('DeepSeek')
+  const [aiModel, setAiModel] = useState('Gemini')
 
   const callbacks = useContext(CallbackContext)
   const { setNumMovies,
