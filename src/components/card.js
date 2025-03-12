@@ -159,7 +159,9 @@ export const Card = ({
 }) => {
   const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
   const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetYear, resetMovie, resetActor, cardDim, user } = callbacks
+  const { resetGenres, resetYear, resetMovie, resetActor } = callbacks.setters
+  const { cardDim, } = callbacks.values
+  const { user } = callbacks
 
   useEffect(() => {
     if (recs && recs.length > 0) {

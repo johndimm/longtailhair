@@ -80,13 +80,10 @@ const Banner = ({ actorName, setTheme, theme, showControlPanel, toggleShowContro
   const callbacks = useContext(CallbackContext)
   const { resetGenres, resetMovie, resetActor,
     resetQuery, resetYearstart, resetYearend, setTitletype, setNumMovies,
+    setCardDim, setUser } = callbacks.setters
+  const {
     nconst, titletype, genres,
-    query, yearstart, yearend, setCardDim, setUser } = callbacks
-  //const [showGenres, setShowGenres] = useState(false)
-
-  //useEffect(() => {
-  //  setShowGenres(false)
-  //}, [genres])
+    query, yearstart, yearend, } = callbacks.values
 
   const updateDates = (yearstart, yearend) => {
     resetYearstart(yearstart)

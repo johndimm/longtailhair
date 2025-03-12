@@ -4,13 +4,15 @@ import { CallbackContext } from '@/components/Main'
 import { useRouter } from 'next/router';
 import GenresHistogram from '@/components/GenresHistogram'
 
-const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsFilter }) => {
+const Genres = ({ /*genres, query, yearstart, yearend, nconst, titletype, ratingsFilter*/ }) => {
     const router = useRouter()
     const [genresCounts, setGenresCounts] = useState([])
     const [checkedItems, setCheckedItems] = useState([]) //genres ? genres.split(',') : [])
 
     const callbacks = useContext(CallbackContext)
-    const { resetGenres, user } = callbacks
+    const { genres, query, yearstart, yearend, 
+        nconst, titletype, ratingsFilter } = callbacks.values
+ 
 
     const genresList = [
         'Action',
@@ -54,8 +56,7 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsF
     }, [genres, query, yearstart, yearend, nconst, titletype, ratingsFilter])
 
     const countGenres = async () => {
-        //return
-        const url = `api/count_genres?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&query=${query}&nconst=${nconst}&titletype=${titletype}&ratingsFilter=${ratingsFilter}&user_id=${user.id}`
+        const url = '/api/count_genres?' + callbacks.url_params
 
         const response = await fetch(url)
         const result = await response.json()
@@ -88,11 +89,11 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsF
         // console.log(checkedItems, newCheckedItems)
 
         // console.log(" **** resetGenres")
-        resetGenres(newCheckedItems.join(','))
+        callbacks.resetGenres(newCheckedItems.join(','))
     };
 
     const selectOneGenre = (genre) => {
-        resetGenres(genre)
+        callbacks.resetGenres(genre)
         setCheckedItems([genre])
     }
 
@@ -126,7 +127,7 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsF
        <GenresHistogram 
        initialData={genresHistogramData} 
        initialGenres={checkedItems}
-       resetGenres={resetGenres} />
+       resetGenres={callbacks.setters.resetGenres} />
     </div>
 }
 

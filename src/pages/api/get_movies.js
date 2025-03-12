@@ -5,7 +5,7 @@ import {getSimpleRecs, getAIRecs } from '@/util/recommendations'
 
 export default async function handler(req, res) {
   const {
-    query: { numMovies, genres, yearstart, yearend, query, nconst, titletype, orderBy, ratingsFilter, user_id }
+    query: { numMovies, genres, yearstart, yearend, query, nconst, titletype, sortOrder, ratingsFilter, user_id }
   } = req
 
   const _numMovies = numMovies ? numMovies : null
@@ -15,13 +15,13 @@ export default async function handler(req, res) {
   const _query = query ? query : null
   const _nconst = nconst ? nconst : null
   const _titletype = titletype ? titletype : null
-  const _orderBy = orderBy ? orderBy : null
+  const _sortOrder = sortOrder ? sortOrder : null
   const _ratingsFilter = ratingsFilter ? ratingsFilter : null
   const _user_id = user_id ? user_id : null
 
   let data
   const runQuery = async () => {
-    data = await db.get_movies(numMovies, _genres, _yearstart, _yearend, _query, _nconst, _titletype, null, _orderBy, _ratingsFilter, _user_id)
+    data = await db.get_movies(numMovies, _genres, _yearstart, _yearend, _query, _nconst, _titletype, null, _sortOrder, _ratingsFilter, _user_id)
 
     await tmdb_fill(data)
   }

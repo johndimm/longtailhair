@@ -13,9 +13,12 @@ const ControlPanel = ({ actorName, setTheme, theme,
 
     const callbacks = useContext(CallbackContext)
     const { resetGenres, resetMovie, resetActor,
-        resetQuery, resetYearstart, resetYearend, setTitletype, setNumMovies,
+        resetQuery, resetYearstart, resetYearend, 
+        setTitletype, setNumMovies } = callbacks.setters
+    const {
         nconst, titletype, genres,
-        query, yearstart, yearend, setCardDim, user } = callbacks
+        query, yearstart, yearend, setCardDim, user_id} = callbacks.values
+    const {user} = callbacks
 
     const [recsCounts, setRecsCounts] = useState({ nOld: 0, nNew: 0 })
     const [prompt, setPrompt] = useState()

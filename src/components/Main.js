@@ -17,32 +17,29 @@ export default function Main({ }) {
   const router = useRouter()
 
   const [data, setData] = useState([])
-  // const [actorName, setActorName] = useState()
   const [isLoading, setIsLoading] = useState(false)
   const [moviePageVisible, setMoviePageVisible] = useState({ "visibility": "hidden" })
   const [searchPageVisible, setSearchPageVisible] = useState({ "visibility": "visible" })
-
   const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef(null);
   const [theme, setTheme] = useState('light')
   const [showControlPanel, setShowControlPanel] = useState(false)
-  const [ratingsFilter, setRatingsFilter] = useState('all')
-  const [sortOrder, setSortOrder] = useState('popularity desc')
+  // const [ratingsFilter, setRatingsFilter] = useState('all')
+  // const [sortOrder, setSortOrder] = useState('popularity desc')
   const [aiModel, setAiModel] = useState('Gemini')
 
   const callbacks = useContext(CallbackContext)
-  const { setNumMovies,
-    tconst, nconst, titletype, genres,
-    query, yearstart, yearend, numMovies, user } = callbacks
+  const { 
+    tconst, nconst, titletype, genres, query, 
+    yearstart, yearend, numMovies, sortOrder, ratingsFilter } = callbacks.values
+  const { setNumMovies, setRatingsFilter, setSortOrder } = callbacks.setters
 
   const getData = async () => {
-    const user_id = user ? user.id : null
-    const url = `/api/get_movies?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&numMovies=${numMovies}&query=${query}&nconst=${nconst}&titletype=${titletype}&orderBy=${sortOrder}&ratingsFilter=${ratingsFilter}&user_id=${user_id}`
-
-    console.log(url)
+    const url = '/api/get_movies?' + callbacks.url_params
 
     setIsLoading(true)
     const response = await fetch(url)
+
     const result = await response.json()
     setIsLoading(false)
 
@@ -83,20 +80,14 @@ export default function Main({ }) {
       setupSearchPage()
   }, [tconst, nconst])
 
-  /*
-  useEffect(() => {
-    //if (!nconst)
-    setActorName('')
-
-  }, [nconst])
-  */
-
   useEffect(() => {
     if (!router.isReady)
       return
 
     getData()
-  }, [genres, numMovies, yearstart, yearend, query, nconst, titletype, ratingsFilter, sortOrder])
+  }, callbacks.param_array)
+  
+  //[genres, numMovies, yearstart, yearend, query, nconst, titletype, ratingsFilter, sortOrder])
 
   const toggleShowControlPanel = () => {
     setShowControlPanel(!showControlPanel)
@@ -122,6 +113,7 @@ export default function Main({ }) {
     }
   }
 
+  /*
   const setNavUrl = () => {
     let navUrl = ''
     if (tconst) {
@@ -155,17 +147,30 @@ export default function Main({ }) {
       if (navUrl !== '/' + window.location.search) {
         window.history.pushState({}, '', navUrl)
       }
-
     }
   }
+  
+  setNavUrl()
+  
+  */
 
-
+  // Enable the back button.
+  
+  const navUrl = encodeURI(`/?${callbacks.url_params}`)
+  
+  if (typeof window !== 'undefined') {
+    if (navUrl != '/' + window.location.search) {
+      // console.log("===> adding to window.history:", navUrl)
+      window.history.pushState({}, '', navUrl)
+    }
+  }
+  
 
   const resetRatingsFilter = (_ratingsFilter) => {
     setRatingsFilter(_ratingsFilter)
   }
 
-  setNavUrl()
+
 
   if (!data)
     return null

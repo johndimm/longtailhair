@@ -70,7 +70,9 @@ const Movie = ({
   const [isLoading, setIsLoading] = useState(false)
 
   const callbacks = useContext(CallbackContext)
-  const { resetMovie, user, resetGenres, resetQuery, resetYearstart, resetYearend } = callbacks
+  const { resetMovie, resetGenres, resetQuery, 
+    resetYearstart, resetYearend } = callbacks.setters
+  const { user } = callbacks
 
   const getMovieData = async () => {
     setIsLoading(true)
