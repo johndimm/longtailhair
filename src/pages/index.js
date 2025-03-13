@@ -1,5 +1,5 @@
-import UrlParams from '@/components/UrlParams'
+import State from '@/components/State'
 
 export default function Index() {
-  return <UrlParams />
+  return <State />
 }

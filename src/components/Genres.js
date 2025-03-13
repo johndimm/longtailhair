@@ -1,18 +1,17 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import styles from "@/styles/Genres.module.css"
-import { CallbackContext } from '@/components/Main'
+import { StateContext } from '@/components/State'
 import { useRouter } from 'next/router';
 import GenresHistogram from '@/components/GenresHistogram'
 
-const Genres = ({ /*genres, query, yearstart, yearend, nconst, titletype, ratingsFilter*/ }) => {
+const Genres = ({genres, resetGenres, genresParamArray, urlParams }) => {
     const router = useRouter()
     const [genresCounts, setGenresCounts] = useState([])
-    const [checkedItems, setCheckedItems] = useState([]) //genres ? genres.split(',') : [])
+    const [checkedItems, setCheckedItems] = useState([])
 
-    const callbacks = useContext(CallbackContext)
-    const { genres, query, yearstart, yearend, 
-        nconst, titletype, ratingsFilter } = callbacks.values
- 
+    //const parameters = useContext(StateContext)
+    //const { genres, numMovies, yearstart, yearend, query, nconst, titletype, ratingsFilter, sortOrder} = parameters.values
+    //const { genresParamArray, urlParams } = parameters
 
     const genresList = [
         'Action',
@@ -45,18 +44,20 @@ const Genres = ({ /*genres, query, yearstart, yearend, nconst, titletype, rating
     ]
 
     useEffect(() => {
-
         if (!router.isReady)
             return
 
-        // console.log(" ==== initializing Genres")
+        // console.log("====> counting genres") //, genresParamArray)
+
         setCheckedItems(genres ? genres.split(',') : [])
         countGenres()
 
-    }, [genres, query, yearstart, yearend, nconst, titletype, ratingsFilter])
+    }, genresParamArray) // [genres, numMovies, yearstart, yearend, query, nconst, titletype, ratingsFilter, sortOrder]) // genresParamArray)
+
+      //[genres, numMovies, yearstart, yearend, query, nconst, titletype, ratingsFilter, sortOrder])
 
     const countGenres = async () => {
-        const url = '/api/count_genres?' + callbacks.url_params
+        const url = '/api/count_genres?' + urlParams
 
         const response = await fetch(url)
         const result = await response.json()
@@ -89,11 +90,11 @@ const Genres = ({ /*genres, query, yearstart, yearend, nconst, titletype, rating
         // console.log(checkedItems, newCheckedItems)
 
         // console.log(" **** resetGenres")
-        callbacks.resetGenres(newCheckedItems.join(','))
+        parameters.resetGenres(newCheckedItems.join(','))
     };
 
     const selectOneGenre = (genre) => {
-        callbacks.resetGenres(genre)
+        parameters.resetGenres(genre)
         setCheckedItems([genre])
     }
 
@@ -127,7 +128,7 @@ const Genres = ({ /*genres, query, yearstart, yearend, nconst, titletype, rating
        <GenresHistogram 
        initialData={genresHistogramData} 
        initialGenres={checkedItems}
-       resetGenres={callbacks.setters.resetGenres} />
+       resetGenres={resetGenres} />
     </div>
 }
 

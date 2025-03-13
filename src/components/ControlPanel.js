@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react'
-import { CallbackContext } from '@/components/Main'
+import { StateContext } from '@/components/State'
 import Actor from "@/components/Actor"
 import YearPicker from "@/components/YearPicker"
 import Genres from "@/components/Genres"
@@ -7,31 +7,21 @@ import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 import RequestRecs from "@/components/RequestRecs"
 
-const ControlPanel = ({ actorName, setTheme, theme,
-    ratingsFilter, resetRatingsFilter, sortOrder, setSortOrder, toggleShowControlPanel,
-    showControlPanel, aiModel, setAiModel }) => {
+const ControlPanel = ({ toggleShowControlPanel}) => {
 
-    const callbacks = useContext(CallbackContext)
+    const parameters = useContext(StateContext)
     const { resetGenres, resetMovie, resetActor,
         resetQuery, resetYearstart, resetYearend, 
-        setTitletype, setNumMovies } = callbacks.setters
+        setTitletype,  setTheme, setRatingsFilter,
+        setSortOrder,  setAiModel, resetAll } = parameters.setters
     const {
-        nconst, titletype, genres,
-        query, yearstart, yearend, setCardDim, user_id} = callbacks.values
-    const {user} = callbacks
+        nconst, titletype, genres, theme,
+        query, yearstart, yearend, setCardDim, user_id,
+        ratingsFilter, showControlPanel, sortOrder, aiModel} = parameters.values
+    const {user, genresParamArray, urlParams } = parameters
 
     const [recsCounts, setRecsCounts] = useState({ nOld: 0, nNew: 0 })
     const [prompt, setPrompt] = useState()
-
-
-    // const [showGenres, setShowGenres] = useState(true)
-
-    //if (!showControlPanel)
-    //    return null
-
-    useEffect(() => {
-        console.log(" ==== initializing ControlPanel")
-    }, [])
 
     const updateDates = (yearstart, yearend) => {
         resetYearstart(yearstart)
@@ -66,30 +56,16 @@ const ControlPanel = ({ actorName, setTheme, theme,
     const zoom = theme == 'dark'
         ? <div className={styles.card_dim_slider} >
             zoom:
-            <input type="range"
+            <input id="zoom-slider" type="range"
                 min="150" max="600"
                 defaultValue="310"
                 onChange={newCardDim} />
         </div>
         : <></>
 
-
-    const resetAll = () => {
-        resetGenres()
-        resetYearstart(MIN_YEAR)
-        resetYearend(MAX_YEAR)
-        resetMovie()
-        resetActor()
-        resetQuery(null)
-        setNumMovies(NUM_MOVIES)
-        const queryInput = document.getElementById("query")
-        queryInput.value = ''
-    }
-
     const actorWidget = (
         <div className={styles.widget}>
             <Actor nconst={nconst}
-                actorName={actorName}
                 resetActor={resetActor}
             />
         </div>
@@ -159,13 +135,13 @@ const ControlPanel = ({ actorName, setTheme, theme,
             { dbName: 'not rated', displayName: 'not yet rated' },
             { dbName: 'recommendations', displayName: 'recommendations' }
         ]
-        console.log('ratingsFilter', ratingsFilter)
+        // ', ratingsFilter)
         const ratingsOptions = ratings.map((rating, idx) => {
             const style = rating.dbName == ratingsFilter
                 ? { fontWeight: 600, fontStyle: 'italic' }
                 : { fontWeight: 200 }
             return <li key={idx} style={style} onClick={() => {
-                if (user.id) resetRatingsFilter(rating.dbName)
+                if (user.id) setRatingsFilter(rating.dbName)
             }}>{rating.displayName}</li>
         })
 
@@ -195,7 +171,7 @@ const ControlPanel = ({ actorName, setTheme, theme,
             .then(data => {
                 console.log("===> recommendations:", data)
                 setRecsCounts(data)
-                resetRatingsFilter('recommendations')
+                setRatingsFilter('recommendations')
                 resetMovie(null)
                 resetGenres(null)
                 resetQuery(null)
@@ -299,22 +275,24 @@ const ControlPanel = ({ actorName, setTheme, theme,
 
     })
 
+
     const style = showControlPanel
         ? { display: "block" }
         : { display: "none" }
-    console.log(" **** render ControlPanel, user_id:", user.id, " aiModel:", aiModel)
+    //console.log(" **** render ControlPanel, user_id:", 
+    //    user.id, " showControlPanel:", showControlPanel)
+    if (!showControlPanel)
+        return null
+
     return (
         <div className={styles.controls} style={style}>
             <div className={styles.controls_content} >
                 <div className={styles.genres_widget}>
                     <Genres
                         genres={genres}
-                        query={query}
-                        yearstart={yearstart}
-                        yearend={yearend}
-                        nconst={nconst}
-                        titletype={titletype}
-                        ratingsFilter={ratingsFilter}
+                        genresParamArray={genresParamArray}
+                        urlParams={urlParams}
+                        resetGenres={resetGenres}
                     />
                 </div>
 

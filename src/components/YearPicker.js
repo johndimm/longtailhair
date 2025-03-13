@@ -1,7 +1,6 @@
 
-import React, { useState, useContext, useEffect } from 'react'
+import React from 'react'
 import RangeSlider from '@/components/RangeSlider'
-
 
 const YearPicker = ({
   setParentYearstart, setParentYearend, yearstart, yearend, goLeft, goRight

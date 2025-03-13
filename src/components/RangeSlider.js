@@ -44,7 +44,7 @@ const RangeSlider = ({ min, max, leftFieldName, rightFieldName,
       setMaxval(val)
       settop('min')
     }
-    console.log("newStart: ", val)
+    // console.log("newStart: ", val)
     return
 
     if (val > maxval) {
