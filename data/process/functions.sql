@@ -232,7 +232,7 @@ select
   ur.msg as user_rating_msg
 from title_basics_ex as tbe
 --join full_genres as fg using(genres)
-left join user_ratings ur using (tconst)
+left join user_ratings ur on ur.tconst = tbe.tconst and ur.user_id = _user_id
 where 
 
  --( _genres is null or fg.genres_array @> string_to_array(_genres::text, ',') )
@@ -378,7 +378,7 @@ select g.genre, count(*)::integer
 from title_basics_ex as tbe
 --join full_genres as fg using(genres)
 join genres as g using (tconst)
-left join user_ratings ur using (tconst)
+left join user_ratings ur on ur.tconst = tbe.tconst and ur.user_id = _user_id
 where  
 -- ( _genres is null or fg.genres_array @> string_to_array(_genres::text, ',') )
 -- and

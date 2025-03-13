@@ -63,7 +63,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
 
     <tr>
       <td style={{ verticalAlign: "top" }}>
-        watched:
+        your rating
       </td>
       <td>
         <EditStarRating user_id={user_id} tconst={tconst} user_rating={rating} getData={getData}
@@ -75,7 +75,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
   const interest = (
     <tr>
       <td style={{ verticalAlign: "top" }}>
-        interested:
+        want to see?
       </td>
       <td>
         <label htmlFor={not_interested_id}>
@@ -103,7 +103,8 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
       <table><tbody>
         <tr>
           <td>
-            imdb:</td>
+          imdb users
+            </td>
           <td>
             <StarRating score={averagerating} />
           </td>

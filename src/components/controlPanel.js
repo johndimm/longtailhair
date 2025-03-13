@@ -133,7 +133,7 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
             { dbName: 'all', displayName: 'everything' },
             { dbName: 'rated', displayName: 'rated by me' },
             { dbName: 'not rated', displayName: 'not yet rated' },
-            { dbName: 'recommendations', displayName: 'recommendations' }
+            { dbName: 'recommendations', displayName: 'recommended' }
         ]
         // ', ratingsFilter)
         const ratingsOptions = ratings.map((rating, idx) => {
