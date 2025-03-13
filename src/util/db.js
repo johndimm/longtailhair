@@ -167,7 +167,7 @@ exports.setUserRating = async function (user_id, tconst, rating) {
   cmd = `
   select count(*) as cnt 
   from user_ratings 
-  where user_id=${user_id} and rating != 3`
+  where user_id=${user_id} and rating != -3`
   const result = await performSQLQuery(cmd)
   const nRatings = result[0].cnt
 
@@ -175,7 +175,6 @@ exports.setUserRating = async function (user_id, tconst, rating) {
   console.log(json)
 
   return json
-
 }
 
 exports.getUserRatings = async function (user_id) {

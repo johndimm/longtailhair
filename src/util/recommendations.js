@@ -33,10 +33,7 @@ async function getDeepseekRecommendations(prompt) {
     ],
   });
 
-  const response = {}
-  //if (completion & completion["choices"]){
-    response = completion.choices[0].message.content
-  //}
+  const response = completion.choices[0].message.content
 
   let json = {}
   try {
@@ -324,7 +321,7 @@ export const getMovieAIRecs = async (user_id, tconst, _aiModel) => {
     genres = movie.genres
   }
 
-  const aiModel = _aiModel ? _aiModel : 'DeepSeek'
+  const aiModel = _aiModel ? _aiModel : 'Gemini'
 
   const prompt = await aiRecsPrompt(user_id, titletype, genres, aiModel, user_ratings_recs)
   const recs = await usePrompt(prompt, aiModel)

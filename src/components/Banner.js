@@ -22,6 +22,8 @@ const AuthButton = ( {setUser} ) => {
     }
   }, [session])
 
+  // return null
+
   if (session) {
     const shortName = session.user.name.replace(/ .*/, '')
     return (
@@ -88,16 +90,6 @@ const Banner = ({ toggleShowControlPanel }) => {
     setCardDim(style)
   }
 
-  /*
-  const zoom = theme == 'dark'
-    ? <div className={styles.card_dim_slider} >zoom
-      <input id="zoom-slider" type="range"
-        min="150" max="600"
-        defaultValue="310"
-        onChange={newCardDim} />
-    </div>
-    : <></>
-  */
 
   const actorWidget = (
     <div className={styles.widget}>
