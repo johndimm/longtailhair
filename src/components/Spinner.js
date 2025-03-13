@@ -2,17 +2,19 @@ import styles from "@/styles/Spinner.module.css"
 import { useEffect, useState } from 'react'
 
 const Spinner = ({ isLoading }) => {
-    const [_isLoading, setIsLoading] = useState(isLoading)
+    // const [_isLoading, setIsLoading] = useState(isLoading)
 
+    /*
     useEffect(() => {
         setIsLoading(isLoading)
-        setTimeout( () =>  {
-            setIsLoading(false)
-        }, 10000 )
+       // setTimeout( () =>  {
+       //     setIsLoading(false)
+       // }, 10000 )
         // console.log("Spinner useEffect")
     }, [isLoading])
+    */
 
-    if (!_isLoading) {
+    if (!isLoading) {
         return null;
     }
     else {

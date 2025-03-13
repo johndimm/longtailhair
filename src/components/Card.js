@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from 'react'
 import styles from "@/styles/Main.module.css";
-import { CallbackContext } from '@/components/Main'
+import { StateContext } from '@/components/State'
 import clsx from 'clsx'
 
 const StarRating = ({ score }) => {
@@ -46,7 +46,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
   const dbSet = async (user_id, _tconst, _rating) => {
     // User gave a rating.
     const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}`
-    console.log(url)
+    // console.log(url)
     await fetch(url)
     setRating(_rating)
     if (getData)
@@ -153,13 +153,15 @@ const Person = ({ r, selectedPerson, resetActor }) => {
 export const Card = ({
   recs,
   selectedPerson,
-  isScrolling,
+  // isScrolling,
   theme,
   getData
 }) => {
   const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
-  const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetYear, resetMovie, resetActor, cardDim, user } = callbacks
+  const parameters = useContext(StateContext)
+  const { resetGenres, resetYear, resetMovie, resetActor } = parameters.setters
+  const { cardDim } = parameters.values
+  const { user } = parameters
 
   useEffect(() => {
     if (recs && recs.length > 0) {
@@ -366,7 +368,7 @@ export const Sidebar = ({
   data,
   place,
   selectedPerson,
-  isScrolling,
+  // isScrolling,
   theme,
   getData
 }) => {
@@ -389,7 +391,6 @@ export const Sidebar = ({
       recs={recs}
       selectedPerson={selectedPerson}
       position="sidebar"
-      isScrolling={isScrolling}
       theme={theme}
       getData={getData} />
 

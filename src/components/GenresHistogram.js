@@ -47,12 +47,15 @@ const GenresHistogram = ({ initialData = sampleData, initialGenres, resetGenres 
   const handleBarClick = (entry) => {
     const genre = entry.genre;
     
-    // Add or remove from selected genres
+    // Add or remove from selected genres.  
     if (selectedGenres.includes(genre)) {
       resetSelectedGenres(selectedGenres.filter(g => g !== genre));
     } else {
-      // Only allow up to 3 selections
-      if (selectedGenres.length < 3) {
+      // Only allow up to 3 selections.  Do not allow 
+      // selection of empty genres.
+      if (selectedGenres.length < 3 
+           && initialData.find ( (g) => g.genre == genre && g.count > 0)
+        ) {
         resetSelectedGenres([...selectedGenres, genre]);
       }
     }
@@ -65,7 +68,7 @@ const GenresHistogram = ({ initialData = sampleData, initialGenres, resetGenres 
     // Ensure minimum height of 2px for visibility
     const minHeight = 2;
     const displayHeight = height < minHeight && height > 0 ? minHeight : height;
-    const adjustedY = y + (height - displayHeight);
+    const adjustedY = (y || 0) + (height - displayHeight);
     
     // Determine if this genre is selected
     const isSelected = selectedGenres.includes(payload.genre);

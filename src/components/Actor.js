@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from "@/styles/Actor.module.css"
 
-const Actor = ({ nconst, actorName, resetActor }) => {
+const Actor = ({ nconst, resetActor }) => {
   // return <></>
   const [data, setData] = useState([])
 

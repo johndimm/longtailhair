@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useContext, useRef } from 'react'
 import styles from "@/styles/Genres.module.css"
-import { CallbackContext } from '@/components/Main'
+import { StateContext } from '@/components/State'
 import { useRouter } from 'next/router';
 import GenresHistogram from '@/components/GenresHistogram'
 
-const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsFilter }) => {
+const Genres = ({genres, resetGenres, genresParamArray, urlParams }) => {
     const router = useRouter()
     const [genresCounts, setGenresCounts] = useState([])
-    const [checkedItems, setCheckedItems] = useState([]) //genres ? genres.split(',') : [])
+    const [checkedItems, setCheckedItems] = useState([])
 
-    const callbacks = useContext(CallbackContext)
-    const { resetGenres, user } = callbacks
+    //const parameters = useContext(StateContext)
+    //const { genres, numMovies, yearstart, yearend, query, nconst, titletype, ratingsFilter, sortOrder} = parameters.values
+    //const { genresParamArray, urlParams } = parameters
 
     const genresList = [
         'Action',
@@ -43,19 +44,20 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsF
     ]
 
     useEffect(() => {
-
         if (!router.isReady)
             return
 
-        // console.log(" ==== initializing Genres")
+        // console.log("====> counting genres") //, genresParamArray)
+
         setCheckedItems(genres ? genres.split(',') : [])
         countGenres()
 
-    }, [genres, query, yearstart, yearend, nconst, titletype, ratingsFilter])
+    }, genresParamArray) // [genres, numMovies, yearstart, yearend, query, nconst, titletype, ratingsFilter, sortOrder]) // genresParamArray)
+
+      //[genres, numMovies, yearstart, yearend, query, nconst, titletype, ratingsFilter, sortOrder])
 
     const countGenres = async () => {
-        //return
-        const url = `api/count_genres?genres=${genres}&yearstart=${yearstart}&yearend=${yearend}&query=${query}&nconst=${nconst}&titletype=${titletype}&ratingsFilter=${ratingsFilter}&user_id=${user.id}`
+        const url = '/api/count_genres?' + urlParams
 
         const response = await fetch(url)
         const result = await response.json()
@@ -88,11 +90,11 @@ const Genres = ({ genres, query, yearstart, yearend, nconst, titletype, ratingsF
         // console.log(checkedItems, newCheckedItems)
 
         // console.log(" **** resetGenres")
-        resetGenres(newCheckedItems.join(','))
+        parameters.resetGenres(newCheckedItems.join(','))
     };
 
     const selectOneGenre = (genre) => {
-        resetGenres(genre)
+        parameters.resetGenres(genre)
         setCheckedItems([genre])
     }
 

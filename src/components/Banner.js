@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef, createContext, useContext } from 'react'
-import { CallbackContext } from '@/components/Main'
+import { StateContext } from '@/components/State'
 import Actor from "@/components/Actor"
-//import YearPicker from "@/components/YearPicker"
-//import Genres from "@/components/Genres"
 import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 import { signIn, signOut, useSession } from "next-auth/react";
@@ -11,6 +9,7 @@ const registerUser = async (email, name, setUser) => {
   const url = `/api/register?email=${email}&name=${name}`
   const response = await fetch(url)
   const result = await response.json()
+  console.log("user_id:", result.user_id)
   setUser({id:result.user_id, email: email, name: name})
 }
 
@@ -22,6 +21,8 @@ const AuthButton = ( {setUser} ) => {
       registerUser(session.user.email, session.user.name, setUser)
     }
   }, [session])
+
+  // return null
 
   if (session) {
     const shortName = session.user.name.replace(/ .*/, '')
@@ -75,39 +76,11 @@ const SearchForm = ({ query, resetQuery }) => {
 
 
 
-const Banner = ({ actorName, setTheme, theme, showControlPanel, toggleShowControlPanel }) => {
+const Banner = ({ toggleShowControlPanel }) => {
 
-  const callbacks = useContext(CallbackContext)
-  const { resetGenres, resetMovie, resetActor,
-    resetQuery, resetYearstart, resetYearend, setTitletype, setNumMovies,
-    nconst, titletype, genres,
-    query, yearstart, yearend, setCardDim, setUser } = callbacks
-  //const [showGenres, setShowGenres] = useState(false)
-
-  //useEffect(() => {
-  //  setShowGenres(false)
-  //}, [genres])
-
-  const updateDates = (yearstart, yearend) => {
-    resetYearstart(yearstart)
-    resetYearend(yearend)
-  }
-
-  const goLeft = (e) => {
-    if (!yearstart || !yearend)
-      return
-
-    const delta = Math.max(yearend - yearstart, 0)
-    updateDates(parseInt(yearstart) - delta - 1, parseInt(yearstart) - 1)
-  }
-
-  const goRight = (e) => {
-    if (!yearstart || !yearend)
-      return
-
-    const delta = Math.max(yearend - yearstart, 0)
-    updateDates(parseInt(yearend) + 1, parseInt(yearend) + 1 + delta)
-  }
+  const parameters = useContext(StateContext)
+  const { resetActor, resetQuery, setCardDim, setUser} = parameters.setters
+  const { nconst, query, theme, showControlPanel} = parameters.values
 
   const newCardDim = (e) => {
     const val = e.target.value
@@ -117,32 +90,10 @@ const Banner = ({ actorName, setTheme, theme, showControlPanel, toggleShowContro
     setCardDim(style)
   }
 
-  const zoom = theme == 'dark'
-    ? <div className={styles.card_dim_slider} >zoom
-      <input type="range"
-        min="150" max="600"
-        defaultValue="310"
-        onChange={newCardDim} />
-    </div>
-    : <></>
-
-
-  const resetAll = () => {
-    resetGenres()
-    resetYearstart(MIN_YEAR)
-    resetYearend(MAX_YEAR)
-    resetMovie()
-    resetActor()
-    resetQuery(null)
-    setNumMovies(NUM_MOVIES)
-    const queryInput = document.getElementById("query")
-    queryInput.value = ''
-  }
 
   const actorWidget = (
     <div className={styles.widget}>
-      <Actor nconst={nconst}
-        actorName={actorName}
+      <Actor nconst={nconst}ƒ
         resetActor={resetActor}
       />
     </div>
@@ -191,7 +142,6 @@ const Banner = ({ actorName, setTheme, theme, showControlPanel, toggleShowContro
   const searchWidget = (
     <div className={styles.search_widget}>
       <SearchForm query={query} resetQuery={resetQuery} />
-      {zoom}
     </div>
   )
 

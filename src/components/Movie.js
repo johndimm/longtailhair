@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styles from "@/styles/Main.module.css"
 import { Card, Sidebar } from "./Card"
-import { CallbackContext } from '@/components/Main'
+import { StateContext } from '@/components/State'
 import Spinner from "@/components/Spinner"
 import Head from 'next/head'
 import RequestRecs from "@/components/RequestRecs"
@@ -29,7 +29,7 @@ const Trailer = ({ tmdb_id, titletype }) => {
 
   const youtube_embed = (key, name) => {
     const src = `https://www.youtube.com/embed/${key}`
-    return <iframe width="100%" height="200px"
+    return <iframe id="youtube_embed" width="100%" height="200px"
       src={src}
       title={name}
       frameBorder="0"
@@ -58,19 +58,17 @@ const Trailer = ({ tmdb_id, titletype }) => {
 }
 
 const Movie = ({
-  tconst,
   hideSearchPage,
-  nconst,
-  setRatingsFilter,
-  ratingsFilter,
-  getData,
-  aiModel
+  getData
 }) => {
   const [data, setData] = useState([])
   const [isLoading, setIsLoading] = useState(false)
 
-  const callbacks = useContext(CallbackContext)
-  const { resetMovie, user, resetGenres, resetQuery, resetYearstart, resetYearend } = callbacks
+  const parameters = useContext(StateContext)
+  const { resetMovie, resetGenres, resetQuery, 
+    resetYearstart, resetYearend,  setRatingsFilter } = parameters.setters
+  const { tconst, nconst, ratingsFilter, aiModel } = parameters.values
+  const { user } = parameters
 
   const getMovieData = async () => {
     setIsLoading(true)
@@ -80,8 +78,8 @@ const Movie = ({
     setData(result)
     setIsLoading(false)
 
-    if (tconst)
-      hideSearchPage()
+    //if (tconst)
+    //  hideSearchPage()
   }
 
   useEffect(() => {
@@ -108,7 +106,6 @@ const Movie = ({
     const backdrop_url = backdrop.replace('w300', 'w1280').replace('SX300', 'SX1280')
     backdrop = <img className={styles.backdrop} src={backdrop_url} />
   }
-
 
   const generateSingleMovieRecs = async () => {
     const url = `/api/get_single_recs?tconst=${tconst}&titletype=${titletype}&user_id=${user.id}&aiModel=${aiModel}`

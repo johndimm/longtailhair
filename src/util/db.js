@@ -80,18 +80,18 @@ function isNullish (query) {
     return !query || query === 'undefined' || query === 'null' || query === ''
 }
 exports.get_movies = function (numMovies, genres, yearstart, yearend, 
-  query, nconst, titletype, movieList, orderBy, ratingsFilter, user_id) {
+  query, nconst, titletype, movieList, sortOrder, ratingsFilter, user_id) {
     const _genres = isNullish(genres) ? null : `'${genres}'`
     const _yearstart = isNullish(yearstart) ? null : yearstart
     const _yearend = isNullish(yearend) ? null : yearend
     const _query = isNullish(query) ? null : `'${query}'`
     const _nconst = isNullish(nconst) ? null : `'${nconst}'`
     const _titletype = isNullish(titletype) ? null : `'${titletype}'`
-    const _orderBy = isNullish(orderBy) ? null : `'${orderBy}'`
+    const _sortOrder = isNullish(sortOrder) ? null : `'${sortOrder}'`
     const _ratingsFilter = isNullish(ratingsFilter) ? null : `'${ratingsFilter}'`
 
     // console.log(query, _query)
-	const data = performSQLQuery(`select * from get_movies(${numMovies}, ${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype}, ${movieList}, ${_orderBy}, ${_ratingsFilter}, ${user_id});`);
+	const data = performSQLQuery(`select * from get_movies(${numMovies}, ${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype}, ${movieList}, ${_sortOrder}, ${_ratingsFilter}, ${user_id});`);
     return data
 };
 
@@ -167,7 +167,7 @@ exports.setUserRating = async function (user_id, tconst, rating) {
   cmd = `
   select count(*) as cnt 
   from user_ratings 
-  where user_id=${user_id} and rating != 3`
+  where user_id=${user_id} and rating != -3`
   const result = await performSQLQuery(cmd)
   const nRatings = result[0].cnt
 
@@ -175,7 +175,6 @@ exports.setUserRating = async function (user_id, tconst, rating) {
   console.log(json)
 
   return json
-
 }
 
 exports.getUserRatings = async function (user_id) {
