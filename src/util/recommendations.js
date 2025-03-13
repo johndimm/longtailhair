@@ -107,7 +107,7 @@ async function getClaudeRecommendations(prompt) {
 export const aiRecsPrompt = async (user_id, titletype, genres, aiModel, user_ratings_recs) => {
 
   // Clear out any previous recommendations
-  await db.performQuery(`delete from user_ratings where user_id=${user_id} and rating=-3`)
+  //await db.performQuery(`delete from user_ratings where user_id=${user_id} and rating=-3`)
 
   let movies = 'movies'
   let titletypeInstruction = 'Respond only with movies, not tv series!'
@@ -259,6 +259,9 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code) => {
     insertRecs.push(line)
   }
 
+    // Clear out any previous recommendations
+  //await db.performQuery(`delete from user_ratings where user_id=${user_id} and rating=-3`)
+
   let cmd = `  
   drop table if exists tmp;
   create table tmp (
@@ -279,6 +282,8 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code) => {
   await db.performQuery(cmd)
 
   cmd = `
+  delete from user_ratings where user_id=${user_id} and rating=-3
+  ;
   insert into user_ratings
   (user_id, tconst, rating, msg)
   select ${user_id} as user_id, tbe.tconst, ${code}, why_recommended as msg

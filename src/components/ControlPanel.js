@@ -13,10 +13,10 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
     const { resetGenres, resetMovie, resetActor,
         resetQuery, resetYearstart, resetYearend, 
         setTitletype,  setTheme, setRatingsFilter,
-        setSortOrder,  setAiModel, resetAll } = parameters.setters
+        setSortOrder,  setAIModel, resetAll } = parameters.setters
     const {
         nconst, titletype, genres, theme,
-        query, yearstart, yearend, setCardDim, user_id,
+        query, yearstart, yearend, setCardDim, user_id, 
         ratingsFilter, showControlPanel, sortOrder, aiModel} = parameters.values
     const {user, genresParamArray, urlParams } = parameters
 
@@ -203,8 +203,8 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
             const defaultChecked = source == aiModel
             return <div key={idx} style={{ 'whiteSpace': 'nowrap' }}>
                 <input type="radio" id={source} name="model" value={source}
-                    defaultChecked={defaultChecked} disabled={!user.id} onClick={() => setAiModel(source)} />
-                <label htmlFor={source} onClick={() => setAiModel(source)}>{source}</label>
+                    defaultChecked={defaultChecked} disabled={!user.id} onClick={() => setAIModel(source)} />
+                <label htmlFor={source} onClick={() => setAIModel(source)}>{source}</label>
             </div>
         })
 

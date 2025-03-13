@@ -65,7 +65,7 @@ const Movie = ({
   const [isLoading, setIsLoading] = useState(false)
 
   const parameters = useContext(StateContext)
-  const { resetMovie, resetGenres, resetQuery, 
+  const { resetMovie, resetActor, resetGenres, resetQuery, 
     resetYearstart, resetYearend,  setRatingsFilter } = parameters.setters
   const { tconst, nconst, ratingsFilter, aiModel } = parameters.values
   const { user } = parameters
@@ -113,7 +113,7 @@ const Movie = ({
     const data = await response.json()
     const alreadyRecs = ratingsFilter == 'recommendations'
     setRatingsFilter('recommendations')
-    resetMovie(null)
+    resetActor(null)
     resetGenres(null)
     resetQuery(null)
     resetYearstart(null)

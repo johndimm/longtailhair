@@ -153,7 +153,7 @@ export default function State() {
   ]
 
   const genresParamArray = [_genres, _query, _yearstart, _yearend,
-    _nconst, _titletype, _ratingsFilter]
+    _nconst, _titletype, _ratingsFilter, user_id]
 
   // Create the key=value params to use in a url.
   const params = []
