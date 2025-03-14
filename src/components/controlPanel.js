@@ -12,11 +12,11 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
     const parameters = useContext(StateContext)
     const { resetGenres, resetMovie, resetActor,
         resetQuery, resetYearstart, resetYearend, 
-        setTitletype,  setTheme, setRatingsFilter,
+        setTitletype,  setTheme, setRatingsFilter, setCardDim, 
         setSortOrder,  setAIModel, resetAll } = parameters.setters
     const {
         nconst, titletype, genres, theme,
-        query, yearstart, yearend, setCardDim, user_id, 
+        query, yearstart, yearend, user_id, 
         ratingsFilter, showControlPanel, sortOrder, aiModel} = parameters.values
     const {user, genresParamArray, urlParams } = parameters
 

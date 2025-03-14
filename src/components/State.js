@@ -142,7 +142,8 @@ export default function State() {
     user_id: user_id,
     theme: _theme,
     showControlPanel: _showControlPanel,
-    aiModel: _aiModel
+    aiModel: _aiModel, 
+    cardDim: cardDim
   }
 
   // Get new data if any of these change.  The tconst value is not included here.  
