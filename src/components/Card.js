@@ -161,7 +161,7 @@ export const Card = ({
   const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
   const parameters = useContext(StateContext)
   const { resetGenres, resetYear, resetMovie, resetActor } = parameters.setters
-  const { cardDim } = parameters.values
+  const { cardDim, aiModel } = parameters.values
   const { user } = parameters
 
   useEffect(() => {
@@ -339,7 +339,7 @@ export const Card = ({
 
         <Ratings user_id={user.id} tconst={r1.tconst}
           user_rating={r1.user_rating} averagerating={r1.averagerating}
-          getData={getData}  />
+          getData={getData}  titletype={r1.titletype} genres={r1.genres} aiModel={aiModel}/>
 
         <span
           className={styles.year}

@@ -61,7 +61,6 @@ async function getChatgptRecommendations(prompt) {
     // model: "03-mini",
     // model: "gpt-4.5-preview",
     model: "gpt-4o",
-    reasoning_effort: "medium",
     store: true,
     messages: [
       { "role": "user", "content": prompt },
