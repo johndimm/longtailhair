@@ -109,40 +109,68 @@ export const aiRecsPrompt = async (user_id, titletype, genres, aiModel, user_rat
   //await db.performQuery(`delete from user_ratings where user_id=${user_id} and rating=-3`)
 
   let movies = 'movies'
-  let titletypeInstruction = 'Respond only with movies, not tv series!'
+  let titletypeInstruction = 'You can provide a few tv series but I am currently looking at movies, so provide mostly movies.'
   if (titletype != 'movie') {
     movies = 'tv series'
-    titletypeInstruction = 'Respond only with tv series, not movies!'
+    titletypeInstruction = 'You can provide a few movies but I am currently looking at tv series, so provide ostly tv series.'
   }
   let genresFilter = ''
   if (genres && genres != 'undefined' && genres != 'null') {
-    genresFilter = `Return only movies in the genre ${genres}`
+    genresFilter = `Return mainly movies or tv series in the genre ${genres}`
   }
 
   const intro = `
 
 Hello ${aiModel}!
 
+<goal>
+Give me an interesting list of movies and tv series I have not yet seen.  The feature
+will be a success if I later watch the recommendations and give them good ratings.  
+</goal>
+
+<request>
 You are a movie and tv show recommendation expert.
+Provide 30 movie and tv recommendations based on the ratings I provide in the resources section.  
+</request>
 
-Provide a JSON array of 30 recommendations based on my ratings below.  
+<constraint>
+CRITICAL: DO NOT recommend ANY movies listed ANYWHERE in this prompt. This is the most important rule.
 
-The recommendations should not include any of the titles listed anywhere in this prompt,
-(including "haven't seen," "would like to," or "rated" sections). 
+Every single title mentioned in any section must be excluded from recommendations, including:
+- All movies in the "I haven't seen these and don't want to" list
+- All movies in the "I haven't seen these but want to" list
+- All movies in the "Rated 3," "Rated 4," and "Rated 5" sections
 
-Follow these rules:  
+Before finalizing each recommendation, explicitly verify it does NOT appear anywhere in this prompt.
+</constraint>
 
-1. Every title listed in any section should be excluded.
-(whether rated, to watch, or not to watch) 
+<strategy>
+Do NOT focus only on the most similar movies to my highest-rated films.
+Instead, rotate through different aspects of my taste profile:
+- First third: recommend based on my top-rated films
+- Second third: recommend based on directors/creators of my top-rated films
+- Final third: recommend films that represent different eras/styles but match my general preferences
+</strategy>
 
-2. Do not repeat any titles mentioned in the prompt, 
-even if the model thinks they fit the recommendation criteria.
+<constraint>
+Ensure diversity in your recommendations by including:
+- At least 3 films from decades I haven't rated anything from
+- At least 3 films from countries not represented in my ratings
+- At least 3 films from genres that seem adjacent to my preferences but aren't directly represented
 
-3. Double-check each recommendation against all provided lists before finalizing.
+The primary goal is discovering new, high-quality films I haven't seen, not just finding the closest matches to my existing favorites.
+</constraint>
 
+<instruction>
+For each recommendation, aim to be at most "two degrees of separation" from my rated films - recommend films that were influences on my favorites, or were influenced by them, rather than just similar films.
+</instruction>
+
+<constraint>
 ${titletypeInstruction}
 ${genresFilter}
+</constraint>
 
+<format>
 Please provide recommendations in this exact JSON format. 
 
 Do not include any text outside the JSON array.
@@ -150,17 +178,22 @@ Do not include any text outside the JSON array.
 Do not add any introductory text, do not wrap it in a single field named 'text', 
 just give the response as a valid JSON array.
 
+<examples>
 [
   {
   "year": 1962,
   "title": "The 400 Blows",
-  "why_recommended": "Recommended because you like french new wave."
+  "why_recommended": "Recommended because you enjoyed 'Breathless' and would appreciate this seminal French New Wave fim aobut youth and alienation"
   }
 ]
+</examples>
 
-For "why_recommended", provide a reference to a ${movies} I have seen 
-to explan why this ${movies} is recommended.  
+Before adding any movie to your recommendations, compare it character-by-character to each movie listed in the resources section to ensure there are NO matches.
 
+For "why_recommended", provide a specific reference to a movie I have rated highly (4 or 5) to explain why this new movie is recommended.
+</format>
+
+<constraint>
 Try to find titles that are not well-known.  
 
 Pick ${movies} with good ratings but low popularity.  
@@ -168,37 +201,45 @@ Pick ${movies} with good ratings but low popularity.
 Do not pick highly popular ${movies}.
 
 Similarity with ${movies} I have rated highly counts much more than popularity.
+</constraint>
 
-Here are the rated ${movies} to Exclude (DO NOT RECOMMEND THESE):
+<verification>
+After creating your list of recommendations, check each one against ALL movies mentioned in this prompt. 
+Remove any recommendation that matches any movie title in this prompt.
+This verification step must be completed before responding.
+</verification>
+
 
 `
 
-  const moviesRatedAs = {}
-  user_ratings_recs.forEach((r, idx) => {
-    if (!moviesRatedAs.hasOwnProperty(r.rating)) {
-      moviesRatedAs[r.rating] = []
-    }
-    moviesRatedAs[r.rating].push(`"${r.title} (${r.year})"\n`)
-    //moviesRatedAs[r.rating].push(`"${r.tconst}"\n`)
+const not_see = user_ratings_recs.filter( (r) => r.rating == -2).map ( (r,idx) => {
+    return {"title": r.title, "year": r.year}
   })
 
-  let ratingsConstants = [
-    { "id": -2, "msg": "I haven't seen these and don't want to:\n" },
-    { "id": -1, "msg": "I haven't seen these but want to:\n" }
-  ]
-
-  const ratings = [1, 2, 3, 4, 5]
-  ratings.forEach((rating, idx) => [
-    ratingsConstants.push({ "id": rating, "msg": `Rated ${rating}:\n` })
-  ])
-
-  let report = ''
-  ratingsConstants.forEach((rating, idx) => {
-    if (moviesRatedAs[rating.id])
-      report += rating.msg + moviesRatedAs[rating.id] + ".\n"
+  const want_see = user_ratings_recs.filter( (r) => r.rating == -1).map ( (r,idx) => {
+    return {"title": r.title, "year": r.year}
   })
 
-  const prompt = intro + report
+  const rated = user_ratings_recs.filter( (r) => r.rating > 0).map ( (r,idx) => {
+    return {"title": r.title, "year": r.year, "rating": r.rating}
+  })
+
+  const resource = {
+    do_not_want_to_see: not_see,
+    want_to_see: want_see,
+    rated: rated
+  }
+
+  const report = JSON.stringify(resource, null, 2)
+
+  const prompt = `
+${intro}
+<resources>
+Here are the rated ${movies} to Exclude (DO NOT RECOMMEND THESE):
+ 
+${report}
+</resources>
+`
   console.log("prompt", prompt)
   return prompt
 }
