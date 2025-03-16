@@ -34,7 +34,7 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
 }
 
 
-const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
+const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
   const [rating, setRating] = useState(user_rating)
 
   useEffect(() => {
@@ -45,7 +45,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData }) => {
 
   const dbSet = async (user_id, _tconst, _rating) => {
     // User gave a rating.
-    const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}`
+    const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}&aiModel=${aiModel}`
     // console.log(url)
     await fetch(url)
     setRating(_rating)
