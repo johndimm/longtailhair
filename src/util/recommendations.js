@@ -178,6 +178,10 @@ Do not include any text outside the JSON array.
 Do not add any introductory text, do not wrap it in a single field named 'text', 
 just give the response as a valid JSON array.
 
+Do not start the response with a few backticks followed by "json".  Just give me the JSON itself.  Given your response, this should work:
+
+  const json = JSON.parse(response)
+
 <examples>
 [
   {

@@ -266,7 +266,7 @@ and
   or
   (_rating_filter = 'not rated' and ur.rating is null)
   or 
-  (_rating_filter = 'interested' and ur.rating = -1)
+  (_rating_filter = 'watchlist' and ur.rating = -1)
   or
   (_rating_filter = 'recommendations' and ur.rating = -3)
   or

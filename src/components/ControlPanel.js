@@ -132,6 +132,7 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
         const ratings = [
             { dbName: 'all', displayName: 'everything' },
             { dbName: 'rated', displayName: 'rated by me' },
+            { dbName: 'watchlist', displayName: 'want to watch'},
             { dbName: 'not rated', displayName: 'not yet rated' },
             { dbName: 'recommendations', displayName: 'recommended' }
         ]
