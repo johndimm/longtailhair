@@ -84,12 +84,16 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
     )
 
     const SourcesWidget = (() => {
-        const sources = ['movie', 'tv']
+        const sources = [
+            {dbName:'movie', displayName:'movies'},
+            {dbName:'tv', displayName:'tv'},
+            {dbName:null, displayName:'both'}
+        ]
         const sourceOptions = sources.map((source, idx) => {
-            const style = source == titletype
+            const style = source.dbName == titletype
                 ? { fontWeight: 600, fontStyle: 'italic' }
                 : { fontWeight: 200 }
-            return <li key={idx} style={style} onClick={() => setTitletype(source)}>{source}</li>
+            return <li key={idx} style={style} onClick={() => setTitletype(source.dbName)}>{source.displayName}</li>
         })
         return (
             <div>

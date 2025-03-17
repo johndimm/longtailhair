@@ -137,9 +137,9 @@ Provide 30 movie and tv recommendations based on the ratings I provide in the re
 CRITICAL: DO NOT recommend ANY movies listed ANYWHERE in this prompt. This is the most important rule.
 
 Every single title mentioned in any section must be excluded from recommendations, including:
-- All movies in the "I haven't seen these and don't want to" list
-- All movies in the "I haven't seen these but want to" list
-- All movies in the "Rated 3," "Rated 4," and "Rated 5" sections
+- All movies in the do_not_want_to_see list
+- All movies in the want_to_see list
+- All movies in the rated list
 
 Before finalizing each recommendation, explicitly verify it does NOT appear anywhere in this prompt.
 </constraint>
