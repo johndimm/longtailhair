@@ -7,9 +7,9 @@ export default async function handler (req, res) {
   const result = await db.setUserRating(user_id, tconst, rating)
   const count = result.count
 
-  if (parseInt(count) % 10 == 0) {
-    await getAIRecs (user_id, titletype, genres, aiModel)
-  }
+  //if (parseInt(count) % 10 == 0) {
+  //  await getAIRecs (user_id, titletype, genres, aiModel)
+  //}
 
   res.status(200).json(result)
 }
