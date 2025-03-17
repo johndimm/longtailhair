@@ -49,14 +49,20 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
     // User gave a rating.
     const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}&aiModel=${aiModel}`
     
-    setIsLoading(true)
-
-    await fetch(url)
-    setRating(_rating)
+    const response = await fetch(url)
+    const result = await response.json()
     if (getData)
       getData()
+    setRating(_rating)
+     
+    if (result.count % 10 == 0) {
+      setIsLoading(true)
+      const url = `/api/get_recommendations?user_id=${user_id}&rating=${_rating}&aiModel=${aiModel}` 
+      const response = await fetch(url)
+      const result = response.json()
+      setIsLoading(false)
+    }
 
-    setIsLoading(false)
   }
 
   const interested = user_rating == -1
