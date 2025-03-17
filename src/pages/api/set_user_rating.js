@@ -8,7 +8,7 @@ export default async function handler (req, res) {
   const count = result.count
 
   if (parseInt(count) % 10 == 0) {
-    getAIRecs (user_id, titletype, genres, aiModel)
+    await getAIRecs (user_id, titletype, genres, aiModel)
   }
 
   res.status(200).json(result)

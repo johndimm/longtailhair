@@ -2,6 +2,7 @@ import { useContext, useState, useEffect } from 'react'
 import styles from "@/styles/Main.module.css";
 import { StateContext } from '@/components/State'
 import clsx from 'clsx'
+import Spinner from "@/components/Spinner"
 
 const StarRating = ({ score }) => {
   const filledStars = Math.round(score / 2.0);
@@ -40,17 +41,22 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
   useEffect(() => {
     setRating(user_rating)
   }, [tconst])
+    const [isLoading, setIsLoading] = useState(false)
 
   // console.log(`tconst:${tconst}, user_rating:${user_rating}, rating:${rating}`)
 
   const dbSet = async (user_id, _tconst, _rating) => {
     // User gave a rating.
     const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}&aiModel=${aiModel}`
-    // console.log(url)
+    
+    setIsLoading(true)
+
     await fetch(url)
     setRating(_rating)
     if (getData)
       getData()
+
+    setIsLoading(false)
   }
 
   const interested = user_rating == -1
@@ -60,7 +66,6 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
   const interest_level_name = 'interest-' + tconst
 
   const user_ratings = (
-
     <tr>
       <td style={{ verticalAlign: "top" }}>
         your rating
@@ -99,7 +104,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
 
   return (
     <div>
-
+      <Spinner isLoading={isLoading} msg="please wait, generating recommendations"/>
       <table><tbody>
         <tr>
           <td>
@@ -154,7 +159,6 @@ const Person = ({ r, selectedPerson, resetActor }) => {
 export const Card = ({
   recs,
   selectedPerson,
-  // isScrolling,
   theme,
   getData
 }) => {
