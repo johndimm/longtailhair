@@ -72,7 +72,7 @@ const Movie = ({
 
   const getMovieData = async () => {
     setIsLoading(true)
-    const url = `/api/get_movie/${tconst}`
+    const url = `/api/get_movie?tconst=${tconst}&user_id=${user.id}`
     const response = await fetch(url)
     const result = await response.json()
     setData(result)

@@ -225,6 +225,8 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
           ? {fontWeight: 600}
           : {}
 
+        const buttonStyle = {fontSize:"10pt", padding:"3px"}  
+
         return (
             <div className={styles.widget} style={style} title={tooltip}>
                 <h3>
@@ -240,7 +242,7 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
 
                     </li>
                 </ul>
-                <div><RequestRecs user={user} generateRecs={getRecommendations} buttonText="run now!" /></div>
+                <div><RequestRecs user={user} generateRecs={getRecommendations} buttonText="run now!" style={buttonStyle} /></div>
                 <ul>
                     <li onClick={showPrompt} style={showPromptButtonStyle}>show prompt</li>
                     <li>already rated: {recsCounts.nOld}</li>

@@ -51,11 +51,11 @@ exports.get_only_movie = function (title, date) {
 	return performSQLQuery(cmd);
 };
 
-exports.get_movie = function (tconst) {
+exports.get_movie = function (tconst, user_id) {
   if (tconst == 'undefined')
     return []
 
-	return performSQLQuery(`select * from get_movie('${tconst}');`);
+	return performSQLQuery(`select * from get_movie('${tconst}', ${user_id});`);
 };
 
 exports.get_movie_list = function (movieList) {
