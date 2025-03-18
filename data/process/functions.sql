@@ -105,7 +105,8 @@ select * from get_only_movie ('The Killing Fields', 1984) limit 3;
 drop function if exists get_movie;
 create
 or replace function get_movie(
-  _tconst text)
+  _tconst text,
+  _user_id integer default null)
 returns table (
 tconst text,
 nconst text,
@@ -164,8 +165,8 @@ select _all.*, nb.primaryName, tb.primaryTitle, coalesce(tp.characters, tp.categ
   join title_basics_ex as tb using (tconst)
   join name_basics_ex as nb using (nconst)
   join title_principals_agg as tp using (tconst, nconst)
-  left join user_ratings as ur using (tconst)
   left join tmdb using (tconst)
+  left join user_ratings as ur on ur.tconst=_all.tconst and ur.user_id = _user_id
   left join posters as p on p.tconst = _all.tconst and p.error_count < 1
 ;
 
