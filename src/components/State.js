@@ -26,6 +26,7 @@ export default function State() {
   // const [_user, setUser] = useState({ id: 725, email: null, name: 'Vince' })
   const [_user, setUser] = useState({ id: null, email: null, name: null })
 
+  const [numRatings, setNumRatings] = useState(0)
   const [paramsProcessed, setParamsProcessed] = useState(false)
   const [cardDim, setCardDim] = useState()
 
@@ -143,7 +144,8 @@ export default function State() {
     theme: _theme,
     showControlPanel: _showControlPanel,
     aiModel: _aiModel, 
-    cardDim: cardDim
+    cardDim: cardDim,
+    numRatings: numRatings
   }
 
   // Get new data if any of these change.  The tconst value is not included here.  
@@ -182,7 +184,8 @@ export default function State() {
     setTheme: setTheme,
     setShowControlPanel: setShowControlPanel,
     setAIModel: setAIModel,
-    resetAll: resetAll
+    resetAll: resetAll,
+    setNumRatings: setNumRatings
   }
 
   const parameters = {

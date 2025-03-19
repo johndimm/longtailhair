@@ -206,3 +206,13 @@ exports.register = async function (email, name) {
 
   return await performSQLQuery(query)
 }
+
+exports.get_num_ratings = async function (user_id) {
+  const query = `
+  select count(*) as num_ratings 
+  from user_ratings 
+  where user_id=${user_id} and rating != -3
+  `
+
+  return await performSQLQuery(query)
+}

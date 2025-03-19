@@ -260,3 +260,9 @@
     padding: 20px;
     display: inline-block;
 }
+.num_ratings {
+    padding: 5px;
+    border: 1px solid gray;
+    margin: 5px;
+    background-color: white;
+}

@@ -5,20 +5,29 @@ import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 import { signIn, signOut, useSession } from "next-auth/react";
 
-const registerUser = async (email, name, setUser) => {
+const registerUser = async (email, name, setUser, setNumRatings) => {
   const url = `/api/register?email=${email}&name=${name}`
   const response = await fetch(url)
   const result = await response.json()
   console.log("user_id:", result.user_id)
   setUser({id:result.user_id, email: email, name: name})
+
+  await updateNumRatings (result.user_id, setNumRatings)
 }
 
-const AuthButton = ( {setUser} ) => {
+const updateNumRatings = async (user_id, setNumRatings) => {
+    const url = `/api/get_num_ratings/${user_id}`
+    const response = await fetch(url)
+    const result = await response.json()
+    setNumRatings (result[0].num_ratings) 
+}
+
+const AuthButton = ( {setUser, setNumRatings} ) => {
   const { data: session } = useSession();
 
   useEffect( () => {
     if (session) {
-      registerUser(session.user.email, session.user.name, setUser)
+      registerUser(session.user.email, session.user.name, setUser, setNumRatings)
     }
   }, [session])
 
@@ -26,6 +35,7 @@ const AuthButton = ( {setUser} ) => {
 
   if (session) {
     const shortName = session.user.name.replace(/ .*/, '')
+
     return (
       <div className={styles.sign_in}>
         <p style={{marginBottom: "5px"}}>{shortName}</p>
@@ -79,8 +89,8 @@ const SearchForm = ({ query, resetQuery }) => {
 const Banner = ({ toggleShowControlPanel }) => {
 
   const parameters = useContext(StateContext)
-  const { resetActor, resetQuery, setCardDim, setUser} = parameters.setters
-  const { nconst, query, theme, showControlPanel} = parameters.values
+  const { resetActor, resetQuery, setCardDim, setUser, setNumRatings} = parameters.setters
+  const { nconst, query, theme, showControlPanel, numRatings} = parameters.values
 
   const newCardDim = (e) => {
     const val = e.target.value
@@ -145,6 +155,13 @@ const Banner = ({ toggleShowControlPanel }) => {
     </div>
   )
 
+  const numRatingsWidget = (
+    <div className={styles.widget}>
+      <div className={styles.num_ratings}>{numRatings}</div>
+      ratings
+    </div>
+  )
+
   const gearStyle = showControlPanel
     ? styles.gear_clicked
     : styles.gear
@@ -157,8 +174,8 @@ const Banner = ({ toggleShowControlPanel }) => {
         <span className={gearStyle} onClick={toggleShowControlPanel}>&#x2699;</span>
       </div>
       {searchWidget}
-      <AuthButton setUser={setUser}/>
-
+      {numRatingsWidget}
+      <AuthButton setUser={setUser} setNumRatings={setNumRatings}/>
     </div>
   )
 }

@@ -15,6 +15,8 @@ const StarRating = ({ score }) => {
 }
 
 const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
+
+
   const nStars = user_rating > 0 ? user_rating : 0
 
   const stars = Array.from({ length: 5 }, (v, i) => {
@@ -37,6 +39,9 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
 
 const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
   const [rating, setRating] = useState(user_rating)
+  const parameters = useContext(StateContext)
+  const { setNumRatings } = parameters.setters
+  const { numRatings } = parameters.values
 
   useEffect(() => {
     setRating(user_rating)
@@ -54,6 +59,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
     if (getData)
       getData()
     setRating(_rating)
+    setNumRatings (parseInt(numRatings) + 1)
      
     if (result.count % 10 == 0) {
       setIsLoading(true)
@@ -379,7 +385,6 @@ export const Sidebar = ({
   data,
   place,
   selectedPerson,
-  // isScrolling,
   theme,
   getData
 }) => {

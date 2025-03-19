@@ -187,14 +187,14 @@ Do not start the response with a few backticks followed by "json".  Just give me
   {
   "year": 1962,
   "title": "The 400 Blows",
-  "why_recommended": "Recommended because you enjoyed 'Breathless' and would appreciate this seminal French New Wave fim aobut youth and alienation"
+  "why_recommended": "Recommended because you enjoyed 'Breathless' and would appreciate this seminal French New Wave film aobut youth and alienation"
   }
 ]
 </examples>
 
 Before adding any movie to your recommendations, compare it character-by-character to each movie listed in the resources section to ensure there are NO matches.
 
-For "why_recommended", provide a specific reference to a movie I have rated highly (4 or 5) to explain why this new movie is recommended.
+For "why_recommended", provide a specific reference to a movie I have rated to explain why this new movie is recommended.
 </format>
 
 <constraint>
