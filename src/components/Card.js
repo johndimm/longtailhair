@@ -2,139 +2,43 @@ import { useContext, useState, useEffect } from 'react'
 import styles from "@/styles/Main.module.css";
 import { StateContext } from '@/components/State'
 import clsx from 'clsx'
-import Spinner from "@/components/Spinner"
+import Ratings from "@/components/Ratings"
 
-const StarRating = ({ score }) => {
-  const filledStars = Math.round(score / 2.0);
+const ExternalLinks = ({ r1 }) => {
 
-  const stars = Array.from({ length: filledStars }, (v, i) => (
-    <span className={styles.star_rating} key={i}>&#9733;</span>
-  ));
+  if (r1.place != 'center') {
+    return null
+  }
 
-  return <span>{stars}</span>
-}
+  const item = `"${r1.primarytitle}" (${r1.startyear})`
+  const google_query = encodeURI(`where can I watch ${item}?`)
+  const url = `https://www.google.com/search?q=${google_query}`
 
-const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
+  const encodeItem = encodeURI(item)
+  const rotten = `https://www.rottentomatoes.com/search?search=${encodeItem}`
 
+  const letterboxItem = encodeURI(`${r1.primarytitle} ${r1.startyear}`)
+  const letterboxd = `https://letterboxd.com/search/${letterboxItem}`
 
-  const nStars = user_rating > 0 ? user_rating : 0
-
-  const stars = Array.from({ length: 5 }, (v, i) => {
-    const style = i < nStars
-      ? { color: "blue", cursor: "pointer" }
-      : { color: "white", cursor: "pointer" }
-    return <span
-      className={styles.star_rating}
-      style={style}
-      key={i}
-      onClick={() => dbSet(user_id, tconst, i + 1)}
-    >&#9733;</span>
-  });
-
-  return <div>
-    <span >{stars}</span>
+  return <div className={styles.external_links}>
+    <ul>
+      <li>
+        <a target="_imdb" title={`${r1.titletype} in imdb`}
+          href={`https://www.imdb.com/title/${r1.tconst}/`}>Internet Movie Database</a>
+      </li>
+      <li>
+        <a href={url} target="_where_to_watch">Google: where to watch</a>
+      </li>
+      <li>
+        <a href={rotten} target="rotten_tomatoes">Rotten Tomatoes</a>
+      </li>
+      <li>
+        <a href={letterboxd} target="letterboxd">Letterboxd</a>
+      </li>
+    </ul>
   </div>
 }
 
-
-const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
-  const [rating, setRating] = useState(user_rating)
-  const parameters = useContext(StateContext)
-  const { setNumRatings } = parameters.setters
-  const { numRatings } = parameters.values
-
-  useEffect(() => {
-    setRating(user_rating)
-  }, [tconst])
-    const [isLoading, setIsLoading] = useState(false)
-
-  // console.log(`tconst:${tconst}, user_rating:${user_rating}, rating:${rating}`)
-
-  const dbSet = async (user_id, _tconst, _rating) => {
-    // User gave a rating.
-    const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}&aiModel=${aiModel}`
-    
-    const response = await fetch(url)
-    const result = await response.json()
-    if (getData)
-      getData()
-    setRating(_rating)
-    setNumRatings (parseInt(numRatings) + 1)
-     
-    if (result.count % 10 == 0) {
-      setIsLoading(true)
-      const url = `/api/get_recommendations?user_id=${user_id}&rating=${_rating}&aiModel=${aiModel}` 
-      const response = await fetch(url)
-      const result = response.json()
-      setIsLoading(false)
-    }
-
-  }
-
-  const interested = user_rating == -1
-  const not_interested = user_rating == -2
-  const interested_id = 'interested-' + tconst
-  const not_interested_id = 'not-interested-' + tconst
-  const interest_level_name = 'interest-' + tconst
-
-  const user_ratings = (
-    <tr>
-      <td style={{ verticalAlign: "top" }}>
-        your rating
-      </td>
-      <td>
-        <EditStarRating user_id={user_id} tconst={tconst} user_rating={rating} getData={getData}
-          dbSet={dbSet} />
-      </td>
-    </tr>
-  )
-
-  const interest = (
-    <tr>
-      <td style={{ verticalAlign: "top" }}>
-        want to see?
-      </td>
-      <td>
-        <label htmlFor={not_interested_id}>
-          <input id={not_interested_id} name={interest_level_name} type='radio'
-            checked={rating == -2}
-
-            onChange={() => dbSet(user_id, tconst, -2)} />
-          no
-        </label>
-
-        <label htmlFor={interested_id}>
-          <input id={interested_id} name={interest_level_name} type='radio'
-            checked={rating == -1}
-
-            onChange={() => dbSet(user_id, tconst, -1)} />
-          yes
-        </label>
-      </td>
-    </tr>
-  )
-
-  return (
-    <div>
-      <Spinner isLoading={isLoading} msg="please wait, generating recommendations"/>
-      <table><tbody>
-        <tr>
-          <td>
-          imdb users
-            </td>
-          <td>
-            <StarRating score={averagerating} />
-          </td>
-        </tr>
-
-        {(user_id) ? user_ratings: null}
-        {(user_id) ? interest: null}
-
-      </tbody>
-      </table>
-    </div>
-  )
-})
 
 const markPosterError = (tconst) => {
   console.log("marking failed poster from ", tconst)
@@ -168,7 +72,7 @@ const Person = ({ r, selectedPerson, resetActor }) => {
   </div>
 }
 
-export const Card = ({
+const Card = ({
   recs,
   selectedPerson,
   theme,
@@ -183,7 +87,7 @@ export const Card = ({
   useEffect(() => {
     if (recs && recs.length > 0) {
       const poster_url = recs[0].poster_url
-      const primaryTitle = recs[0].primarytitle
+      // const primaryTitle = recs[0].primarytitle
       if (!poster_url || poster_url == '') {
         //console.log("useEffect sets card white", poster_url, primaryTitle)
         const className = theme == 'light' ? styles.card_white_light : styles.card_white
@@ -209,7 +113,7 @@ export const Card = ({
   }
 
   let slicedRecs = recs
-  if (r1.place == 'genres') { 
+  if (r1.place == 'genres') {
     // Show director first.
     const rec_director = recs.filter(isDirector)
 
@@ -222,7 +126,7 @@ export const Card = ({
     } else {
       slicedRecs = recs.slice(0, numPersons)
     }
-  } 
+  }
 
   const persons = slicedRecs.map((rec, idx) => {
     return <Person
@@ -279,7 +183,7 @@ export const Card = ({
   let plot_sentence = r1.plot_summary
 
   if (r1.place != 'center') {
-    if (r1.user_rating_msg && !r1.user_rating_msg.includes('is a popular')) {
+    if (r1.user_rating_msg) { //} && !r1.user_rating_msg.includes('is a popular')) {
       plot_sentence = r1.user_rating_msg
     }
     // Should be able to cut off only if longer than 150, but no.
@@ -298,37 +202,7 @@ export const Card = ({
   if (r1.place == 'genres' && theme == 'dark')
     style = cardDim
 
-  let external_links = null
-  if (r1.place == 'center') {
-    const item = `"${r1.primarytitle}" (${r1.startyear})`
-    const google_query = encodeURI(`where can I watch ${item}?`)
-    const url = `https://www.google.com/search?q=${google_query}`
-
-    const encodeItem = encodeURI(item)
-    const rotten = `https://www.rottentomatoes.com/search?search=${encodeItem}`
-
-    const letterboxItem = encodeURI(`${r1.primarytitle} ${r1.startyear}`)
-    const letterboxd = `https://letterboxd.com/search/${letterboxItem}`
-
-    external_links = <div className={styles.external_links}>
-      <ul>
-        <li>
-          <a target="_imdb" title={`${r1.titletype} in imdb`}
-            href={`https://www.imdb.com/title/${r1.tconst}/`}>Internet Movie Database</a>
-        </li>
-        <li>
-          <a href={url} target="_where_to_watch">Google: where to watch</a>
-        </li>
-        <li>
-          <a href={rotten} target="rotten_tomatoes">Rotten Tomatoes</a>
-        </li>
-        <li>
-          <a href={letterboxd} target="letterboxd">Letterboxd</a>
-        </li>
-      </ul>
-    </div>
-
-  }
+  console.log("card -- tconst:", r1.tconst, " user_rating:", r1.user_rating)
 
   return <div className={topClass} style={style}>
     <div className={styles.card_text}>
@@ -355,7 +229,7 @@ export const Card = ({
 
         <Ratings user_id={user.id} tconst={r1.tconst}
           user_rating={r1.user_rating} averagerating={r1.averagerating}
-          getData={getData}  titletype={r1.titletype} genres={r1.genres} aiModel={aiModel}/>
+          getData={getData} titletype={r1.titletype} genres={r1.genres} aiModel={aiModel} />
 
         <span
           className={styles.year}
@@ -374,41 +248,12 @@ export const Card = ({
           {genres}
         </span>
       </div>
-      {external_links}
+      <ExternalLinks r1={r1} />
 
     </div>
     {right_poster}
   </div>
 }
 
-export const Sidebar = ({
-  data,
-  place,
-  selectedPerson,
-  theme,
-  getData
-}) => {
+export default Card
 
-  // Aggregate multiple actors in the same film.
-  const agg = {}
-  data.filter(r => r.place == place).forEach((r, idx) => {
-    const movie = r.tconst
-    if (!(movie in agg)) {
-      agg[movie] = []
-    }
-    agg[movie].push(r)
-  })
-
-  return Object.keys(agg).map((tconst, idx) => {
-    const recs = agg[tconst]
-
-    return <Card
-      key={idx}
-      recs={recs}
-      selectedPerson={selectedPerson}
-      position="sidebar"
-      theme={theme}
-      getData={getData} />
-
-  })
-}

@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect, useRef, useContext } from 'react'
 import styles from "@/styles/Main.module.css"
-import { Sidebar } from "@/components/Card"
+import Cards from "@/components/Cards"
 import Movie from "@/components/Movie"
 import Spinner from "@/components/Spinner"
 import { useRouter } from 'next/router'
@@ -148,7 +148,7 @@ const Main = React.memo ( ({ }) => {
         <ControlPanel
           toggleShowControlPanel={toggleShowControlPanel}
         />
-        <Sidebar
+        <Cards
           data={data}
           place='genres'
           selectedPerson={nconst}

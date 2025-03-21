@@ -7,18 +7,18 @@ import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 import RequestRecs from "@/components/RequestRecs"
 
-const ControlPanel = ({ toggleShowControlPanel}) => {
+const ControlPanel = ({ toggleShowControlPanel }) => {
 
     const parameters = useContext(StateContext)
     const { resetGenres, resetMovie, resetActor,
-        resetQuery, resetYearstart, resetYearend, 
-        setTitletype,  setTheme, setRatingsFilter, setCardDim, 
-        setSortOrder,  setAIModel, resetAll } = parameters.setters
+        resetQuery, resetYearstart, resetYearend,
+        setTitletype, setTheme, setRatingsFilter, setCardDim,
+        setSortOrder, setAIModel, resetAll, setNumRatings } = parameters.setters
     const {
         nconst, titletype, genres, theme,
-        query, yearstart, yearend, user_id, 
-        ratingsFilter, showControlPanel, sortOrder, aiModel} = parameters.values
-    const {user, genresParamArray, urlParams } = parameters
+        query, yearstart, yearend, user_id,
+        ratingsFilter, showControlPanel, sortOrder, aiModel } = parameters.values
+    const { user, genresParamArray, urlParams } = parameters
 
     const [recsCounts, setRecsCounts] = useState({ nOld: 0, nNew: 0 })
     const [prompt, setPrompt] = useState()
@@ -85,9 +85,9 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
 
     const SourcesWidget = (() => {
         const sources = [
-            {dbName:'movie', displayName:'movies'},
-            {dbName:'tv', displayName:'tv'},
-            {dbName:null, displayName:'both'}
+            { dbName: 'movie', displayName: 'movies' },
+            { dbName: 'tv', displayName: 'tv' },
+            { dbName: null, displayName: 'both' }
         ]
         const sourceOptions = sources.map((source, idx) => {
             const style = source.dbName == titletype
@@ -136,7 +136,7 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
         const ratings = [
             { dbName: 'all', displayName: 'everything' },
             { dbName: 'rated', displayName: 'rated by me' },
-            { dbName: 'watchlist', displayName: 'want to watch'},
+            { dbName: 'watchlist', displayName: 'want to watch' },
             { dbName: 'not rated', displayName: 'not yet rated' },
             { dbName: 'recommendations', displayName: 'recommended' }
         ]
@@ -157,7 +157,7 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
         return (
             <div className={styles.widget} style={style} title={tooltip}>
                 <h3>
-                    Filters
+                    Select
                 </h3>
                 <ul>
                     {ratingsOptions}
@@ -187,20 +187,20 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
     }
 
     const showPrompt = async (e) => {
-        if (prompt) { 
+        if (prompt) {
             setPrompt(null)
             return
         }
-        
+
         const url = `/api/get_prompt?user_id=${user.id}&titletype=${titletype}&genres=${genres}&aiModel=${aiModel}`
         const response = await fetch(url)
         const result = await response.json()
         setPrompt(result.prompt)
     }
 
-    const promptStyle = prompt 
-      ? {display: 'inline-block'}
-      : {display: 'none'}
+    const promptStyle = prompt
+        ? { display: 'inline-block' }
+        : { display: 'none' }
 
     const RecommendationsWidget = (() => {
         const aiModels = ["Claude", "ChatGPT", "DeepSeek", "Gemini"]
@@ -221,12 +221,18 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
             ? ""
             : "sign in to rate and get recommendations"
 
-        const showPromptButtonStyle = prompt 
-          ? {fontWeight: 600}
-          : {}
+        const showPromptButtonStyle = prompt
+            ? { fontWeight: 600 }
+            : {}
 
-        const buttonStyle = {fontSize:"10pt", padding:"3px"}  
+        const buttonStyle = { fontSize: "10pt", padding: "3px" }
 
+        const deleteRatings = async (e) => {
+            const url = `/api/delete_ratings/${user_id}`
+            const response = await fetch(url)
+            const result = response.json()
+            setNumRatings(0)
+        }
         return (
             <div className={styles.widget} style={style} title={tooltip}>
                 <h3>
@@ -242,11 +248,20 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
 
                     </li>
                 </ul>
-                <div><RequestRecs user={user} generateRecs={getRecommendations} buttonText="run now!" style={buttonStyle} /></div>
+                <div><RequestRecs user={user} generateRecs={getRecommendations} buttonText="run now!" style={buttonStyle} aiModel={aiModel} /></div>
+
+
+
                 <ul>
                     <li onClick={showPrompt} style={showPromptButtonStyle}>show prompt</li>
+
                     <li>already rated: {recsCounts.nOld}</li>
                     <li>new: {recsCounts.nNew}</li>
+                    <li>
+                        <button style={{ color: "red",padding:"1px" ,margin:"1px"}} onClick={deleteRatings}>
+                            delete ratings
+                        </button>
+                    </li>
                 </ul>
 
             </div>
@@ -343,9 +358,9 @@ const ControlPanel = ({ toggleShowControlPanel}) => {
                 </div>
             </div>
             <div className={styles.prompt} style={promptStyle}>
-              <pre>
-            {prompt}
-            </pre>
+                <pre>
+                    {prompt}
+                </pre>
             </div>
 
         </div>

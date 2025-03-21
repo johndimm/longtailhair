@@ -216,3 +216,9 @@ exports.get_num_ratings = async function (user_id) {
 
   return await performSQLQuery(query)
 }
+
+exports.delete_ratings = async function (user_id) {
+  const cmd = `delete from user_ratings where user_id=${user_id}`
+  return await performSQLQuery(cmd)
+
+}

@@ -89,8 +89,9 @@ const SearchForm = ({ query, resetQuery }) => {
 const Banner = ({ toggleShowControlPanel }) => {
 
   const parameters = useContext(StateContext)
-  const { resetActor, resetQuery, setCardDim, setUser, setNumRatings} = parameters.setters
-  const { nconst, query, theme, showControlPanel, numRatings} = parameters.values
+  const { resetActor, resetQuery, setCardDim, setUser, 
+    setNumRatings, setRatingsFilter} = parameters.setters
+  const { nconst, query, theme, showControlPanel, numRatings, ratingsFilter} = parameters.values
 
   const newCardDim = (e) => {
     const val = e.target.value
@@ -155,10 +156,22 @@ const Banner = ({ toggleShowControlPanel }) => {
     </div>
   )
 
+  const ratingsCountStyle = numRatings % 10 == 0
+    ? {color: 'red', fontWeight: '600'}
+    : {}
+
   const numRatingsWidget = (
-    <div className={styles.widget}>
-      <div className={styles.num_ratings}>{numRatings}</div>
-      ratings
+    <div className={styles.widget} onClick={() => {
+      setRatingsFilter('rated')
+      const newRatingsFilter = ratingsFilter == 'recommendations'
+        ? 'all'
+        : 'recommendations'
+      setRatingsFilter(newRatingsFilter)
+    }}
+      style={{cursor: 'pointer'}}
+      title={ratingsFilter == 'recommendations' ? 'show everything' : 'show recommended'}>
+      <div className={styles.num_ratings} style={ratingsCountStyle}>{numRatings}</div>
+      <span>ratings</span>
     </div>
   )
 
