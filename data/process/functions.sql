@@ -195,6 +195,7 @@ or replace function get_movies (
   _user_id integer default null
 )
 returns table (
+  source_order int,
 tconst text,
 genres text,
 averagerating double precision,
@@ -224,6 +225,7 @@ return query
 with 
 exploded as (
 select 
+  ur.source_order,
   tbe.tconst, 
   tbe.startyear, 
   tbe.averageRating, 
@@ -282,6 +284,7 @@ and
   --  when _rating_filter = 'no rating' then ur.rating
   --end is not null,
  case 
+    when _rating_filter = 'recommendations' then ur.source_order
     when _orderBy = 'popularity desc' then -1 * tbe.popularity
     when _orderBy = 'popularity' then tbe.popularity
     when _orderBy = 'year desc' then -1 * tbe.startyear
@@ -292,7 +295,7 @@ and
  limit _numMovies
 )
 
-  select tb.tconst, tb.genres, e.averageRating, e.numVotes, e.averageRating * e.numVotes as popularity,
+  select e.source_order, tb.tconst, tb.genres, e.averageRating, e.numVotes, e.averageRating * e.numVotes as popularity,
   tp.nconst, 'genres' as place, nb.primaryName, tb.primaryTitle, coalesce(tp.characters, tp.category) as role, tb.startYear, tb.startYear - nb.birthYear as age, 
   coalesce(p.url, tmdb.poster_path) as poster_url, 
   substring(tmdb.overview, 0, 150) as plot_summary,
@@ -324,6 +327,7 @@ where
 
 order by 
  case 
+    when _rating_filter = 'recommendations' then e.source_order
     when _orderBy = 'year' then tb.startyear
     when _orderBy = 'popularity desc' then -1 * e.popularity
     when _orderBy = 'popularity' then e.popularity

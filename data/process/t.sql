@@ -1,26 +1,32 @@
-with params as (
-    select 'movie' as _titletype
-), exploded as (
-    select tb.tconst, ur.rating as user_rating
-    from  title_basics_ex as tb
-    join full_genres as fg using(genres)
-    left join user_ratings as ur using (tconst),
-    params
-where
-
- (_titletype is null or (_titletype = 'movie' and tb.titletype = 'movie') or (_titletype != 'movie' and tb.titletype != 'movie'))
--- and
--- (_rating_filter != 'not rated' or ur.rating is null)
-
-    limit 100
-)
-select *
-from exploded as e
-join title_basics_ex as tb using (tconst)
-join title_principals_agg as tp using (tconst)
-join name_basics_ex as nb using (nconst)
-left join tmdb using (tconst)
-left join posters as p on p.tconst = e.tconst and p.error_count < 1
-
-where e.user_rating is null
+delete from user_ratings where user_id=177 and rating=-3
 ;
+
+/*
+insert into user_ratings
+(source_order, tconst, rating, user_id)
+select 49, 'tt1234', -3, 177
+;
+*/
+
+
+insert into user_ratings
+  (source_order, user_id, tconst, rating, msg)
+  select 
+    source_order,
+    177 as user_id, 
+    tbe.tconst, 
+    -3, 
+    why_recommended as msg
+  from tmp
+  join title_basics_ex as tbe on 
+  lower(tbe.primarytitle) = lower(tmp.title) 
+  and startyear = tmp.year 
+  on conflict (user_id, tconst) do nothing
+  ;
+
+
+select ur.user_id, tbe.primarytitle, ur.tconst, rating, source_order 
+from user_ratings as ur
+join title_basics_ex as tbe using (tconst)
+where user_id=177 and rating=-3
+order by source_order;

@@ -150,15 +150,23 @@ Instead, rotate through different aspects of my taste profile:
 - First third: recommend based on my top-rated films
 - Second third: recommend based on directors/creators of my top-rated films
 - Final third: recommend films that represent different eras/styles but match my general preferences
+
+In your "why_recommended" field, try to flesh out the connection between some aspect of a movie I liked and this recommendation.  Same actor or crew, same plot theme, same pace, same atmosphere.
+
+Do not use each rated title independently to generate a single recommendation.  Look for common themes among the highly rated titles.  For example, if most of them are about chefs and cooking, the user will be more interested in recommendations about chefs and cooking.
+
 </strategy>
 
 <constraint>
-Ensure diversity in your recommendations by including:
-- At least 3 films from decades I haven't rated anything from
-- At least 3 films from countries not represented in my ratings
-- At least 3 films from genres that seem adjacent to my preferences but aren't directly represented
-
 The primary goal is discovering new, high-quality films I haven't seen, not just finding the closest matches to my existing favorites.
+</constraint>
+
+<constraint>
+Pick movies made close in time to the rated titles.  If all the rated titles are from the early 60's, pick other movies made then.
+</constraint>
+
+<constraint>
+If most of the rated titles are from a given country, pick other movies from the same country.
 </constraint>
 
 <instruction>
@@ -205,6 +213,7 @@ Pick ${movies} with good ratings but low popularity.
 Do not pick highly popular ${movies}.
 
 Similarity with ${movies} I have rated highly counts much more than popularity.
+
 </constraint>
 
 <verification>
@@ -269,7 +278,7 @@ export const aiRecs = async (user_id, titletype, genres, aiModel, user_ratings_r
   return recs
 }
 
-const populateUserRatings = async (recs, user_id, user_ratings_recs, code) => {
+const populateUserRatings = async (recs, user_id, user_ratings_recs, code, aiModel) => {
   if (!recs)
     return null
 
@@ -297,9 +306,10 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code) => {
   const insertRecs = []
   for (let i = 0; i < newRecs.length; i++) {
     const r = newRecs[i]
-    const why_recommended = r.why_recommended.replace(/'/g, "''")
+    const why_recommended = r.why_recommended.replace(/'/g, "''") 
+       + ` (${aiModel})`
     const title = r.title.replace(/'/g, "''")
-    const line = `(${r.year}, '${r.tconst}', '${title}', '${why_recommended}')`
+    const line = `(${r.year}, ${i+1}, '${r.tconst}', '${title}', '${why_recommended}')`
     insertRecs.push(line)
   }
 
@@ -310,6 +320,7 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code) => {
   drop table if exists tmp;
   create table tmp (
     year int,
+    source_order int,
     tconst text,
     title text,
     why_recommended text
@@ -319,7 +330,7 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code) => {
   await db.performQuery(cmd)
 
   cmd = `
-  insert into tmp (year, tconst, title, why_recommended) values
+  insert into tmp (year, source_order, tconst, title, why_recommended) values
     ${insertRecs.join(',')}
   ;
   `
@@ -329,10 +340,17 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code) => {
   delete from user_ratings where user_id=${user_id} and rating=-3
   ;
   insert into user_ratings
-  (user_id, tconst, rating, msg)
-  select ${user_id} as user_id, tbe.tconst, ${code}, why_recommended as msg
+  (source_order, user_id, tconst, rating, msg)
+  select 
+    source_order,
+    ${user_id} as user_id, 
+    tbe.tconst, 
+    ${code}, 
+    why_recommended as msg
   from tmp
-  join title_basics_ex as tbe on lower(tbe.primarytitle) = lower(tmp.title) and startyear = tmp.year
+  join title_basics_ex as tbe on 
+  lower(tbe.primarytitle) = lower(tmp.title) 
+  and startyear = tmp.year 
   on conflict (user_id, tconst) do nothing
   ;
     `
@@ -355,7 +373,7 @@ export const getAIRecs = async (user_id, titletype, genres, aiModel) => {
 
   const prompt = await aiRecsPrompt(user_id, titletype, genres, aiModel, user_ratings_recs)
   const recs = await usePrompt(prompt, aiModel)
-  const json = await populateUserRatings(recs, user_id, user_ratings_recs, -3)
+  const json = await populateUserRatings(recs, user_id, user_ratings_recs, -3, aiModel)
   return json
 }
 
@@ -374,7 +392,7 @@ export const getMovieAIRecs = async (user_id, tconst, _aiModel) => {
 
   const prompt = await aiRecsPrompt(user_id, titletype, genres, aiModel, user_ratings_recs)
   const recs = await usePrompt(prompt, aiModel)
-  const json = await populateUserRatings(recs, user_id, user_ratings_recs, -3)
+  const json = await populateUserRatings(recs, user_id, user_ratings_recs, -3, aiModel)
   return json
 }
 

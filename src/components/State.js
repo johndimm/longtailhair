@@ -7,7 +7,7 @@ import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 
 export const StateContext = createContext(null);
 
-export default function State() {
+const State = () => {
   const router = useRouter()
 
   const [_genres, setGenres] = useState()
@@ -16,7 +16,7 @@ export default function State() {
   const [_query, setQuery] = useState('undefined')
   const [_tconst, setMovie] = useState()
   const [_nconst, setActor] = useState()
-  const [_titletype, setTitletype] = useState('movie')
+  const [_titletype, setTitletype] = useState(null)
   const [_numMovies, setNumMovies] = useState(NUM_MOVIES)
   const [_ratingsFilter, setRatingsFilter] = useState('all')
   const [_sortOrder, setSortOrder] = useState('popularity desc')
@@ -44,7 +44,7 @@ export default function State() {
       setYearstart(yearstart || year || _yearstart)
       setYearend(yearend || year || _yearend)
       setQuery(query)
-      setTitletype(titletype || 'movie')
+      setTitletype(titletype)
       setParamsProcessed(true)
       setNumMovies(parseInt(numMovies) || NUM_MOVIES)
       setRatingsFilter(ratingsFilter || _ratingsFilter)
@@ -203,3 +203,5 @@ export default function State() {
     </StateContext.Provider >
   )
 }
+
+export default State

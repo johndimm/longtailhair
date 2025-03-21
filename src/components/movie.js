@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react'
 import styles from "@/styles/Main.module.css"
-import { Card, Sidebar } from "./Card"
+import Cards from "@/components/Cards"
+import Card from '@/components/Card'
 import { StateContext } from '@/components/State'
 import Spinner from "@/components/Spinner"
 import Head from 'next/head'
 import RequestRecs from "@/components/RequestRecs"
-
 
 const Trailer = ({ tmdb_id, titletype }) => {
   const [data, setData] = useState([])
@@ -128,6 +128,10 @@ const Movie = ({
   if (!data || data.length == 0)
     return <Spinner isLoading={isLoading} />
 
+
+//  <RequestRecs user={user} generateRecs={generateSingleMovieRecs} buttonText="Generate recommendations based on this movie" aiModel={aiModel}/>
+//  <br />
+
   return <div className={styles.movie_page}>
 
     <Head>
@@ -141,11 +145,8 @@ const Movie = ({
 
     <div className={styles.controls} style={{ "marginTop": "10px" }}>
 
-
       <span className={styles.page_title} style={{ "cursor": "pointer" }} title="go back" onClick={() => resetMovie(null)}>
-
         Collaborations
-
         <span className={styles.page_subtitle}>
           productions by members of this cast and crew before and after</span>
 
@@ -157,7 +158,7 @@ const Movie = ({
     </div>
 
     <div className={styles.left}>
-      <Sidebar
+      <Cards
         data={data}
         place='left'
         selectedPerson={nconst}
@@ -166,8 +167,7 @@ const Movie = ({
 
     <div className={styles.center}>
       {center}
-      <RequestRecs user={user} generateRecs={generateSingleMovieRecs} buttonText="Generate recommendations based on this movie"/>
-      <br />
+
       {backdrop}
       <Trailer tmdb_id={tmdb_id} titletype={titletype} />
       <div className={styles.request_recs}>
@@ -176,7 +176,7 @@ const Movie = ({
     </div>
 
     <div className={styles.right}>
-      <Sidebar
+      <Cards
         data={data}
         place='right'
         selectedPerson={nconst}
