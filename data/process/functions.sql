@@ -265,7 +265,7 @@ and
 
 and
 (
-  (_rating_filter = 'rated' and ur.rating between 1 and 5)
+  (_rating_filter = 'rated' and ur.rating > -3)
   or
   (_rating_filter = 'not rated' and ur.rating is null)
   or 
@@ -407,7 +407,7 @@ and
 
 and
 (
-  (_rating_filter = 'rated' and ur.rating between 1 and 5)
+  (_rating_filter = 'rated' and ur.rating > -3)
   or
   (_rating_filter = 'not rated' and ur.rating is null)
   or 

@@ -22,7 +22,7 @@ const Cards = ({
       const recs = agg[tconst]
   
       return <Card
-        key={idx}
+        key={idx + tconst}
         recs={recs}
         selectedPerson={selectedPerson}
         position="sidebar"
