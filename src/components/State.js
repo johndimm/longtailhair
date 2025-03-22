@@ -127,8 +127,6 @@ const State = () => {
     queryInput.value = ''
   }
 
-  const user_id = _user ? _user.id : null
-
   const values = {
     tconst: _tconst,
     nconst: _nconst,
@@ -140,7 +138,7 @@ const State = () => {
     numMovies: _numMovies,
     ratingsFilter: _ratingsFilter,
     sortOrder: _sortOrder,
-    user_id: user_id,
+    user_id: _user.id,
     theme: _theme,
     showControlPanel: _showControlPanel,
     aiModel: _aiModel, 
@@ -152,11 +150,11 @@ const State = () => {
   // It just selects the movie and doesn't change the set of movies.
   const paramArray = [
     _nconst, _genres, _numMovies, _yearstart, _yearend, _query,
-    _titletype, _ratingsFilter, _sortOrder, _theme, _aiModel, user_id
+    _titletype, _ratingsFilter, _sortOrder, _theme, _aiModel, _user.id
   ]
 
   const genresParamArray = [_genres, _query, _yearstart, _yearend,
-    _nconst, _titletype, _ratingsFilter, user_id]
+    _nconst, _titletype, _ratingsFilter, _user.id]
 
   // Create the key=value params to use in a url.
   const params = []

@@ -21,7 +21,7 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
     useEffect(() => {
         console.log("useEffect, defaultNstars:", defaultNstars, " nStars:", nStars, " tconst:", tconst)
         setNstars(defaultNstars)
-    }, [tconst])
+    }, [tconst, user_rating])
 
     const mouseEnter = (e, _nStars) => {
         e.preventDefault()
@@ -46,7 +46,7 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
     }
 
     // if (nStars > 0)
-    console.log("rendering ratings-- user_rating:", user_rating, " defaultNstars", defaultNstars, " nStars:", nStars, "tconst:", tconst)
+    // console.log("rendering ratings-- user_rating:", user_rating, " defaultNstars", defaultNstars, " nStars:", nStars, "tconst:", tconst)
 
     const stars = Array.from({ length: 5 }, (v, i) => {
         const style = i < nStars
@@ -61,6 +61,7 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
             onMouseEnter={(e) => mouseEnter(e, i + 1)}
         >&#9733;</span>
     });
+
 
     return <div
         onMouseOut={mouseOut}
@@ -134,7 +135,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
             <td>
                 <label htmlFor={not_interested_id}>
                     <input id={not_interested_id} name={interest_level_name} type='radio'
-                        checked={rating == -2}
+                        defaultChecked={rating == -2}
 
                         onChange={() => dbSet(user_id, tconst, -2)} />
                     no
@@ -142,7 +143,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
 
                 <label htmlFor={interested_id}>
                     <input id={interested_id} name={interest_level_name} type='radio'
-                        checked={rating == -1}
+                        defaultChecked={rating == -1}
 
                         onChange={() => dbSet(user_id, tconst, -1)} />
                     yes
