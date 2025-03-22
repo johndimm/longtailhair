@@ -87,8 +87,8 @@ const Interest = ({ user_id, tconst, user_rating, dbSet }) => {
     */
 
     const bold = { fontWeight: "600", fontSize: "120%"}
-    const yesStyle = rating == -1 ? bold : {}
-    const noStyle = rating == -2 ? bold : {}
+    const yesStyle = user_rating == -1 ? bold : {}
+    const noStyle = user_rating == -2 ? bold : {}
     /*
     setTimeout(() => {
         return
@@ -130,7 +130,7 @@ const Interest = ({ user_id, tconst, user_rating, dbSet }) => {
 
 
 const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
-    // const [rating, setRating] = useState(user_rating)
+    const [rating, setRating] = useState(user_rating)
     // const rating = user_rating
 
     const parameters = useContext(StateContext)
@@ -143,16 +143,18 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
 
     const [isLoading, setIsLoading] = useState(false)
 
-    console.log(`Ratings tconst:${tconst}, user_rating:${user_rating}`)
+    //console.log(`Ratings tconst:${tconst}, user_rating:${user_rating}`)
 
     const dbSet = async (user_id, _tconst, _rating) => {
         // User gave a rating.
         const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}&aiModel=${aiModel}`
 
+        setRating(_rating)
+
         const response = await fetch(url)
         const result = await response.json()
 
-        // setRating(_rating)
+  
         setNumRatings(parseInt(numRatings) + 1)
         /*
                 if (result.count % 10 == 0) {
@@ -164,7 +166,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
                 }
         */
 
-        // Trouble with this, on yes-no.
+        // Trouble with this, flashing.
         //if (getData)
         //   getData()
 
@@ -178,7 +180,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
             </td>
             <td>
                 <EditStarRating user_id={user_id} tconst={tconst}
-                    user_rating={user_rating} getData={getData} dbSet={dbSet} />
+                    user_rating={rating} getData={getData} dbSet={dbSet} />
             </td>
         </tr>
     )
@@ -200,7 +202,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
                 <Interest
                     user_id={user_id}
                     tconst={tconst}
-                    user_rating={user_rating}
+                    user_rating={rating}
                     dbSet={dbSet} />
 
             </tbody>

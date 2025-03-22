@@ -14,7 +14,7 @@ import Head from 'next/head'
 
 
 
-const Main = React.memo ( ({ }) => {
+const Main = ({ }) => {
   const router = useRouter()
 
   const [data, setData] = useState([])
@@ -171,6 +171,6 @@ const Main = React.memo ( ({ }) => {
     {pageHtml}
   </>
 }
-)
+
 
 export default Main

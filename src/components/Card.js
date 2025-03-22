@@ -78,7 +78,7 @@ const Card = ({
   theme,
   getData
 }) => {
-  const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_black))
+  const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_white_light))
   const parameters = useContext(StateContext)
   const { resetGenres, resetYear, resetMovie, resetActor } = parameters.setters
   const { cardDim, aiModel } = parameters.values
