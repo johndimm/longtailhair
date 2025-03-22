@@ -68,10 +68,70 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
         id="star-container">{stars}</div>
 }
 
+const Interest = ({ user_id, tconst, user_rating, dbSet }) => {
+    const [rating, setRating] = useState(user_rating)
+
+    const onClick = ( _rating ) => {
+        setRating(_rating)
+        dbSet(user_id, tconst, _rating)
+    }
+
+    /*
+    const interested_id = 'interested-' + tconst
+    const not_interested_id = 'not-interested-' + tconst
+    const interest_level_name = 'interest-' + tconst
+    const yesChecked = user_rating != null && user_rating == -1
+    const noChecked = user_rating != null && user_rating == -2
+    
+    console.log(`yesChecked: ${yesChecked} noChecked:${noChecked}`)
+    */
+
+    const bold = { fontWeight: "600", fontSize: "120%"}
+    const yesStyle = rating == -1 ? bold : {}
+    const noStyle = rating == -2 ? bold : {}
+    /*
+    setTimeout(() => {
+        return
+
+        const yesEl = document.getElementById(interested_id)
+        if (yesEl)
+            yesEl.checked = yesChecked
+
+        const noEl = document.getElementById(not_interested_id)
+        if (noEl)
+            noEl.checked = noChecked
+
+    }, 1000)
+    */
+
+    if (!user_id) {
+        return null
+    } else {
+        return (
+            <tr>
+                <td style={{ verticalAlign: "top" }}>
+                    want to see?
+                </td>
+                <td>
+                    <span
+                        className={styles.yesno}
+                        style={noStyle}
+                        onClick={() => onClick(-2)}>no</span>
+                    <span
+                        className={styles.yesno}
+                        style={yesStyle}
+                        onClick={() => onClick(-1)}>yes</span>
+                </td>
+            </tr>
+        )
+    }
+
+}
+
 
 const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
     // const [rating, setRating] = useState(user_rating)
-    const rating = user_rating
+    // const rating = user_rating
 
     const parameters = useContext(StateContext)
     const { setNumRatings } = parameters.setters
@@ -83,7 +143,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
 
     const [isLoading, setIsLoading] = useState(false)
 
-    // console.log(`Ratings tconst:${tconst}, user_rating:${user_rating}, rating:${rating}`)
+    console.log(`Ratings tconst:${tconst}, user_rating:${user_rating}`)
 
     const dbSet = async (user_id, _tconst, _rating) => {
         // User gave a rating.
@@ -103,18 +163,14 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
                     setIsLoading(false)
                 }
         */
-        if (getData)
-            getData()
+
+        // Trouble with this, on yes-no.
+        //if (getData)
+        //   getData()
 
     }
 
-    //const interested = user_rating == -1
-    //const not_interested = user_rating == -2
-    const interested_id = 'interested-' + tconst
-    const not_interested_id = 'not-interested-' + tconst
-    const interest_level_name = 'interest-' + tconst
-
-    console.log("Ratings -- rating:", rating, " user_rating:", user_rating)
+    console.log("Ratings -- user_rating:", user_rating)
     const user_ratings = (
         <tr>
             <td style={{ verticalAlign: "top" }}>
@@ -122,32 +178,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
             </td>
             <td>
                 <EditStarRating user_id={user_id} tconst={tconst}
-                    user_rating={rating} getData={getData} dbSet={dbSet} />
-            </td>
-        </tr>
-    )
-
-    const interest = (
-        <tr>
-            <td style={{ verticalAlign: "top" }}>
-                want to see?
-            </td>
-            <td>
-                <label htmlFor={not_interested_id}>
-                    <input id={not_interested_id} name={interest_level_name} type='radio'
-                        defaultChecked={rating == -2}
-
-                        onChange={() => dbSet(user_id, tconst, -2)} />
-                    no
-                </label>
-
-                <label htmlFor={interested_id}>
-                    <input id={interested_id} name={interest_level_name} type='radio'
-                        defaultChecked={rating == -1}
-
-                        onChange={() => dbSet(user_id, tconst, -1)} />
-                    yes
-                </label>
+                    user_rating={user_rating} getData={getData} dbSet={dbSet} />
             </td>
         </tr>
     )
@@ -166,7 +197,11 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
                 </tr>
 
                 {(user_id) ? user_ratings : null}
-                {(user_id) ? interest : null}
+                <Interest
+                    user_id={user_id}
+                    tconst={tconst}
+                    user_rating={user_rating}
+                    dbSet={dbSet} />
 
             </tbody>
             </table>
