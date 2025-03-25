@@ -93,10 +93,7 @@ const Card = ({
 
   const r1 = recs[0]
 
-  console.log("place:", r1.place)
-  if (r1.place == 'center') {
-    console.log("center")
-  }
+  //console.log("place:", r1.place)
 
   const hasPoster = r1.poster_url && r1.poster_url != ''
   const layoutOne = numMovies == 1
@@ -110,43 +107,22 @@ const Card = ({
     secondClass = styles.card_one
   } else if (layoutOne && inSearchResults && !lightTheme) {
     secondClass = styles.card_one_dark
+  } else if (inSearchResults && !lightTheme && hasPoster) {
+    secondClass = styles.card_dark
   } else if (inCenter) {
     secondClass = null
   } else if (hasPoster && lightTheme) {
     secondClass = styles.card_light
   } else if (!hasPoster && lightTheme) {
-    secondClass = styles.card_white_light
+    secondClass = styles.card_light_noposter
   } else if (hasPoster && !lightTheme) {
     secondClass = styles.card_dark
   } else if (!hasPoster && !lightTheme) {
-    secondClass = styles.card_white
+    secondClass = styles.card_dark_noposter
   }
 
+
   const topClass = clsx(styles.card, secondClass)
-
-  /*
-  useEffect(() => {
-    if (recs && recs.length > 0) {
-      const poster_url = recs[0].poster_url
-
-      if (numMovies == 1) {
-        setTopClass(clsx(styles.card, styles.card_one))
-        return
-      }
-
-      if (!poster_url || poster_url == '') {
-        const className = theme == 'light' ? styles.card_white_light : styles.card_white
-        setTopClass(clsx(styles.card, className))
-      } else {
-        const className = theme == 'light' ? styles.card_light : styles.card_dark
-        setTopClass(clsx(styles.card, className))
-      }
-    }
-  }, [recs, theme])
-  */
-
-
-
 
   const isDirector = (r) => {
     return r.role.split(', ').indexOf('director') != -1
@@ -260,6 +236,10 @@ const Card = ({
 
   const navStyle = layoutOne ? {} : { "display": "none" }
 
+  const center_poster_style = r1.place == 'center'
+    ? { "display": "inline-block" }
+    : { "display": "none" }
+
   return <div className={topClass} style={style}>
     <div className={styles.card_text}>
 
@@ -270,7 +250,7 @@ const Card = ({
           </div>
 
           <hr />
-          <div className={styles.poster}>
+          <div className={styles.poster} style={center_poster_style}>
             {center_poster}
           </div>
           {plotHtml}
