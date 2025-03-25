@@ -67,7 +67,7 @@ const Movie = ({
   const parameters = useContext(StateContext)
   const { resetMovie, resetActor, resetGenres, resetQuery, 
     resetYearstart, resetYearend,  setRatingsFilter } = parameters.setters
-  const { tconst, nconst, ratingsFilter, aiModel } = parameters.values
+  const { tconst, nconst, ratingsFilter, aiModel, theme } = parameters.values
   const { user } = parameters
 
   const getMovieData = async () => {
@@ -90,6 +90,7 @@ const Movie = ({
   const center = <Card
     recs={center_persons}
     selectedPerson={nconst}
+    theme={theme}
   />
 
   let tmdb_id
@@ -162,6 +163,7 @@ const Movie = ({
         data={data}
         place='left'
         selectedPerson={nconst}
+        theme={theme}
       />
     </div>
 
@@ -180,6 +182,7 @@ const Movie = ({
         data={data}
         place='right'
         selectedPerson={nconst}
+        theme={theme}
       />
     </div>
 

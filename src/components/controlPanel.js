@@ -7,17 +7,24 @@ import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 import RequestRecs from "@/components/RequestRecs"
 
-const ControlPanel = ({ toggleShowControlPanel }) => {
+const ControlPanel = ({ 
+    toggleShowControlPanel,
+    setCardDim, 
+    cardDim }) => {
 
     const parameters = useContext(StateContext)
     const { resetGenres, resetMovie, resetActor,
         resetQuery, resetYearstart, resetYearend,
-        setTitletype, setTheme, setRatingsFilter, setCardDim,
-        setSortOrder, setAIModel, resetAll, setNumRatings } = parameters.setters
+        setTitletype, setTheme, setRatingsFilter, 
+        //setCardDim,
+        setSortOrder, setAIModel, resetAll, setNumRatings, setNumMovies, setOffset }
+        = parameters.setters
     const {
         nconst, titletype, genres, theme,
         query, yearstart, yearend, user_id,
-        ratingsFilter, showControlPanel, sortOrder, aiModel } = parameters.values
+        ratingsFilter, showControlPanel, sortOrder, aiModel,
+        numMovies }
+        = parameters.values
     const { user, genresParamArray, urlParams } = parameters
 
     const [recsCounts, setRecsCounts] = useState({ nOld: 0, nNew: 0 })
@@ -44,10 +51,10 @@ const ControlPanel = ({ toggleShowControlPanel }) => {
         updateDates(parseInt(yearend) + 1, parseInt(yearend) + 1 + delta)
     }
 
-    const newCardDim = (e) => {
-        const val = e.target.value
+    const newCardDim = (val) => {
+        // const val = e.target.value
         const width = parseInt(val)
-        const height = width * 480 / 310
+        const height = width * 440 / 310
         const style = { width: width + 'px', height: height + 'px' }
         setCardDim(style)
     }
@@ -59,7 +66,7 @@ const ControlPanel = ({ toggleShowControlPanel }) => {
             <input id="zoom-slider" type="range"
                 min="150" max="600"
                 defaultValue="310"
-                onChange={newCardDim} />
+                onChange={(e) => newCardDim(e.target.value)} />
         </div>
         : <></>
 
@@ -146,7 +153,10 @@ const ControlPanel = ({ toggleShowControlPanel }) => {
                 ? { fontWeight: 600, fontStyle: 'italic' }
                 : { fontWeight: 200 }
             return <li key={idx} style={style} onClick={() => {
-                if (user.id) setRatingsFilter(rating.dbName)
+                if (user.id) {
+                    setRatingsFilter(rating.dbName)
+                    setOffset(0)
+                }
             }}>{rating.displayName}</li>
         })
 
@@ -258,7 +268,7 @@ const ControlPanel = ({ toggleShowControlPanel }) => {
                     <li>already rated: {recsCounts.nOld}</li>
                     <li>new: {recsCounts.nNew}</li>
                     <li>
-                        <button style={{ color: "red",padding:"1px" ,margin:"1px"}} onClick={deleteRatings}>
+                        <button style={{ color: "red", padding: "1px", margin: "1px" }} onClick={deleteRatings}>
                             delete ratings
                         </button>
                     </li>
@@ -297,6 +307,38 @@ const ControlPanel = ({ toggleShowControlPanel }) => {
 
     })
 
+    const LayoutWidget = (() => {
+        const options = [
+            { name: 'one', numMovies: 1 },
+            { name: 'many', numMovies: 8 }
+        ]
+
+        const optionsList = options.map((option, idx) => {
+            const style = (
+                (numMovies == option.numMovies)
+                ||
+                (numMovies > 1 && option.numMovies == 8)
+            )
+                ? { fontWeight: 600, fontStyle: 'italic' }
+                : { fontWeight: 200 }
+            return <li key={idx} style={style} onClick={
+                () => setNumMovies(option.numMovies)
+            }>{option.name}</li>
+        })
+
+        return (
+            <div>
+                <h3>
+                    Layout
+                </h3>
+                <ul>
+                    {optionsList}
+                </ul>
+
+            </div>
+        )
+
+    })
 
     const style = showControlPanel
         ? { display: "block" }
@@ -325,6 +367,8 @@ const ControlPanel = ({ toggleShowControlPanel }) => {
                             <SourcesWidget />
                             <br />
                             <ThemesWidget />
+                            <br />
+                            <LayoutWidget />
                         </div>
                         <SortOrderWidget />
                         <RatingsWidget />

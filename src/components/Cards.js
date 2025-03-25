@@ -5,7 +5,8 @@ const Cards = ({
     place,
     selectedPerson,
     theme,
-    getData
+    getData,
+    cardDim
   }) => {
   
     // Aggregate multiple actors in the same film.
@@ -27,7 +28,9 @@ const Cards = ({
         selectedPerson={selectedPerson}
         position="sidebar"
         theme={theme}
-        getData={getData} />
+        numReturnedMovies={Object.keys(agg).length}
+        getData={getData}
+        cardDim={cardDim}/>
   
     })
   }

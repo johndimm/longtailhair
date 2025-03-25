@@ -80,7 +80,7 @@ function isNullish (query) {
     return !query || query === 'undefined' || query === 'null' || query === ''
 }
 exports.get_movies = function (numMovies, genres, yearstart, yearend, 
-  query, nconst, titletype, movieList, sortOrder, ratingsFilter, user_id) {
+  query, nconst, titletype, movieList, sortOrder, ratingsFilter, user_id, offset) {
     const _genres = isNullish(genres) ? null : `'${genres}'`
     const _yearstart = isNullish(yearstart) ? null : yearstart
     const _yearend = isNullish(yearend) ? null : yearend
@@ -89,9 +89,10 @@ exports.get_movies = function (numMovies, genres, yearstart, yearend,
     const _titletype = isNullish(titletype) ? null : `'${titletype}'`
     const _sortOrder = isNullish(sortOrder) ? null : `'${sortOrder}'`
     const _ratingsFilter = isNullish(ratingsFilter) ? null : `'${ratingsFilter}'`
+    const _offset = isNullish(offset) ? 0 : offset
 
     // console.log(query, _query)
-	const data = performSQLQuery(`select * from get_movies(${numMovies}, ${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype}, ${movieList}, ${_sortOrder}, ${_ratingsFilter}, ${user_id});`);
+	const data = performSQLQuery(`select * from get_movies(${numMovies}, ${_genres}, ${_yearstart}, ${_yearend}, ${_query}, ${_nconst}, ${_titletype}, ${movieList}, ${_sortOrder}, ${_ratingsFilter}, ${user_id}, ${_offset});`);
     return data
 };
 

@@ -2,17 +2,22 @@
 .center,
 .right {
     float: left;
-    font-size: 14.6px;
+    font-size: 10pt;
     width: 35%;
     padding: 20px;
     padding-top: 0;
     background-color: white;
-
 }
 
 .center {
     width: 30%;
     font-size: 12pt;
+}
+
+.main_page {
+    height: 100vh;
+    width: 100vw;
+    overflow: auto;
 }
 
 .movie_page {
@@ -23,25 +28,43 @@
     background-color: white;
 }
 
-.main_page {
-    height: 100vh;
-    width: 100vw;
-    overflow: auto;
-}
-
 .search_page {
     padding-bottom: 50px;
     height: 100vh;
     width: 100%;
-
     overflow: auto;
     position: relative;
-
-    background-color: black;
     padding-left: 10px;
     padding-top: 10px;
     text-align: center;
 }
+
+.movie_page .card_light .card_text {
+    width: 100%;
+ }
+ 
+ .movie_page .page_title {
+     position: relative;
+     padding: 10px;
+ 
+     padding-left: 30px;
+     font-size: 180%;
+     font-weight: 600;
+     text-align: center;
+     background-color: lightgray;
+     font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif
+ }
+ 
+ .movie_page .page_subtitle {
+     font-size: 11pt;
+     font-style: italic;
+     font-weight: 400;
+     width: 200px;
+     margin: 10px;
+     margin-left: 10px;
+     vertical-align: middle;
+     font-family: Arial;
+ }
 
 .movie .page_title {
     float: left;
@@ -61,16 +84,24 @@
     width: 100%;
 }
 
+
 .card {
     position: relative;
     width: 100%;
     margin: 5px;
     padding: 10px;
     border: 1px solid rgb(100, 100, 100, 1);
+    /*
     display: flex;
     align-items: flex-start;
+    */
     font-weight: 200;
     break-inside: avoid-column;
+}
+
+.card {
+    margin: 10px;
+    scrollbar-width: none;
 }
 
 .card .person {
@@ -115,6 +146,12 @@
 .card .person .age {
     margin-left: 2px;
     font-size: 80%;
+}
+
+.left .card_text,
+.right .card_text,
+.search_page .card_text {
+    max-width: 50%;
 }
 
 .card .card_text {
@@ -164,240 +201,11 @@
     transform: scale(1.1);
 }
 
-.movie_title:hover {
-    transform: scale(1.1);
-}
-
 .card img {
     position: relative;
     transition: transform 3s;
     z-index: 1;
     cursor: pointer;
-
-    /* Animation */
-}
-
-.card .card_text {
-    animation: fadeIn 1s;
-}
-
-
-.center .card hr {
-    display: none;
-}
-
-.search_page .card .card_text {
-    width: 100%;
-}
-
-.search_page .card .age {
-    display: none
-}
-
-.left .card img,
-.right .card img {
-    max-width: 40%;
-    padding-left: 10px;
-    display: inline-block;
-}
-
-.center .card img {
-    max-width: 100%;
-    margin-bottom: 10px;
-}
-
-.center .card img:hover {
-    /*transform: scale(1);*/
-    /* 140% zoom */
-    z-index: 99;
-}
-
-.center .card {
-    border: 1px solid black;
-}
-
-.center .card .movie_title {
-    text-align: center;
-}
-
-.center .card .movie_title {
-    font-size: 150%;
-}
-
-.search_page .card .movie_title {
-    font-size: 180%;
-}
-
-.search_page .persons {
-    margin-top: 10px;
-    max-width: 100%;
-    overflow: hidden;
-    max-height: 180px;
-    margin-bottom: 10px;
-    padding-left: 4px;
-}
-
-.search_page .card {
-    width: 30%;
-    font-size: 80%;
-    height: 210px;
-    display: inline-block;
-}
-
-.search_page .card_light img {
-    max-height: 100%;
-    float: right;
-    width: 45%;
-}
-
-.search_page .card_black .plot_summary {
-    display: none;
-}
-
-.search_page .role {
-    display: block;
-}
-
-.search_page .card .metadata {
-    position: relative;
-    margin-bottom: 10px;
-}
-
-.search_page .card_black .card_text {
-    display: none;
-}
-
-.search_page .card_black img {
-   max-height: 100%;
-   max-width: 100%;
-}
-
-.search_page .card {
-    width: 310px;
-    height: 500px;
-    margin: 10px;
-    scrollbar-width: none;
-}
-
-.search_page .card_black {
-    background-color: black;
-    margin: 10px;
-    vertical-align: top;
-}
-
-.center .card {
-    text-align: center;
-}
-
-.search_page .card_white {
-    background-color: black;
-    color: white;
-    overflow: auto;
-
-}
-
-.search_page .card_white_light {
-    color: black;
-    background-color: white;
-    overflow: auto;
-    width: 450px;
-    height: 330px;
-    margin-right: 3px;
-    scrollbar-width: none;
-}
-
-
-.search_page .card_white img {
-    width: 0;
-    position: absolute;
-}
-
-
-.search_page .card_white .card_text {
-    width: 100%;
-    background-color: black;
-    position: relative;
-}
-
-.search_page .card_white::-webkit-scrollbar {
-    display: none;
-}
-
-
-.search_page .card_light {
-    background-color: white;
-    color: black;
-    overflow: auto;
-    width: 450px;
-    height: 330px;
-    scrollbar-width: none;
-}
-
-.left .card img:hover, .right .card img:hover   {
-    transform: scale(1.1);
-    transition: transform 2s;
-    z-index: 101;
-    /*
-    border: 1px solid lightgray;
-    margin: 10px;
-    padding: 5px;
-    background-color: white;
-    */
-}
-
-.search_page .card_light .card_text {
-    margin-right: 5px;
-    width: 50%;
-}
-
-.search_page .card_light .plot_summary {
-    background-color: white;
-    color: black;
-
-    z-index: 2;
-    position: relative;
-}
-
-.search_page .card_light::-webkit-scrollbar {
-    display: none;
-}
-
-.search_page .plot_summary {
-    background-color: rgb(240, 240, 240, 1);
-    color: black;
-    z-index: 2;
-    position: relative;
-}
-
-.movie_page .card_light .card_text {
-   width: 60%;
-}
-
-.movie_page .page_title {
-    position: relative;
-    padding: 10px;
-
-    padding-left: 30px;
-    font-size: 180%;
-    font-weight: 600;
-    text-align: center;
-    background-color: lightgray;
-    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif
-}
-
-.movie_page .page_subtitle {
-    font-size: 11pt;
-    font-style: italic;
-    font-weight: 400;
-    width: 200px;
-    margin: 10px;
-    margin-left: 10px;
-    vertical-align: middle;
-    font-family: Arial;
-}
-
-.backdrop {
-    width: 100%;
 }
 
 .card .external_links {
@@ -423,6 +231,177 @@
     margin-bottom: -10px;
 }
 
+
+.center .card hr {
+    display: none;
+}
+
+.center .card img {
+    max-width: calc(100% - 30px);
+    margin-bottom: 10px;
+}
+
+
+.center .card .movie_title {
+    text-align: center;
+    font-size: 150%;
+}
+
+.center .card {
+    text-align: center;
+    border: 1px solid black;
+}
+
+.center .poster {
+    width: 100%;
+}
+
+
+.left .card img,
+.right .card img {
+    max-width: 100%;
+    padding-left: 10px;
+    display: inline-block;
+}
+
+.left .card img:hover, .right .card img:hover   {
+    transform: scale(1.1);
+    transition: transform 2s;
+    z-index: 101;
+}
+
+
+.search_page .persons {
+    margin-top: 10px;
+    max-width: 100%;
+    overflow: hidden;
+    max-height: 180px;
+    margin-bottom: 10px;
+    padding-left: 4px;
+}
+
+.search_page .role {
+    display: block;
+}
+
+.search_page .plot_summary {
+    background-color: rgb(240, 240, 240, 1);
+    color: black;
+    z-index: 2;
+    position: relative;
+}
+
+
+.search_page .card {
+    display: inline-block;
+}
+
+
+.search_page .card .metadata {
+    position: relative;
+    margin-bottom: 10px;
+}
+
+.search_page .card .age {
+    display: none
+}
+
+.search_page .card .movie_title {
+    font-size: 180%;
+}
+
+
+.search_page .card_dark .plot_summary {
+    display: none;
+}
+
+
+.search_page .card_dark .card_text {
+    display: none;
+}
+
+.search_page .card_dark img {
+   max-height: 100%;
+   max-width: 100%;
+}
+
+.search_page .card_dark {
+    width: 310px;
+    height: 440px;
+    background-color: black;
+    margin: 10px;
+    vertical-align: top;
+}
+
+
+.search_page .card_white {
+    background-color: black;
+    color: white;
+    overflow: auto;
+}
+
+.search_page .card_white img {
+    width: 0;
+    position: absolute;
+}
+
+.search_page .card_white .card_text {
+    width: 100%;
+    background-color: black;
+    position: relative;
+}
+
+.search_page .card_white::-webkit-scrollbar {
+    display: none;
+}
+
+
+.search_page .card_white_light {
+    color: black;
+    background-color: white;
+    overflow: auto;
+    width: 450px;
+    height: 340px;
+    margin-right: 3px;
+    scrollbar-width: none;
+}
+
+.search_page .card_light img {
+    max-height: 100%;
+    max-width: 100%;
+    float: right;
+}
+.search_page .card_light {
+    background-color: white;
+    color: black;
+    overflow: auto;
+    width: 450px;
+    height: 340px;
+    scrollbar-width: none;
+}
+
+.xsearch_page .card_light .card_text {
+    margin-right: 5px;
+    width: 50%;
+}
+
+.search_page .card_light .plot_summary {
+    background-color: white;
+    color: black;
+
+    z-index: 2;
+    position: relative;
+}
+
+.search_page .card_light::-webkit-scrollbar {
+    display: none;
+}
+
+
+.backdrop {
+    width: 100%;
+}
+
 .rating_buttons button {
     font-size: 18pt;
 }
@@ -437,7 +416,6 @@
 
 .request_recs {
     margin: 2px;
-
 }
 
 .request_recs button {
@@ -453,6 +431,101 @@
     cursor: pointer;
 }
 
+.card_one {
+    width: 900px;
+    height: 581px;
+    vertical-align: top;
+}
+
+.card_one_dark {
+    width: 600px;
+    height: 581px;
+    vertical-align: top;
+}
+
+.card_one_dark {
+    width: 400px;
+    height: 580px;
+    vertical-align: top;
+    color: white;
+}
+
+.card_one img {
+    max-width: 100%;
+    height: 500px;
+    margin-left: 10px;
+    opacity: 0;
+    transition: opacity .25s ease-in-out;
+}
+
+.card_one .poster {
+    width: 45%;
+    max-height: calc(100% - 40px);
+}
+
+
+.poster {
+    display: inline-block;
+    max-height: 100%;
+    margin-left: 10px;
+    vertical-align: top;
+}
+
+.left .poster, 
+.right .poster, 
+.card_one .poster, 
+.card_light .poster {
+    width: 45%;
+}
+
+.card_dark .poster {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.card_one .card_text {
+    width: 45%;
+    margin-left: 10px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.card_one .card_text .plot_summary {
+    background-color: white;
+}
 
 
 
+.card_one_dark img {
+    max-width: 100%;
+    max-height: 100%;
+    margin: 10px;
+}
+
+.card_one_dark .card_text {
+    display: none;
+}
+
+.nav_prev_next {
+    font-size: 150%;
+    cursor: pointer;
+}
+
+.center .nav_prev_next, 
+.left .nav_prev_next, 
+.right .nav_prev_next {
+   display: none;
+}
+
+.visible {
+    opacity: 1;
+    transition: opacity 1s ease-out;
+  }
+
+  .search_page {
+    font-size: 85%;
+  }
+
+  .movie_title:hover {
+    transform: scale(1.1);
+}
