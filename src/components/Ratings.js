@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 import styles from "@/styles/Main.module.css";
 import { StateContext } from '@/components/State'
 import Spinner from "@/components/Spinner"
@@ -69,40 +69,13 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
 }
 
 const Interest = ({ user_id, tconst, user_rating, dbSet }) => {
-    const [rating, setRating] = useState(user_rating)
-
-    const onClick = ( _rating ) => {
-        setRating(_rating)
+    const onClick = (_rating) => {
         dbSet(user_id, tconst, _rating)
     }
 
-    /*
-    const interested_id = 'interested-' + tconst
-    const not_interested_id = 'not-interested-' + tconst
-    const interest_level_name = 'interest-' + tconst
-    const yesChecked = user_rating != null && user_rating == -1
-    const noChecked = user_rating != null && user_rating == -2
-    
-    console.log(`yesChecked: ${yesChecked} noChecked:${noChecked}`)
-    */
-
-    const bold = { fontWeight: "600", fontSize: "120%"}
+    const bold = { fontWeight: "600", fontSize: "120%" }
     const yesStyle = user_rating == -1 ? bold : {}
     const noStyle = user_rating == -2 ? bold : {}
-    /*
-    setTimeout(() => {
-        return
-
-        const yesEl = document.getElementById(interested_id)
-        if (yesEl)
-            yesEl.checked = yesChecked
-
-        const noEl = document.getElementById(not_interested_id)
-        if (noEl)
-            noEl.checked = noChecked
-
-    }, 1000)
-    */
 
     if (!user_id) {
         return null
@@ -111,6 +84,7 @@ const Interest = ({ user_id, tconst, user_rating, dbSet }) => {
             <tr>
                 <td style={{ verticalAlign: "top" }}>
                     want to see?
+                    &nbsp;&nbsp;
                 </td>
                 <td>
                     <span
@@ -129,34 +103,41 @@ const Interest = ({ user_id, tconst, user_rating, dbSet }) => {
 }
 
 
-const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
+const Ratings =  (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
     const [rating, setRating] = useState(user_rating)
-    // const rating = user_rating
 
     const parameters = useContext(StateContext)
     const { setNumRatings } = parameters.setters
     const { numRatings } = parameters.values
+    // const [isLoading, setIsLoading] = useState(false)
 
-    //useEffect(() => {
-    //  setRating(user_rating)
-    //}, [tconst])
-
-    const [isLoading, setIsLoading] = useState(false)
+    const isLoading = useRef(false)
+    const setIsLoading= (val) => {
+      isLoading.current = val
+    }
 
     //console.log(`Ratings tconst:${tconst}, user_rating:${user_rating}`)
 
     const dbSet = async (user_id, _tconst, _rating) => {
-        // User gave a rating.
+        // User rated something.
         const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}&aiModel=${aiModel}`
 
         setRating(_rating)
+        setNumRatings(parseInt(numRatings) + 1)
 
         const response = await fetch(url)
         const result = await response.json()
 
-  
-        setNumRatings(parseInt(numRatings) + 1)
+        // Trouble with this, flashing.
+        if (getData)
+            await getData()
+
+
+
+
+
         /*
+                // Generate recs every 10 ratings.
                 if (result.count % 10 == 0) {
                     setIsLoading(true)
                     const url = `/api/get_recommendations?user_id=${user_id}&rating=${_rating}&aiModel=${aiModel}`
@@ -166,13 +147,11 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
                 }
         */
 
-        // Trouble with this, flashing.
-        //if (getData)
-        //   getData()
+
 
     }
 
-    console.log("Ratings -- user_rating:", user_rating)
+    // console.log("Ratings -- user_rating:", user_rating)
     const user_ratings = (
         <tr>
             <td style={{ verticalAlign: "top" }}>
@@ -187,7 +166,7 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
 
     return (
         <div>
-            <Spinner isLoading={isLoading} msg="please wait, generating recommendations" />
+            <Spinner isLoading={isLoading.current} msg="please wait, generating recommendations" />
             <table><tbody>
                 <tr>
                     <td>

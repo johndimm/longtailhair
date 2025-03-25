@@ -76,33 +76,53 @@ const Card = ({
   recs,
   selectedPerson,
   theme,
-  getData
+  getData,
+  numReturnedMovies,
+  cardDim
 }) => {
-  const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_white_light))
+  // const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_light))
   const parameters = useContext(StateContext)
-  const { resetGenres, resetYear, resetMovie, resetActor } = parameters.setters
-  const { cardDim, aiModel } = parameters.values
+  const { resetGenres, resetYear, resetMovie, resetActor, setOffset } = parameters.setters
+  const { 
+    //cardDim, 
+    aiModel, numMovies, offset } = parameters.values
   const { user } = parameters
-
-  useEffect(() => {
-    if (recs && recs.length > 0) {
-      const poster_url = recs[0].poster_url
-      // const primaryTitle = recs[0].primarytitle
-      if (!poster_url || poster_url == '') {
-        //console.log("useEffect sets card white", poster_url, primaryTitle)
-        const className = theme == 'light' ? styles.card_white_light : styles.card_white
-        setTopClass(clsx(styles.card, className))
-      } else {
-        const className = theme == 'light' ? styles.card_light : styles.card_black
-        setTopClass(clsx(styles.card, className))
-      }
-    }
-  }, [recs, theme])
 
   if (!recs || recs.length == 0)
     return null
 
   const r1 = recs[0]
+
+  //console.log("place:", r1.place)
+
+  const hasPoster = r1.poster_url && r1.poster_url != ''
+  const layoutOne = numMovies == 1
+  const inSidebar = (r1.place == 'left' || r1.place == 'right')
+  const inCenter = r1.place == 'center'
+  const inSearchResults = r1.place == 'genres'
+  const lightTheme = theme == 'light'
+
+  let secondClass = null // styles.card_dark
+  if (layoutOne && inSearchResults && lightTheme) {
+    secondClass = styles.card_one
+  } else if (layoutOne && inSearchResults && !lightTheme) {
+    secondClass = styles.card_one_dark
+  } else if (inSearchResults && !lightTheme && hasPoster) {
+    secondClass = styles.card_dark
+  } else if (inCenter) {
+    secondClass = null
+  } else if (hasPoster && lightTheme) {
+    secondClass = styles.card_light
+  } else if (!hasPoster && lightTheme) {
+    secondClass = styles.card_light_noposter
+  } else if (hasPoster && !lightTheme) {
+    secondClass = styles.card_dark
+  } else if (!hasPoster && !lightTheme) {
+    secondClass = styles.card_dark_noposter
+  }
+
+
+  const topClass = clsx(styles.card, secondClass)
 
   const isDirector = (r) => {
     return r.role.split(', ').indexOf('director') != -1
@@ -118,7 +138,7 @@ const Card = ({
     const rec_director = recs.filter(isDirector)
 
     // Show only 4 to 6 persons.
-    const numPersons = r1.poster_url != null ? 4 : 10
+    const numPersons = (r1.poster_url != null && numMovies > 1) ? 4 : 30
     if (rec_director.length > 0) {
       slicedRecs = rec_director.concat(
         recs.filter(isNotDirector).slice(0, numPersons - rec_director.length)
@@ -148,9 +168,13 @@ const Card = ({
     const poster_url = r1.poster_url.replace('w200', 'w400').replace('SX300', 'SX600')
     poster = <img
       src={poster_url}
-      onClick={() => goToMovie(r1.tconst)}
+      onClick={() => {
+        goToMovie(r1.tconst)
+      }}
       onLoad={(e) => {
         e.target.style.display = 'inline-block'
+        e.target.style.opacity = 1
+        // e.target.style.display = 'none'
       }}
       onError={(e) => {
         console.log(`cover image load error for ${r1.primarytitle}, ${poster_url} ${e}`)
@@ -158,6 +182,7 @@ const Card = ({
 
         e.target.style.display = 'none'
       }} />
+    //poster = null
 
     if (r1.place == 'center') {
       poster = <a href={poster_url} target="_blank">{poster}</a>
@@ -187,7 +212,7 @@ const Card = ({
       plot_sentence = r1.user_rating_msg
     }
     // Should be able to cut off only if longer than 150, but no.
-    if (plot_sentence && plot_sentence == r1.plot_summary && plot_sentence != '') {
+    if (numMovies != 1 && plot_sentence && plot_sentence == r1.plot_summary && plot_sentence != '') {
       plot_sentence = plot_sentence.substring(0, 150) + '...'
     }
   }
@@ -202,7 +227,18 @@ const Card = ({
   if (r1.place == 'genres' && theme == 'dark')
     style = cardDim
 
-  console.log("card -- tconst:", r1.tconst, " user_rating:", r1.user_rating)
+  // console.log("card -- tconst:", r1.tconst, " user_rating:", r1.user_rating)
+
+  const resetOffset = (increment) => {
+    const newOffset = Math.max(0, offset + increment)
+    setOffset(newOffset)
+  }
+
+  const navStyle = layoutOne ? {} : { "display": "none" }
+
+  const center_poster_style = r1.place == 'center'
+    ? { "display": "inline-block" }
+    : { "display": "none" }
 
   return <div className={topClass} style={style}>
     <div className={styles.card_text}>
@@ -214,7 +250,9 @@ const Card = ({
           </div>
 
           <hr />
-          {center_poster}
+          <div className={styles.poster} style={center_poster_style}>
+            {center_poster}
+          </div>
           {plotHtml}
 
         </div>
@@ -248,10 +286,24 @@ const Card = ({
           {genres}
         </span>
       </div>
+      <div style={{
+        fontSize: '200%',
+        cursor: "pointer",
+        display: numMovies == 1 ? 'block' : 'none'
+      }}>
+
+      </div>
       <ExternalLinks r1={r1} />
 
     </div>
-    {right_poster}
+    <div className={styles.poster}>
+      {right_poster}
+    </div>
+    <div className={styles.nav_prev_next} style={navStyle}>
+      <span onClick={() => resetOffset(-1)} className={styles.prev}>&#9664;</span>
+      <span onClick={() => resetOffset(1)} className={styles.next}>&#9654;</span>
+    </div>
+
   </div>
 }
 

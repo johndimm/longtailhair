@@ -192,7 +192,8 @@ or replace function get_movies (
   _movieList text[] default null,
   _orderBy text default 'popularity desc',
   _rating_filter text default 'all',
-  _user_id integer default null
+  _user_id integer default null,
+  _offset integer default 0
 )
 returns table (
   source_order int,
@@ -292,7 +293,7 @@ and
  end
 
  
- limit _numMovies
+ limit _numMovies  offset _offset
 )
 
   select e.source_order, tb.tconst, tb.genres, e.averageRating, e.numVotes, e.averageRating * e.numVotes as popularity,

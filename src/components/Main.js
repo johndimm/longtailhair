@@ -21,19 +21,23 @@ const Main = ({ }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [moviePageVisible, setMoviePageVisible] = useState({ "visibility": "visible" })
   const [searchPageVisible, setSearchPageVisible] = useState({ "visibility": "visible" })
-  const [isScrolling, setIsScrolling] = useState(false);
+  //const [isScrolling, setIsScrolling] = useState(false);
   const scrollTimeoutRef = useRef(null);
 
   const parameters = useContext(StateContext)
-  const { tconst, nconst, numMovies, theme, showControlPanel } = parameters.values
+  const { tconst, nconst, numMovies, theme, showControlPanel} = parameters.values
   const { setNumMovies, setShowControlPanel } = parameters.setters
+  const [cardDim, setCardDim] = useState(null)
+  
 
   const getData = async () => {
     const url = '/api/get_movies?' + parameters.urlParams
 
-    setIsLoading(true)
+    if (numMovies == 1)
+      setIsLoading(true)
     const response = await fetch(url)
     const result = await response.json()
+    if (numMovies == 1)
     setIsLoading(false)
 
     setData(result)
@@ -104,7 +108,8 @@ const Main = ({ }) => {
     */
 
     const el = e.nativeEvent.srcElement
-    if (atBottom(el)) {
+    if (atBottom(el) && numMovies != 1) {
+      // if layout is one movie, don't try to show more.
       setNumMovies(numMovies + NUM_MOVIES)
     }
   }
@@ -147,6 +152,8 @@ const Main = ({ }) => {
         />
         <ControlPanel
           toggleShowControlPanel={toggleShowControlPanel}
+          setCardDim={setCardDim}
+          cardDim={cardDim}
         />
         <Cards
           data={data}
@@ -154,6 +161,7 @@ const Main = ({ }) => {
           selectedPerson={nconst}
           theme={theme}
           getData={getData}
+          cardDim={cardDim}
         />
       </div>
     )

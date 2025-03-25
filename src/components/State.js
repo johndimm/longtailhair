@@ -28,7 +28,8 @@ const State = () => {
 
   const [numRatings, setNumRatings] = useState(0)
   const [paramsProcessed, setParamsProcessed] = useState(false)
-  const [cardDim, setCardDim] = useState()
+  //const [cardDim, setCardDim] = useState(null)
+  const [offset, setOffset] = useState(0)
 
   const { tconst, nconst, genres, year, yearstart, yearend,
     query, titletype, numMovies, page, ratingsFilter, sortOrder,
@@ -112,7 +113,9 @@ const State = () => {
   }
 
   const resetNumMovies = () => {
-    setNumMovies(NUM_MOVIES)
+    if (numMovies > 1)
+      setNumMovies(NUM_MOVIES)
+    setOffset(0)
   }
 
   const resetAll = () => {
@@ -142,15 +145,16 @@ const State = () => {
     theme: _theme,
     showControlPanel: _showControlPanel,
     aiModel: _aiModel, 
-    cardDim: cardDim,
-    numRatings: numRatings
+  //  cardDim: cardDim,
+    numRatings: numRatings,
+    offset: offset
   }
 
   // Get new data if any of these change.  The tconst value is not included here.  
   // It just selects the movie and doesn't change the set of movies.
   const paramArray = [
     _nconst, _genres, _numMovies, _yearstart, _yearend, _query,
-    _titletype, _ratingsFilter, _sortOrder, _theme, _aiModel, _user.id
+    _titletype, _ratingsFilter, _sortOrder, _theme, _aiModel, _user.id, offset
   ]
 
   const genresParamArray = [_genres, _query, _yearstart, _yearend,
@@ -176,14 +180,15 @@ const State = () => {
     setTitletype: setTitletype,
     setNumMovies: setNumMovies,
     setUser: setUser,
-    setCardDim: setCardDim,
+  //  setCardDim: setCardDim,
     setRatingsFilter: setRatingsFilter,
     setSortOrder: setSortOrder,
     setTheme: setTheme,
     setShowControlPanel: setShowControlPanel,
     setAIModel: setAIModel,
     resetAll: resetAll,
-    setNumRatings: setNumRatings
+    setNumRatings: setNumRatings,
+    setOffset: setOffset
   }
 
   const parameters = {
