@@ -9,7 +9,7 @@
 }
 
 .selected_actor img {
-   height: 60px;
+   height: 70px;
    border-radius: 10px;
 }
 
@@ -39,4 +39,12 @@
     max-width: 200px;
     overflow: hidden;
     border-radius: 5px;
+}
+
+.actor_name {
+    float: left;
+    padding-top: 20px;
+    margin-right: 10px;
+    font-size: 200%;
+    font-weight: 300;
 }

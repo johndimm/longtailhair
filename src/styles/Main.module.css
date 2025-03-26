@@ -3,14 +3,14 @@
 .right {
     float: left;
     font-size: 14.6pt;
-    width: 35%;
-    padding: 20px;
+    width: 30%;
+    padding: 10px;
     padding-top: 0;
     background-color: white;
 }
 
 .center {
-    width: 30%;
+    width: 40%;
     font-size: 12pt;
 }
 
@@ -158,6 +158,7 @@
     display: inline-block;
     font-weight: 400;
     text-align: center;
+    font-size: 80%;
 }
 
 .card .plot_summary {
@@ -250,12 +251,19 @@
 .center .card {
     text-align: center;
     border: 1px solid black;
+    font-size: 140%;
+    padding: 20px;
 }
 
 .center .poster {
     width: 100%;
+    margin-left: 0;
 }
 
+.left .card,
+.right .card {
+    font-size: 80%;
+}
 
 .left .card img,
 .right .card img {
@@ -477,6 +485,8 @@
     vertical-align: top;
 }
 
+
+
 .left .poster, 
 .right .poster, 
 .card_one .poster, 
@@ -494,6 +504,7 @@
     margin-left: 10px;
     display: inline-block;
     vertical-align: top;
+    font-size: 110%;
 }
 
 .card_one .card_text .plot_summary {

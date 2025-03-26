@@ -20,6 +20,8 @@ const Actor = ({ nconst, resetActor }) => {
   if (!data)
     return null
 
+  const onClick = nconst ? (e) => resetActor(nconst) : null
+
   const width = 200
   const url_prefix = `https://image.tmdb.org/t/p/w${width}`
   let profilePicture
@@ -28,7 +30,7 @@ const Actor = ({ nconst, resetActor }) => {
     && data["profile_path"] != null
 
   if (hasImage) {
-    profilePicture = <img onClick={(e) => resetActor(nconst)} src={url_prefix + data["profile_path"]} />
+    profilePicture = <img onClick={onClick} src={url_prefix + data["profile_path"]} />
   } else {
     profilePicture = <div className={styles.profile_picture}>
       <img className={styles.logo_credit} src="/graph-logo-60.jpg" />
@@ -42,17 +44,21 @@ const Actor = ({ nconst, resetActor }) => {
     ? <a title="person in imdb" target='_imdb' href={imdbUrl}>imdb</a>
     : <></>
 
+
   const closeButton = nconst
-    ? <span className={styles.close_button} onClick={(e) => resetActor(nconst)}>X</span>
+    ? <span className={styles.close_button} onClick={onClick}>X</span>
     : <></>
 
   const name = nconst ? data.name : <span className={styles.logo_credit}></span>
 
-  return <div className={styles.selected_actor}>
+
+  return <div className={styles.selected_actor} onClick={onClick}>
     <div>
+      <div style={{float: "right"}}>
       {closeButton}
       {profilePicture}
-      <div>
+      </div>
+      <div className={styles.actor_name}>
         {name}
       </div>
       {closeButton}

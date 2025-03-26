@@ -42,7 +42,7 @@ async function getDeepseekRecommendations(prompt) {
   catch (e) {
     console.log("Error parsing JSON from ai", e)
     console.log("response from ai:", response)
-    json = {"response": response }
+    json = { "response": response }
   }
 
   return json
@@ -83,24 +83,31 @@ async function getClaudeRecommendations(prompt) {
     apiKey: process.env.ANTHROPIC_API_KEY,
   });
 
-  const message = await anthropic.messages.create({
-    // model: "claude-3-opus-20240229",
-    model: "claude-3-7-sonnet-20250219",
-    max_tokens: 4000,
-    system: `You are a movie recommendation expert. Provide recommendations in the exact JSON format requested.  
+  try {
+    const message = await anthropic.messages.create({
+      // model: "claude-3-opus-20240229",
+      model: "claude-3-7-sonnet-20250219",
+      max_tokens: 4000,
+      system: `You are a movie recommendation expert. Provide recommendations in the exact JSON format requested.  
     Please wrap strings in double quotes.  Return a valid JSON array.`,
-    messages: [
-      {
-        role: "user",
-        content: prompt
-      }
-    ]
-  });
+      messages: [
+        {
+          role: "user",
+          content: prompt
+        }
+      ]
+    });
 
-  const jsonString = message.content[0].text
-  const json = JSON.parse(jsonString)
+    const jsonString = message.content[0].text
+    const json = JSON.parse(jsonString)
 
-  return json
+    return json
+  } catch (e) {
+    const jsonError = { title: 'Error: Unable to get response from Claude.' }
+    console.log(jsonError, e)
+    alert (jsonError + '   ' + e)
+    return jsonError
+  }
 }
 
 export const aiRecsPrompt = async (user_id, titletype, genres, aiModel, user_ratings_recs) => {
@@ -225,16 +232,16 @@ This verification step must be completed before responding.
 
 `
 
-const not_see = user_ratings_recs.filter( (r) => r.rating == -2).map ( (r,idx) => {
-    return {"title": r.title, "year": r.year}
+  const not_see = user_ratings_recs.filter((r) => r.rating == -2).map((r, idx) => {
+    return { "title": r.title, "year": r.year }
   })
 
-  const want_see = user_ratings_recs.filter( (r) => r.rating == -1).map ( (r,idx) => {
-    return {"title": r.title, "year": r.year}
+  const want_see = user_ratings_recs.filter((r) => r.rating == -1).map((r, idx) => {
+    return { "title": r.title, "year": r.year }
   })
 
-  const rated = user_ratings_recs.filter( (r) => r.rating > 0).map ( (r,idx) => {
-    return {"title": r.title, "year": r.year, "rating": r.rating}
+  const rated = user_ratings_recs.filter((r) => r.rating > 0).map((r, idx) => {
+    return { "title": r.title, "year": r.year, "rating": r.rating }
   })
 
   const resource = {
@@ -306,14 +313,14 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code, aiMod
   const insertRecs = []
   for (let i = 0; i < newRecs.length; i++) {
     const r = newRecs[i]
-    const why_recommended = r.why_recommended.replace(/'/g, "''") 
-       + ` (${aiModel})`
+    const why_recommended = r.why_recommended.replace(/'/g, "''")
+      + ` (${aiModel})`
     const title = r.title.replace(/'/g, "''")
-    const line = `(${r.year}, ${i+1}, '${r.tconst}', '${title}', '${why_recommended}')`
+    const line = `(${r.year}, ${i + 1}, '${r.tconst}', '${title}', '${why_recommended}')`
     insertRecs.push(line)
   }
 
-    // Clear out any previous recommendations
+  // Clear out any previous recommendations
   //await db.performQuery(`delete from user_ratings where user_id=${user_id} and rating=-3`)
 
   let cmd = `  
@@ -357,7 +364,7 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code, aiMod
   await db.performQuery(cmd)
 
 
-return { nOld: nOld, nNew: nNew }
+  return { nOld: nOld, nNew: nNew }
 }
 
 export const getAIRecsPrompt = async (user_id, titletype, genres, aiModel) => {
@@ -365,7 +372,7 @@ export const getAIRecsPrompt = async (user_id, titletype, genres, aiModel) => {
 
   const prompt = await aiRecsPrompt(user_id, titletype, genres, aiModel, user_ratings_recs)
 
-  return {"prompt": prompt}
+  return { "prompt": prompt }
 }
 
 export const getAIRecs = async (user_id, titletype, genres, aiModel) => {
