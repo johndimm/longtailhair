@@ -33,7 +33,8 @@ async function getDeepseekRecommendations(prompt) {
     ],
   });
 
-  const response = completion.choices[0].message.content
+  let response = completion.choices[0].message.content
+  response = response.replace("```json", "").replace("```", "")
 
   let json = {}
   try {
@@ -105,7 +106,7 @@ async function getClaudeRecommendations(prompt) {
   } catch (e) {
     const jsonError = { title: 'Error: Unable to get response from Claude.' }
     console.log(jsonError, e)
-    alert (jsonError + '   ' + e)
+    alert(jsonError + '   ' + e)
     return jsonError
   }
 }
@@ -357,12 +358,11 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code, aiMod
   from tmp
   join title_basics_ex as tbe on 
   lower(tbe.primarytitle) = lower(tmp.title) 
-  and startyear = tmp.year 
+  and abs(startyear - tmp.year) <= 2 
   on conflict (user_id, tconst) do nothing
   ;
     `
   await db.performQuery(cmd)
-
 
   return { nOld: nOld, nNew: nNew }
 }

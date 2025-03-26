@@ -19,7 +19,7 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
     const [clicked, setClicked] = useState(false)
 
     useEffect(() => {
-        console.log("useEffect, defaultNstars:", defaultNstars, " nStars:", nStars, " tconst:", tconst)
+        // console.log("useEffect, defaultNstars:", defaultNstars, " nStars:", nStars, " tconst:", tconst)
         setNstars(defaultNstars)
     }, [tconst, user_rating])
 
@@ -32,7 +32,7 @@ const EditStarRating = ({ user_id, tconst, user_rating, dbSet }) => {
 
     const mouseOut = (e) => {
         e.preventDefault()
-        console.log("mouseOut:", e.target.id)
+        // console.log("mouseOut:", e.target.id)
         if (e.target.id == 'star-container') {
             if (!clicked)
                 setNstars(defaultNstars)
@@ -132,10 +132,6 @@ const Ratings =  (({ user_id, tconst, user_rating, averagerating, getData, aiMod
         if (getData)
             await getData()
 
-
-
-
-
         /*
                 // Generate recs every 10 ratings.
                 if (result.count % 10 == 0) {
@@ -146,8 +142,6 @@ const Ratings =  (({ user_id, tconst, user_rating, averagerating, getData, aiMod
                     setIsLoading(false)
                 }
         */
-
-
 
     }
 
