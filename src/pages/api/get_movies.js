@@ -12,7 +12,7 @@ export default async function handler(req, res) {
   const _genres = genres ? genres : null
   const _yearstart = yearstart ? yearstart : null
   const _yearend = yearend ? yearend : null
-  const _query = query ? query : null
+  const _query = query ? query.trim() : null
   const _nconst = nconst ? nconst : null
   const _titletype = titletype ? titletype : null
   const _sortOrder = sortOrder ? sortOrder : null

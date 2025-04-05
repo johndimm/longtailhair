@@ -1,11 +1,15 @@
 import { getAIRecs } from '@/util/recommendations'
+import { waitUntil } from '@vercel/functions';
+
 
 export default async function handler(req, res) {
   const {
     query: { user_id, titletype, genres, aiModel }
   } = req
 
-  const recs = await getAIRecs(user_id, titletype, genres, aiModel)
+   waitUntil (
+     getAIRecs(user_id, titletype, genres, aiModel)
+   )
 
-  res.status(200).json(recs)
+  res.status(200).json({ 'msg': 'generating recs' })
 }

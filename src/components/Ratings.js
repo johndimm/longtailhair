@@ -132,7 +132,7 @@ const Ratings =  (({ user_id, tconst, user_rating, averagerating, getData, aiMod
         if (getData)
             await getData()
 
-        /*
+        
                 // Generate recs every 10 ratings.
                 if (result.count % 10 == 0) {
                     setIsLoading(true)
@@ -141,7 +141,7 @@ const Ratings =  (({ user_id, tconst, user_rating, averagerating, getData, aiMod
                     const result = await response.json()
                     setIsLoading(false)
                 }
-        */
+        
 
     }
 
