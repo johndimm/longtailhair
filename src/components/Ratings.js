@@ -136,7 +136,7 @@ const Ratings =  (({ user_id, tconst, user_rating, averagerating, getData, aiMod
                 // Generate recs every 10 ratings.
                 if (result.count % 10 == 0) {
                     setIsLoading(true)
-                    const url = `/api/get_recommendations?user_id=${user_id}&rating=${_rating}&aiModel=${aiModel}`
+                    const url = `/api/get_recommendations_async?user_id=${user_id}&rating=${_rating}&aiModel=${aiModel}`
                     const response = await fetch(url)
                     const result = await response.json()
                     setIsLoading(false)
