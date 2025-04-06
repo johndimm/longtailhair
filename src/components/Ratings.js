@@ -103,17 +103,18 @@ const Interest = ({ user_id, tconst, user_rating, dbSet }) => {
 }
 
 
-const Ratings =  (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
+const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
     const [rating, setRating] = useState(user_rating)
 
+
     const parameters = useContext(StateContext)
-    const { setNumRatings } = parameters.setters
+    const { setNumRatings, setRatingsCounts } = parameters.setters
     const { numRatings } = parameters.values
     // const [isLoading, setIsLoading] = useState(false)
 
     const isLoading = useRef(false)
-    const setIsLoading= (val) => {
-      isLoading.current = val
+    const setIsLoading = (val) => {
+        isLoading.current = val
     }
 
     //console.log(`Ratings tconst:${tconst}, user_rating:${user_rating}`)
@@ -123,26 +124,28 @@ const Ratings =  (({ user_id, tconst, user_rating, averagerating, getData, aiMod
         const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}&aiModel=${aiModel}`
 
         setRating(_rating)
-        setNumRatings(parseInt(numRatings) + 1)
+
+        const newNumRatings = parseInt(numRatings) + 1
+        setNumRatings(newNumRatings)
 
         const response = await fetch(url)
         const result = await response.json()
+
+        setRatingsCounts(result.ratingsCounts)
+        console.log("Ratings -- result:", result.ratingsCounts)
 
         // Trouble with this, flashing.
         if (getData)
             await getData()
 
-        
-                // Generate recs every 10 ratings.
-                if (result.count % 10 == 0) {
-                    setIsLoading(true)
-                    const url = `/api/get_recommendations_async?user_id=${user_id}&rating=${_rating}&aiModel=${aiModel}`
-                    const response = await fetch(url)
-                    const result = await response.json()
-                    setIsLoading(false)
-                }
-        
-
+        // Generate recs every 10 ratings.
+        if (newNumRatings % 10 == 0) {
+            setIsLoading(true)
+            const url = `/api/get_recommendations_async?user_id=${user_id}&rating=${_rating}&aiModel=${aiModel}`
+            const response = await fetch(url)
+            const result = await response.json()
+            setIsLoading(false)
+        }
     }
 
     // console.log("Ratings -- user_rating:", user_rating)

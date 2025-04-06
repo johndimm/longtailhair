@@ -267,3 +267,7 @@
     background-color: white;
     text-align: center;
 }
+
+.select_option {
+    white-space: nowrap;
+}

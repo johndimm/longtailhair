@@ -6,6 +6,7 @@ import Genres from "@/components/Genres"
 import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 import RequestRecs from "@/components/RequestRecs"
+// import { count } from 'console'
 
 const ControlPanel = ({ 
     toggleShowControlPanel,
@@ -23,7 +24,7 @@ const ControlPanel = ({
         nconst, titletype, genres, theme,
         query, yearstart, yearend, user_id,
         ratingsFilter, showControlPanel, sortOrder, aiModel,
-        numMovies }
+        numMovies, ratingsCounts }
         = parameters.values
     const { user, genresParamArray, urlParams } = parameters
 
@@ -139,25 +140,32 @@ const ControlPanel = ({
         const style = user.id
             ? { color: 'black' }
             : { color: 'gray' }
+        
+        let ratedByMe = 0
+        Object.keys(ratingsCounts).forEach ((rating) => {
+            if (rating > -3) 
+            ratedByMe += ratingsCounts[rating]
+        })
 
         const ratings = [
-            { dbName: 'all', displayName: 'everything' },
-            { dbName: 'rated', displayName: 'rated by me' },
-            { dbName: 'watchlist', displayName: 'want to watch' },
             { dbName: 'not rated', displayName: 'not yet rated' },
-            { dbName: 'recommendations', displayName: 'recommended' }
+            { dbName: 'recommendations', displayName: 'recommended', count: ratingsCounts[-3] },
+            { dbName: 'rated', displayName: 'rated by me', count: ratedByMe },
+            { dbName: 'watchlist', displayName: 'want to watch', count: ratingsCounts[-1] },
+            { dbName: 'all', displayName: 'everything' }
         ]
-        // ', ratingsFilter)
+
         const ratingsOptions = ratings.map((rating, idx) => {
             const style = rating.dbName == ratingsFilter
                 ? { fontWeight: 600, fontStyle: 'italic' }
                 : { fontWeight: 200 }
-            return <li key={idx} style={style} onClick={() => {
+            const count = rating.count ? ` (${rating.count})` : ''
+            return <li key={idx} className={styles.select_option} style={style} onClick={() => {
                 if (user.id) {
                     setRatingsFilter(rating.dbName)
                     setOffset(0)
                 }
-            }}>{rating.displayName}</li>
+            }}>{rating.displayName} {count}</li>
         })
 
         const tooltip = user.id

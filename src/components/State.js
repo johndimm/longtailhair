@@ -18,7 +18,7 @@ const State = () => {
   const [_nconst, setActor] = useState()
   const [_titletype, setTitletype] = useState(null)
   const [_numMovies, setNumMovies] = useState(NUM_MOVIES)
-  const [_ratingsFilter, setRatingsFilter] = useState('all')
+  const [_ratingsFilter, setRatingsFilter] = useState('not rated')
   const [_sortOrder, setSortOrder] = useState('popularity desc')
   const [_theme, setTheme] = useState('light')
   const [_showControlPanel, setShowControlPanel] = useState(false)
@@ -27,6 +27,8 @@ const State = () => {
   const [_user, setUser] = useState({ id: null, email: null, name: null })
 
   const [numRatings, setNumRatings] = useState(0)
+  const [ratingsCounts, setRatingsCounts] = useState({})
+
   const [paramsProcessed, setParamsProcessed] = useState(false)
   //const [cardDim, setCardDim] = useState(null)
   const [offset, setOffset] = useState(0)
@@ -147,6 +149,7 @@ const State = () => {
     aiModel: _aiModel, 
   //  cardDim: cardDim,
     numRatings: numRatings,
+    ratingsCounts: ratingsCounts,
     offset: offset
   }
 
@@ -188,6 +191,7 @@ const State = () => {
     setAIModel: setAIModel,
     resetAll: resetAll,
     setNumRatings: setNumRatings,
+    setRatingsCounts: setRatingsCounts,
     setOffset: setOffset
   }
 
