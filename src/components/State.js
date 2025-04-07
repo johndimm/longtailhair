@@ -26,8 +26,12 @@ const State = () => {
   // const [_user, setUser] = useState({ id: 725, email: null, name: 'Vince' })
   const [_user, setUser] = useState({ id: null, email: null, name: null })
 
-  const [numRatings, setNumRatings] = useState(0)
-  const [ratingsCounts, setRatingsCounts] = useState({})
+  const [ratingsCounts, setRatingsCounts] = useState({
+    rated: 0,
+    want_to_see: 0,
+    recommended: 0,
+    do_not_want_to_see: 0
+  })
 
   const [paramsProcessed, setParamsProcessed] = useState(false)
   //const [cardDim, setCardDim] = useState(null)
@@ -147,8 +151,6 @@ const State = () => {
     theme: _theme,
     showControlPanel: _showControlPanel,
     aiModel: _aiModel, 
-  //  cardDim: cardDim,
-    numRatings: numRatings,
     ratingsCounts: ratingsCounts,
     offset: offset
   }
@@ -183,14 +185,12 @@ const State = () => {
     setTitletype: setTitletype,
     setNumMovies: setNumMovies,
     setUser: setUser,
-  //  setCardDim: setCardDim,
     setRatingsFilter: setRatingsFilter,
     setSortOrder: setSortOrder,
     setTheme: setTheme,
     setShowControlPanel: setShowControlPanel,
     setAIModel: setAIModel,
     resetAll: resetAll,
-    setNumRatings: setNumRatings,
     setRatingsCounts: setRatingsCounts,
     setOffset: setOffset
   }

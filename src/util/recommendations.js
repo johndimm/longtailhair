@@ -359,7 +359,7 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code, aiMod
   from tmp
   join title_basics_ex as tbe on 
   lower(tbe.primarytitle) = lower(tmp.title) 
-  and abs(startyear - tmp.year) <= 1 
+  and startyear = tmp.year
   on conflict (user_id, tconst) do nothing
   ;
     `

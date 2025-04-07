@@ -430,32 +430,52 @@ select *
 from count_genres('Comedy,Action', 1980, 1990, null,null, 'movie');
 
 
-/*
-drop function if exists recommend_movie_list;
-create or replace function recommend_movie_list (
-  _user_id integer,
-  _movieList text[] default null
-) 
- returns integer
+drop function if exists count_ratings;
+create
+or replace function count_ratings (
+  _user_id integer
+)
+returns table (
+  category text,
+  cnt integer
+)
 language plpgsql as 
 $$ 
 begin 
+return query
 
-insert into user_ratings
-(user_id, tconst, rating)
-select _user_id, tbe.tconst, -3
-from title_basics_ex as tbe
-where tbe.tconst = ANY(_movieList)
-on conflict (user_id, tconst) do nothing
-;
+  with ratings_counts as (
+    select rating, count(*)::integer as cnt 
+    from user_ratings 
+    where user_id = _user_id
+    group by 1
+  )
+  select 'recommended' as category, rc.cnt
+  from ratings_counts as rc
+  where rating = -3
 
-return 1;
+  union
+
+  select 'rated' as category, coalesce(sum(rc.cnt), 0)::integer as cnt
+  from ratings_counts as rc
+  where rating > -3
+
+  union
+
+  select 'want_to_see' as category, rc.cnt
+  from ratings_counts as rc
+  where rating = -1
+
+  union
+
+  select 'do_not_want_to_see' as category, rc.cnt
+  from ratings_counts as rc
+  where rating = -2
+  ;
 
 end $$ ;
 
---select 'array query' as nada, *
---from get_movies(10, null, null, null, null, null, null, '{"tt0111161", "tt0099685"}')
+select *
+from count_ratings(177)
+;
 
-select * from recommend_movie_list(1, '{"tt0111161", "tt0099685"}');
-
-*/

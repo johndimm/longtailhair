@@ -105,12 +105,9 @@ const Interest = ({ user_id, tconst, user_rating, dbSet }) => {
 
 const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
     const [rating, setRating] = useState(user_rating)
-
-
+    
     const parameters = useContext(StateContext)
-    const { setNumRatings, setRatingsCounts } = parameters.setters
-    const { numRatings } = parameters.values
-    // const [isLoading, setIsLoading] = useState(false)
+    const { setRatingsCounts } = parameters.setters
 
     const isLoading = useRef(false)
     const setIsLoading = (val) => {
@@ -125,21 +122,18 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
 
         setRating(_rating)
 
-        const newNumRatings = parseInt(numRatings) + 1
-        setNumRatings(newNumRatings)
-
         const response = await fetch(url)
-        const result = await response.json()
+        const ratingsCounts = await response.json()
 
-        setRatingsCounts(result.ratingsCounts)
-        console.log("Ratings -- result:", result.ratingsCounts)
+        setRatingsCounts(ratingsCounts)
+        console.log("Ratings -- result:", ratingsCounts)
 
         // Trouble with this, flashing.
         if (getData)
             await getData()
 
         // Generate recs every 10 ratings.
-        if (newNumRatings % 10 == 0) {
+        if (ratingsCounts['rated'] % 10 == 0) {
             setIsLoading(true)
             const url = `/api/get_recommendations_async?user_id=${user_id}&rating=${_rating}&aiModel=${aiModel}`
             const response = await fetch(url)

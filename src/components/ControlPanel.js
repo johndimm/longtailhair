@@ -6,19 +6,20 @@ import Genres from "@/components/Genres"
 import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 import RequestRecs from "@/components/RequestRecs"
+// import { log } from 'console'
 // import { count } from 'console'
 
-const ControlPanel = ({ 
+const ControlPanel = ({
     toggleShowControlPanel,
-    setCardDim, 
+    setCardDim,
     cardDim }) => {
 
     const parameters = useContext(StateContext)
     const { resetGenres, resetMovie, resetActor,
         resetQuery, resetYearstart, resetYearend,
-        setTitletype, setTheme, setRatingsFilter, 
+        setTitletype, setTheme, setRatingsFilter,
         //setCardDim,
-        setSortOrder, setAIModel, resetAll, setNumRatings, setNumMovies, setOffset }
+        setSortOrder, setAIModel, resetAll, setRatingsCounts, setNumMovies, setOffset }
         = parameters.setters
     const {
         nconst, titletype, genres, theme,
@@ -137,38 +138,51 @@ const ControlPanel = ({
     })
 
     const RatingsWidget = (() => {
-        const style = user.id
-            ? { color: 'black' }
-            : { color: 'gray' }
-        
-        let ratedByMe = 0
-        Object.keys(ratingsCounts).forEach ((rating) => {
-            if (rating > -3) 
-            ratedByMe += ratingsCounts[rating]
-        })
-
         const ratings = [
             { dbName: 'not rated', displayName: 'not yet rated' },
-            { dbName: 'recommendations', displayName: 'recommended', count: ratingsCounts[-3] },
-            { dbName: 'rated', displayName: 'rated by me', count: ratedByMe },
-            { dbName: 'watchlist', displayName: 'want to watch', count: ratingsCounts[-1] },
+            { dbName: 'recommendations', displayName: 'recommended', count: ratingsCounts["recommended"] },
+            { dbName: 'rated', displayName: 'rated by me', count: ratingsCounts["rated"] },
+            { dbName: 'watchlist', displayName: 'want to watch', count: ratingsCounts["want_to_see"] },
             { dbName: 'all', displayName: 'everything' }
         ]
 
+        const selectFilter = (dbName) => {
+            setRatingsFilter(dbName)
+            setOffset(0)
+        }
+
+        const loggedIn = user.id
         const ratingsOptions = ratings.map((rating, idx) => {
-            const style = rating.dbName == ratingsFilter
-                ? { fontWeight: 600, fontStyle: 'italic' }
-                : { fontWeight: 200 }
-            const count = rating.count ? ` (${rating.count})` : ''
-            return <li key={idx} className={styles.select_option} style={style} onClick={() => {
-                if (user.id) {
-                    setRatingsFilter(rating.dbName)
-                    setOffset(0)
-                }
-            }}>{rating.displayName} {count}</li>
+            let onClick = null
+            let count = ''
+            let color = 'gray'
+            if (rating.count == undefined) {
+                onClick = selectFilter
+                color = 'black'
+            } else if (rating.count > 0) {
+                onClick = selectFilter
+                count = `(${rating.count})`
+                color = 'black'
+            }
+    
+            const selected = rating.dbName == ratingsFilter
+            const style = selected
+            ? { fontWeight: 600, fontStyle: 'italic', color: color }
+            : { fontWeight: 200, color: color }
+     
+
+            return <li key={idx} 
+              className={styles.select_option} 
+              style={style} 
+              onClick={onClick ? () => onClick(rating.dbName) : null}
+            >{rating.displayName} {count}</li>
         })
 
-        const tooltip = user.id
+        const style = loggedIn
+            ? { color: 'black' }
+            : { color: 'gray' }
+
+        const tooltip = loggedIn
             ? ""
             : "sign in to rate and get recommendations"
 
@@ -249,7 +263,12 @@ const ControlPanel = ({
             const url = `/api/delete_ratings/${user_id}`
             const response = await fetch(url)
             const result = response.json()
-            setNumRatings(0)
+            setRatingsCounts({
+                rated: 0,
+                want_to_see: 0,
+                recommended: 0,
+                do_not_want_to_see: 0
+            })
         }
         return (
             <div className={styles.widget} style={style} title={tooltip}>

@@ -165,22 +165,25 @@ exports.setUserRating = async function (user_id, tconst, rating) {
 
   await performSQLQuery(cmd)
 
-  cmd = `
-  select rating, count(*) as cnt 
-  from user_ratings 
-  where user_id=${user_id}
-  group by 1`
-  const rows = await performSQLQuery(cmd)
+  return await getRatingsCounts(user_id)
+}
 
-  const ratingsCounts = {}
-  if (rows.length > 0) {
-    rows.forEach((row) => {
-      ratingsCounts[row.rating] = parseInt(row.cnt)
-    })
+const getRatingsCounts = async function (user_id) {
+  // Get the number of ratings per rating value.
+
+  const cmd = `select * from count_ratings(${user_id})`
+  const result = await performSQLQuery(cmd)
+  const ratingsCounts = {
+    rated: 0,
+    want_to_see: 0,
+    recommended: 0,
+    do_not_want_to_see: 0
   }
+  result.forEach ((r) => {
+    ratingsCounts[r.category] = r.cnt 
+  })
 
-  const json = { "ratingsCounts": ratingsCounts }
-  console.log(json)
+  const json = ratingsCounts 
 
   return json
 }
@@ -216,13 +219,9 @@ exports.register = async function (email, name) {
 }
 
 exports.get_num_ratings = async function (user_id) {
-  const query = `
-  select count(*) as num_ratings 
-  from user_ratings 
-  where user_id=${user_id} and rating != -3
-  `
-
-  return await performSQLQuery(query)
+  const ratingsCounts = await getRatingsCounts(user_id)
+  return ratingsCounts
+  // return {count: ratingsCounts["rated"]}
 }
 
 exports.delete_ratings = async function (user_id) {
