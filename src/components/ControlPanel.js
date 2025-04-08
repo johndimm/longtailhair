@@ -6,6 +6,7 @@ import Genres from "@/components/Genres"
 import styles from "@/styles/ControlPanel.module.css"
 import { NUM_MOVIES, MIN_YEAR, MAX_YEAR } from "@/util/constants"
 import RequestRecs from "@/components/RequestRecs"
+import { updateRatingsCounts } from './Banner'
 // import { log } from 'console'
 // import { count } from 'console'
 
@@ -214,8 +215,9 @@ const ControlPanel = ({
                 resetQuery(null)
                 resetYearstart(null)
                 resetYearend(null)
+                updateRatingsCounts(user.id, setRatingsCounts)
             })
-
+     
     }
 
     const showPrompt = async (e) => {

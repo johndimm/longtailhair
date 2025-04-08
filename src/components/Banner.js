@@ -15,7 +15,7 @@ const registerUser = async (email, name, setUser, setRatingsCounts) => {
   await updateRatingsCounts (result.user_id, setRatingsCounts)
 }
 
-const updateRatingsCounts = async (user_id, setRatingsCounts) => {
+export const updateRatingsCounts = async (user_id, setRatingsCounts) => {
     const url = `/api/get_num_ratings/${user_id}`
     const response = await fetch(url)
     const ratingsCounts = await response.json()

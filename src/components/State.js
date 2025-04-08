@@ -22,7 +22,7 @@ const State = () => {
   const [_sortOrder, setSortOrder] = useState('popularity desc')
   const [_theme, setTheme] = useState('light')
   const [_showControlPanel, setShowControlPanel] = useState(false)
-  const [_aiModel, setAIModel] = useState('Gemini')
+  const [_aiModel, setAIModel] = useState('Claude')
   // const [_user, setUser] = useState({ id: 725, email: null, name: 'Vince' })
   const [_user, setUser] = useState({ id: null, email: null, name: null })
 
