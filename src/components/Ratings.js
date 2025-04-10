@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect, useRef } from 'react'
 import styles from "@/styles/Main.module.css";
 import { StateContext } from '@/components/State'
-import Spinner from "@/components/Spinner"
+import { updateRatingsCounts } from './Banner'
 
 const StarRating = ({ score }) => {
     const filledStars = Math.round(score / 2.0);
@@ -103,43 +103,56 @@ const Interest = ({ user_id, tconst, user_rating, dbSet }) => {
 }
 
 
-const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiModel }) => {
+const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiModel, setIsLoading }) => {
     const [rating, setRating] = useState(user_rating)
-    
-    const parameters = useContext(StateContext)
-    const { setRatingsCounts } = parameters.setters
 
-    const isLoading = useRef(false)
-    const setIsLoading = (val) => {
-        isLoading.current = val
-    }
+    const parameters = useContext(StateContext)
+    const { setRatingsCounts, setRatingsFilter, resetAll, setNumMovies, resetQuery, resetActor } = parameters.setters
+    const { numMovies } = parameters.values
 
     //console.log(`Ratings tconst:${tconst}, user_rating:${user_rating}`)
 
     const dbSet = async (user_id, _tconst, _rating) => {
         // User rated something.
-        const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}&aiModel=${aiModel}`
-
         setRating(_rating)
 
+        const url = `/api/set_user_rating?user_id=${user_id}&tconst=${_tconst}&rating=${_rating}&aiModel=${aiModel}`
         const response = await fetch(url)
-        const ratingsCounts = await response.json()
+        const newRatingsCounts = await response.json()
 
-        setRatingsCounts(ratingsCounts)
-        console.log("Ratings -- result:", ratingsCounts)
-
-        // Trouble with this, flashing.
-        if (getData)
-            await getData()
-
-        // Generate recs every 10 ratings.
-        if (ratingsCounts['rated'] % 10 == 0) {
+        // if (newRatingsCounts['rated'] % 10 == 0 || newRatingsCounts['rated'] == 1) {
+        if (newRatingsCounts['recommended'] == 0) {
             setIsLoading(true)
-            const url = `/api/get_recommendations_async?user_id=${user_id}&rating=${_rating}&aiModel=${aiModel}`
+
+            const url = `/api/get_recommendations?user_id=${user_id}&rating=${_rating}&aiModel=${aiModel}`
             const response = await fetch(url)
             const result = await response.json()
-            setIsLoading(false)
+
+            updateRatingsCounts(user_id, setRatingsCounts)
+
+            // resetYearstart(1890 + Math.floor(Math.random() * 10))
+            //const newNumMovies = (numMovies + 1) % 2
+            //setNumMovies(newNumMovies)
+            setRatingsFilter('recommendations')
+     // Get next item now.
+     if (getData)
+        await getData()
+
+            resetQuery(null)
+            resetActor(null)
+            // resetAll()
+            // setNumMovies(1)
+            // location.href = '/?ratingsFilter=recommendations&numMovies=1'
+        } else {
+            setRatingsCounts(newRatingsCounts)
+                 // Get next item now.
+        if (getData)
+            await getData()
         }
+
+   
+
+        setIsLoading(false)
     }
 
     // console.log("Ratings -- user_rating:", user_rating)
@@ -157,7 +170,6 @@ const Ratings = (({ user_id, tconst, user_rating, averagerating, getData, aiMode
 
     return (
         <div>
-            <Spinner isLoading={isLoading.current} msg="please wait, generating recommendations" />
             <table><tbody>
                 <tr>
                     <td>

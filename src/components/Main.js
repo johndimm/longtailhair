@@ -38,7 +38,7 @@ const Main = ({ }) => {
     const response = await fetch(url)
     const result = await response.json()
     if (numMovies == 1)
-    setIsLoading(false)
+      setIsLoading(false)
 
     setData(result)
   }
@@ -162,6 +162,7 @@ const Main = ({ }) => {
           theme={theme}
           getData={getData}
           cardDim={cardDim}
+          setIsLoading={setIsLoading}
         />
       </div>
     )

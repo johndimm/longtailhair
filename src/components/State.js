@@ -22,7 +22,7 @@ const State = () => {
   const [_sortOrder, setSortOrder] = useState('popularity desc')
   const [_theme, setTheme] = useState('light')
   const [_showControlPanel, setShowControlPanel] = useState(false)
-  const [_aiModel, setAIModel] = useState('Claude')
+  const [_aiModel, setAIModel] = useState('Gemini')
   // const [_user, setUser] = useState({ id: 725, email: null, name: 'Vince' })
   const [_user, setUser] = useState({ id: null, email: null, name: null })
 
@@ -86,9 +86,9 @@ const State = () => {
   }
 
   const resetQuery = (query) => {
-    setMovie(null)
-    resetNumMovies()
     setQuery(query)
+    const queryInput = document.getElementById("query")
+    queryInput.value = query
   }
 
   const resetYearstart = (yearstart) => {
@@ -107,7 +107,7 @@ const State = () => {
       : nconst
 
     setMovie(null)
-    resetNumMovies()
+    // resetNumMovies()
     setActor(newNconst)
 
     if (newNconst) {

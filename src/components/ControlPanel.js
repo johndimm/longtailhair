@@ -157,7 +157,7 @@ const ControlPanel = ({
             let onClick = null
             let count = ''
             let color = 'gray'
-            if (rating.count == undefined) {
+            if (! rating.hasOwnProperty('count')) {
                 onClick = selectFilter
                 color = 'black'
             } else if (rating.count > 0) {

@@ -6,14 +6,16 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 async function getGeminiRecommendations(prompt) {
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  // const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro-exp-03-25" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  // const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-thinking-exp-01-21" });
+  // const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro-exp-03-25" });
 
   const result = await model.generateContent(prompt);
   let response = result.response.text()
 
   response = response.replace(/`/g, '')
   response = response.replace(/^json/, '')
+  response = response.replace(/,}/g,'}')
   console.log("response from Gemini:", response)
 
   const json = JSON.parse(response)
@@ -121,7 +123,7 @@ export const aiRecsPrompt = async (user_id, titletype, genres, aiModel, user_rat
   let titletypeInstruction = 'You can provide a few tv series but I am currently looking at movies, so provide mostly movies.'
   if (titletype != 'movie') {
     movies = 'tv series'
-    titletypeInstruction = 'You can provide a few movies but I am currently looking at tv series, so provide ostly tv series.'
+    titletypeInstruction = 'You can provide a few movies but I am currently looking at tv series, so provide mostly tv series.'
   }
   let genresFilter = ''
   if (genres && genres != 'undefined' && genres != 'null') {
@@ -139,7 +141,7 @@ will be a success if I later watch the recommendations and give them good rating
 
 <request>
 You are a movie and tv show recommendation expert.
-Provide 30 movie and tv recommendations based on the ratings I provide in the resources section.  
+Provide 7 movie and tv recommendations based on the ratings I provide in the resources section.  
 </request>
 
 <constraint>
@@ -177,10 +179,6 @@ Pick movies made close in time to the rated titles.  If all the rated titles are
 <constraint>
 If most of the rated titles are from a given country, pick other movies from the same country.
 </constraint>
-
-<instruction>
-For each recommendation, aim to be at most "two degrees of separation" from my rated films - recommend films that were influences on my favorites, or were influenced by them, rather than just similar films.
-</instruction>
 
 <constraint>
 ${titletypeInstruction}
@@ -268,6 +266,7 @@ ${report}
 
 const usePrompt = async (prompt, aiModel) => {
   let recs
+
   if (aiModel == 'Claude') {
     recs = await getClaudeRecommendations(prompt)
   } else if (aiModel == 'ChatGPT') {

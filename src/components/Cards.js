@@ -6,7 +6,8 @@ const Cards = ({
     selectedPerson,
     theme,
     getData,
-    cardDim
+    cardDim,
+    setIsLoading
   }) => {
   
     // Aggregate multiple actors in the same film.
@@ -23,14 +24,15 @@ const Cards = ({
       const recs = agg[tconst]
   
       return <Card
-        key={idx + tconst}
+        key={`${idx}-${tconst}`}
         recs={recs}
         selectedPerson={selectedPerson}
         position="sidebar"
         theme={theme}
         numReturnedMovies={Object.keys(agg).length}
         getData={getData}
-        cardDim={cardDim}/>
+        cardDim={cardDim}
+        setIsLoading={setIsLoading}/>
   
     })
   }

@@ -78,7 +78,8 @@ const Card = ({
   theme,
   getData,
   numReturnedMovies,
-  cardDim
+  cardDim,
+  setIsLoading
 }) => {
   // const [topClass, setTopClass] = useState(clsx(styles.card, styles.card_light))
   const parameters = useContext(StateContext)
@@ -267,7 +268,8 @@ const Card = ({
 
         <Ratings user_id={user.id} tconst={r1.tconst}
           user_rating={r1.user_rating} averagerating={r1.averagerating}
-          getData={getData} titletype={r1.titletype} genres={r1.genres} aiModel={aiModel} />
+          getData={getData} titletype={r1.titletype} genres={r1.genres} aiModel={aiModel} 
+          setIsLoading={setIsLoading}/>
 
         <span
           className={styles.year}
