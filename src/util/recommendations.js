@@ -202,6 +202,7 @@ Do not start the response with a few backticks followed by "json".  Just give me
   {
   "year": 1962,
   "title": "The 400 Blows",
+  "tconst": "tt0053198",
   "why_recommended": "Recommended because you enjoyed 'Breathless' and would appreciate this seminal French New Wave film aobut youth and alienation"
   }
 ]
@@ -344,7 +345,33 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code, aiMod
   `
   await db.performQuery(cmd)
 
-  cmd = `
+  // await matchByTitle(user_id, code)
+  await matchById(user_id, code)
+
+  return { nOld: nOld, nNew: nNew }
+}
+
+const matchById = async (user_id, code) => {
+  const cmd = `
+  delete from user_ratings where user_id=${user_id} and rating=-3
+  ;
+  insert into user_ratings
+  (source_order, user_id, tconst, rating, msg)
+  select 
+    source_order,
+    ${user_id} as user_id, 
+    tconst, 
+    ${code}, 
+    why_recommended as msg
+  from tmp
+  on conflict (user_id, tconst) do nothing
+  ;
+    `
+  await db.performQuery(cmd)
+}
+
+const matchByTitle = async (user_id, code) => {
+  const cmd = `
   delete from user_ratings where user_id=${user_id} and rating=-3
   ;
   insert into user_ratings
@@ -363,8 +390,6 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code, aiMod
   ;
     `
   await db.performQuery(cmd)
-
-  return { nOld: nOld, nNew: nNew }
 }
 
 export const getAIRecsPrompt = async (user_id, titletype, genres, aiModel) => {
