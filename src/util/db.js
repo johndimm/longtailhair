@@ -197,6 +197,7 @@ exports.getUserRatings = async function (user_id) {
     left join tmdb using (tconst)
     left join posters as p on p.tconst = ur.tconst and p.error_count < 1
     where ur.user_id = ${user_id}
+    and ur.rating != -3
     order by 3`
   return await performSQLQuery(cmd)
 }

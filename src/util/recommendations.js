@@ -312,6 +312,8 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code, aiMod
     existingTitle[r.title] = idx
   })
 
+  console.log("===> existing titles:", existingTitle)
+
   let newRecs = []
   let nOld = 0
   let nNew = 0
@@ -361,9 +363,9 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code, aiMod
   `
   await db.performQuery(cmd)
 
-  //await matchByTitle(user_id, code)
+  await matchByTitleAndYear(user_id, code)
   //await matchById(user_id, code)
-  await matchByIdAndTitle(user_id, code)
+  // await matchByIdAndTitle(user_id, code)
 
   return { nOld: nOld, nNew: nNew }
 }
@@ -411,7 +413,7 @@ const matchById = async (user_id, code) => {
   await db.performQuery(cmd)
 }
 
-const matchByTitle = async (user_id, code) => {
+const matchByTitleAndYear = async (user_id, code) => {
   const cmd = `
   delete from user_ratings where user_id=${user_id} and rating=-3
   ;
