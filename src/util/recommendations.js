@@ -4,9 +4,17 @@ import Anthropic from '@anthropic-ai/sdk';
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 async function getGeminiRecommendations(prompt) {
+  return await getGemini(prompt, "gemini-2.0-flash")
+}
+
+async function getGemini25Recommendations(prompt) {
+  return await getGemini(prompt, "gemini-2.5-pro-exp-03-25")
+}
+
+async function getGemini(prompt, gmodel) {
 
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+  const model = genAI.getGenerativeModel({ "model": gmodel });
   // const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-thinking-exp-01-21" });
   // const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro-exp-03-25" });
 
@@ -230,6 +238,12 @@ Remove any recommendation that matches any movie title in this prompt.
 This verification step must be completed before responding.
 </verification>
 
+<verification>
+Parse the JSON output to make sure it is valid JSON.
+If it is not valid JSON, return an error message instead of the JSON.
+If the JSON is valid, return the JSON.
+</verification>
+
 
 `
 
@@ -276,6 +290,8 @@ const usePrompt = async (prompt, aiModel) => {
     recs = await getDeepseekRecommendations(prompt)
   } else if (aiModel == 'Gemini') {
     recs = await getGeminiRecommendations(prompt)
+  }else if (aiModel == 'Gemini25') {
+    recs = await getGemini25Recommendations(prompt)
   }
 
   return recs
@@ -345,10 +361,34 @@ const populateUserRatings = async (recs, user_id, user_ratings_recs, code, aiMod
   `
   await db.performQuery(cmd)
 
-  // await matchByTitle(user_id, code)
-  await matchById(user_id, code)
+  //await matchByTitle(user_id, code)
+  //await matchById(user_id, code)
+  await matchByIdAndTitle(user_id, code)
 
   return { nOld: nOld, nNew: nNew }
+}
+
+const matchByIdAndTitle = async (user_id, code) => {
+  const cmd = `
+  delete from user_ratings where user_id=${user_id} and rating=-3
+  ;
+  insert into user_ratings
+  (source_order, user_id, tconst, rating, msg)
+  select 
+    source_order,
+    ${user_id} as user_id, 
+    tmp.tconst, 
+    ${code}, 
+    why_recommended as msg
+  from tmp
+  join title_basics_ex as tbe on 
+  lower(tbe.primarytitle) = lower(tmp.title) 
+  and tbe.tconst = tmp.tconst
+  on conflict (user_id, tconst) do nothing
+  ;
+  ;
+    `
+  await db.performQuery(cmd)
 }
 
 const matchById = async (user_id, code) => {
@@ -360,11 +400,12 @@ const matchById = async (user_id, code) => {
   select 
     source_order,
     ${user_id} as user_id, 
-    tconst, 
+    tmp.tconst, 
     ${code}, 
     why_recommended as msg
   from tmp
   on conflict (user_id, tconst) do nothing
+  ;
   ;
     `
   await db.performQuery(cmd)

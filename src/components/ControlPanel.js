@@ -237,7 +237,7 @@ const ControlPanel = ({
         : { display: 'none' }
 
     const RecommendationsWidget = (() => {
-        const aiModels = ["Claude", "ChatGPT", "DeepSeek", "Gemini"]
+        const aiModels = ["Claude", "ChatGPT", "DeepSeek", "Gemini", "Gemini25"]
         const recsOptions = aiModels.map((source, idx) => {
             const defaultChecked = source == aiModel
             return <div key={idx} style={{ 'whiteSpace': 'nowrap' }}>
